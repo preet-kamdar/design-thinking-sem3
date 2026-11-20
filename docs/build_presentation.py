@@ -21,6 +21,7 @@ Extending
 3. Change palette / gradient angles in THEME at the top of this file.
 """
 
+import argparse
 import json
 from pathlib import Path
 
@@ -104,6 +105,53 @@ THEME = [
     (SUN, SUN_SOFT, SUN),
     (AQUA, AQUA_SOFT, AQUA),
 ]
+
+# --- Trial palettes -------------------------------------------------------- #
+# Each entry maps to the four roles used by the slide code. The "soft" colours
+# are auto-derived for the faint decorative shapes. Dark reference hues are
+# lightened here so black text stays readable on every box.
+PALETTES = {
+    "current":      dict(primary="FFE22E", bridge="5ED6C8", secondary="45C4F8", limit="FF7676"),
+    "yellow_coral": dict(primary="FEF200", bridge="F2D21C", secondary="F7A6A6", limit="E7575D"),
+    "dandadan":     dict(primary="E3F21C", bridge="ADFB70", secondary="13A3B5", limit="B73B36"),
+    "crimson_gold": dict(primary="E5D561", bridge="F2B8C6", secondary="E56595", limit="D11544"),
+    "teal_red":     dict(primary="EDE6E0", bridge="8FC3C9", secondary="E8A0A0", limit="C0504F"),
+}
+THEME_ORDER = ("primary", "bridge", "secondary", "secondary", "bridge",
+               "primary", "primary", "bridge", "secondary", "secondary",
+               "limit", "bridge", "primary", "primary", "bridge")
+
+
+def _rgb(h):
+    return RGBColor(int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16))
+
+
+def _soft(c, mix=0.78):
+    return RGBColor(*[int(v + (255 - v) * mix) for v in tuple(c)])
+
+
+def apply_palette(name):
+    """Swap every colour role, then rebuild THEME in the same soft order."""
+    global SUN, AQUA, BLUE, CORAL, SUN_SOFT, AQUA_SOFT, BLUE_SOFT, CORAL_SOFT
+    global THEME, GREEN, CYAN, ORANGE, PURPLE, RED, AMBER, LILAC, SKY, MINT, PEACH, ROSE
+    p = PALETTES[name]
+    SUN, AQUA, BLUE, CORAL = (_rgb(p[k]) for k in
+                              ("primary", "bridge", "secondary", "limit"))
+    SUN_SOFT, AQUA_SOFT, BLUE_SOFT, CORAL_SOFT = (
+        _soft(c) for c in (SUN, AQUA, BLUE, CORAL))
+    GREEN = AMBER = SUN
+    CYAN = BLUE
+    PURPLE = AQUA
+    ORANGE = RED = CORAL
+    LILAC = AQUA_SOFT
+    SKY = BLUE_SOFT
+    MINT = PEACH = SUN_SOFT
+    ROSE = CORAL_SOFT
+    colors = dict(primary=SUN, bridge=AQUA, secondary=BLUE, limit=CORAL)
+    softs = dict(primary=SUN_SOFT, bridge=AQUA_SOFT,
+                 secondary=BLUE_SOFT, limit=CORAL_SOFT)
+    THEME = [(colors[r], softs[r], colors[r]) for r in THEME_ORDER]
+
 
 # Only TWO type sizes: a hero for titles/big numbers, one size for everything
 # else. Bold is reserved for hero text, so a slide no longer reads as a mess
@@ -686,6 +734,16 @@ SLIDE_BUILDERS = [s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, s14, s
 
 
 def main():
+    global OUT
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--palette", default="current", choices=sorted(PALETTES),
+                    help="which reference palette to build")
+    ap.add_argument("--out", default=None, help="output .pptx path")
+    args = ap.parse_args()
+    apply_palette(args.palette)
+    if args.out:
+        OUT = Path(args.out)
+
     notes_list = json.loads(NOTES_FILE.read_text()) if NOTES_FILE.exists() else []
     prs = Presentation()
     prs.slide_width = Inches(W)

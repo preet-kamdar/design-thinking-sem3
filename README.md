@@ -77,6 +77,11 @@ report **0 estimated overflowing text boxes**, and text must also stay inside
 its coloured panel. Chart gridlines come from `webapp/analysis/analysis.py` —
 regenerate charts before rebuilding the deck.
 
+Four palette trial decks live in `docs/trials/` (see its README). Build any of
+them with `python3 docs/build_presentation.py --palette <name> --out <file>`;
+the plain command still rebuilds `docs/Presentation.pptx` with the default
+palette.
+
 ## Run the dashboard
 
 ```bash
