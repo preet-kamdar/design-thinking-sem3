@@ -45,40 +45,55 @@ ORANGE = RGBColor(255, 152, 0)
 PURPLE = RGBColor(156, 39, 176)
 RED = RGBColor(241, 94, 108)
 WHITE = RGBColor(245, 245, 245)
-MUTED = RGBColor(163, 163, 170)
+MUTED = RGBColor(205, 205, 215)   # brightened so captions never blend into panels
 DARK = RGBColor(10, 10, 12)
 
-# (gradient start, gradient end, accent, angle)
+# (green-tinted start, rich dark end, accent, angle)
+# The dark end used to be near-black on every slide — that was the blandness.
 THEME = [
-    (RGBColor(9, 26, 17), RGBColor(14, 14, 16), GREEN, 45),
-    (RGBColor(9, 28, 32), RGBColor(14, 14, 16), CYAN, 135),
-    (RGBColor(12, 24, 18), RGBColor(16, 14, 18), GREEN, 45),
-    (RGBColor(24, 14, 34), RGBColor(14, 14, 16), PURPLE, 135),
-    (RGBColor(30, 20, 10), RGBColor(14, 14, 16), ORANGE, 45),
-    (RGBColor(9, 28, 32), RGBColor(16, 14, 20), CYAN, 135),
-    (RGBColor(12, 26, 18), RGBColor(14, 14, 16), GREEN, 45),
-    (RGBColor(24, 14, 34), RGBColor(14, 16, 20), PURPLE, 135),
-    (RGBColor(30, 20, 10), RGBColor(14, 14, 16), ORANGE, 45),
-    (RGBColor(12, 24, 18), RGBColor(14, 14, 18), GREEN, 135),
-    (RGBColor(30, 14, 18), RGBColor(14, 14, 16), RED, 45),
-    (RGBColor(9, 28, 32), RGBColor(14, 16, 20), CYAN, 135),
-    (RGBColor(30, 20, 10), RGBColor(18, 14, 16), ORANGE, 45),
-    (RGBColor(12, 26, 18), RGBColor(14, 14, 16), GREEN, 135),
-    (RGBColor(9, 26, 17), RGBColor(14, 14, 16), GREEN, 45),
+    (RGBColor(9, 26, 17), RGBColor(26, 16, 42), GREEN, 45),
+    (RGBColor(9, 28, 32), RGBColor(16, 28, 52), CYAN, 135),
+    (RGBColor(12, 24, 18), RGBColor(38, 18, 44), GREEN, 45),
+    (RGBColor(24, 14, 34), RGBColor(18, 20, 48), PURPLE, 135),
+    (RGBColor(30, 20, 10), RGBColor(44, 18, 26), ORANGE, 45),
+    (RGBColor(9, 28, 32), RGBColor(20, 22, 52), CYAN, 135),
+    (RGBColor(12, 26, 18), RGBColor(28, 18, 46), GREEN, 45),
+    (RGBColor(24, 14, 34), RGBColor(16, 30, 44), PURPLE, 135),
+    (RGBColor(30, 20, 10), RGBColor(48, 20, 28), ORANGE, 45),
+    (RGBColor(12, 24, 18), RGBColor(22, 26, 50), GREEN, 135),
+    (RGBColor(30, 14, 18), RGBColor(48, 16, 30), RED, 45),
+    (RGBColor(9, 28, 32), RGBColor(18, 28, 48), CYAN, 135),
+    (RGBColor(30, 20, 10), RGBColor(42, 20, 36), ORANGE, 45),
+    (RGBColor(12, 26, 18), RGBColor(24, 26, 52), GREEN, 135),
+    (RGBColor(9, 26, 17), RGBColor(30, 18, 44), GREEN, 45),
 ]
 
 FONT_HERO, FONT_BODY, FONT_META = 32, 16, 11
 FONTS = (FONT_HERO, FONT_BODY, FONT_META)   # the ONLY font sizes allowed
 
-# Uniform TEXT palette. Accent colours are for SHAPES only — every piece of
-# text resolves to white (body), muted grey (captions) or green (headings).
-T_HEAD, T_BODY, T_MUTED = GREEN, WHITE, MUTED
-ACCENTS = (GREEN, CYAN, ORANGE, PURPLE, RED)
+# Controlled TEXT palette. Headings are white; body light; captions readable.
+# Amber and purple carry secondary roles, red is reserved for limitations —
+# so green no longer floods the typography. Shapes keep the full accent set.
+T_HEAD = WHITE
+T_BODY = RGBColor(240, 240, 246)
+T_MUTED = MUTED
+T_GREEN = GREEN
+T_AMBER = RGBColor(255, 193, 7)
+T_PURPLE = RGBColor(186, 104, 200)
+T_RED = RGBColor(255, 107, 107)
+
+TEXT_COLOR_MAP = {
+    GREEN: T_GREEN,
+    CYAN: T_PURPLE,
+    ORANGE: T_AMBER,
+    PURPLE: T_PURPLE,
+    RED: T_RED,
+}
 
 
 def text_color(color):
-    """Collapse any per-slide accent colour to the single heading colour."""
-    return T_HEAD if color in ACCENTS else color
+    """Resolve an accent to its fixed role colour — no per-slide rainbow."""
+    return TEXT_COLOR_MAP.get(color, color)
 
 W, H = 13.333, 7.5
 
@@ -132,16 +147,39 @@ def shape(slide, kind, x, y, w, h, fill, line=None):
 def box(slide, x, y, w, h, fill=PANEL, line=None):
     panel = shape(slide, MSO_SHAPE.ROUNDED_RECTANGLE, x, y, w, h, fill, line)
     if w >= 2.4 and h >= 0.8:
-        # Faint tinted wash stops large panels reading as flat blocks.
+        # Motif hue shifts gently across the slide: green → amber → purple.
+        mc = T_GREEN if x < 4 else (T_AMBER if x < 8 else T_PURPLE)
+
+        # 1) Faint tinted wash so the panel is never a flat block.
         wash = shape(slide, MSO_SHAPE.ROUNDED_RECTANGLE,
-                     x + 0.02, y + 0.02, w - 0.04, h - 0.04, T_HEAD)
+                     x + 0.02, y + 0.02, w - 0.04, h - 0.04, mc)
         set_opacity(wash, 3)
-        # Tiny equaliser motif: 6% opacity keeps text fully readable.
-        for i, extra in enumerate((0.12, 0.30, 0.16, 0.36, 0.22)):
-            bar = shape(slide, MSO_SHAPE.RECTANGLE,
-                        x + w - 1.2 + i * 0.2, y + h - 0.55,
-                        0.07, 0.18 + extra, T_HEAD)
-            set_opacity(bar, 6)
+
+        # 2) Three vinyl grooves tucked into the bottom-right corner.
+        for d, op in ((1.30, 5), (0.92, 6), (0.54, 7)):
+            ring = slide.shapes.add_shape(
+                MSO_SHAPE.OVAL,
+                Inches(x + w - d / 2 - 0.18), Inches(y + h - d / 2 - 0.18),
+                Inches(d), Inches(d))
+            ring.fill.background()
+            ring.line.color.rgb = mc
+            ring.line.width = Pt(1.1)
+            set_opacity(ring, op)
+
+        # 3) A small note glyph near the top-right, behind the content text.
+        note = text(slide, x + w - 0.62, y + 0.12, 0.42, 0.42,
+                    "♪", size=FONT_BODY, color=mc)
+        for par in note.text_frame.paragraphs:
+            for run in par.runs:
+                _alpha(run.font.color, 8)
+
+        # 4) A soft dot cluster in the bottom-left corner.
+        for i in range(3):
+            for j in range(2):
+                dot = shape(slide, MSO_SHAPE.OVAL,
+                            x + 0.20 + i * 0.15, y + h - 0.42 + j * 0.15,
+                            0.045, 0.045, mc)
+                set_opacity(dot, 6)
     return panel
 
 
@@ -149,7 +187,7 @@ def circle(slide, x, y, d, fill):
     return shape(slide, MSO_SHAPE.OVAL, x, y, d, d, fill)
 
 
-def text(slide, x, y, w, h, value, size=FONT_BODY, color=WHITE, bold=False,
+def text(slide, x, y, w, h, value, size=FONT_BODY, color=T_BODY, bold=False,
          align=PP_ALIGN.LEFT, valign=MSO_ANCHOR.TOP, italic=False):
     tb = slide.shapes.add_textbox(Inches(x), Inches(y), Inches(w), Inches(h))
     tf = tb.text_frame
@@ -171,7 +209,7 @@ def text(slide, x, y, w, h, value, size=FONT_BODY, color=WHITE, bold=False,
     return tb
 
 
-def bullets(slide, x, y, w, h, items, color=WHITE, accent=GREEN, gap=9):
+def bullets(slide, x, y, w, h, items, color=T_BODY, accent=T_AMBER, gap=9):
     tb = slide.shapes.add_textbox(Inches(x), Inches(y), Inches(w), Inches(h))
     tf = tb.text_frame
     tf.word_wrap = True
@@ -188,7 +226,8 @@ def bullets(slide, x, y, w, h, items, color=WHITE, accent=GREEN, gap=9):
 
 
 def kicker(slide, label, accent):
-    text(slide, 0.7, 0.33, 8, 0.28, label.upper(), size=FONT_META, color=accent, bold=True)
+    text(slide, 0.7, 0.33, 8, 0.28, label.upper(), size=FONT_META,
+         color=T_AMBER, bold=True)
 
 
 def header(slide, index, title, subtitle, accent):
@@ -203,13 +242,13 @@ def footer(slide, index, accent):
     text(slide, 0.7, 6.95, 9, 0.35, "Reimagining the Personal Music Experience",
          size=FONT_META, color=MUTED)
     text(slide, 11.85, 6.95, 0.8, 0.35, f"{index:02d}", size=FONT_META,
-         color=accent, align=PP_ALIGN.RIGHT)
+         color=T_AMBER, align=PP_ALIGN.RIGHT)
 
 
 def stat_card(slide, x, y, w, h, big, label, accent):
     box(slide, x, y, w, h, PANEL)
     shape(slide, MSO_SHAPE.RECTANGLE, x, y, 0.05, h, accent)
-    text(slide, x + 0.22, y + 0.16, w - 0.4, 0.7, big, size=FONT_HERO, color=accent, bold=True)
+    text(slide, x + 0.22, y + 0.16, w - 0.4, 0.7, big, size=FONT_HERO, color=T_GREEN, bold=True)
     text(slide, x + 0.22, y + 0.95, w - 0.4, h - 1.0, label, size=FONT_META, color=MUTED)
 
 
@@ -303,7 +342,7 @@ def s2(prs):
     stat_card(s, 8.9, 2.0, 3.7, 1.9, "39%", "say taste is understood\n'very well'", GREEN)
     box(s, 0.7, 4.35, 11.9, 1.9, PANEL)
     shape(s, MSO_SHAPE.RECTANGLE, 0.7, 4.35, 0.05, 1.9, a)
-    text(s, 1.0, 4.6, 11.2, 0.3, "THE QUESTION", size=FONT_META, color=a, bold=True)
+    text(s, 1.0, 4.6, 11.2, 0.3, "THE QUESTION", size=FONT_META, color=T_AMBER, bold=True)
     text(s, 1.0, 5.0, 11.2, 1.0,
          "Can a lightweight utility improve discovery and rediscovery\nwithout private streaming APIs?",
          size=FONT_BODY, color=WHITE, bold=True)
@@ -319,7 +358,7 @@ def s3(prs):
                  "A personal library makes saved songs easy to find.", a)
     feature_card(s, 8.8, 1.95, 3.8, 2.2, "3", "Prove with data",
                  "Statistics show which pain points the design addresses.", ORANGE)
-    text(s, 0.7, 4.5, 6, 0.28, "OUTCOMES", size=FONT_META, color=a, bold=True)
+    text(s, 0.7, 4.5, 6, 0.28, "OUTCOMES", size=FONT_META, color=T_AMBER, bold=True)
     chips = [("Chrome extension", GREEN), ("Flask + SQLite", CYAN),
              ("Responsive dashboard", ORANGE), ("Re-runnable analysis", PURPLE)]
     x = 0.7
@@ -335,7 +374,7 @@ def s3(prs):
 def s4(prs):
     s, a = new(prs, 4)
     header(s, 4, "User research", "Convenience sample · n = 18 · ages 18–30 (median 19)", a)
-    text(s, 0.7, 1.98, 5.5, 0.28, "PRIMARY PLATFORM", size=FONT_META, color=a, bold=True)
+    text(s, 0.7, 1.98, 5.5, 0.28, "PRIMARY PLATFORM", size=FONT_META, color=T_AMBER, bold=True)
     y = 2.4
     for label, pct, c in [("Spotify", 78, GREEN), ("YouTube Music", 17, CYAN), ("Other", 5, ORANGE)]:
         text(s, 0.7, y, 2.1, 0.3, label, size=FONT_META, color=WHITE)
@@ -344,10 +383,10 @@ def s4(prs):
         text(s, 6.85, y - 0.02, 0.8, 0.3, f"{pct}%", size=FONT_META, color=c, bold=True)
         y += 0.65
     box(s, 8.1, 1.98, 4.5, 2.9, PANEL)
-    text(s, 8.4, 2.2, 4.0, 0.28, "METHOD", size=FONT_META, color=a, bold=True)
+    text(s, 8.4, 2.2, 4.0, 0.28, "METHOD", size=FONT_META, color=T_AMBER, bold=True)
     bullets(s, 8.4, 2.6, 3.9, 2.1,
             ["MCQ + ordinal + numeric + open", "78% Spotify — platform imbalance",
-             "Below target of 30 — declared"], accent=a, gap=8)
+             "Below target of 30 — declared"], accent=T_AMBER, gap=8)
     box(s, 0.7, 5.1, 11.9, 1.1, PANEL)
     shape(s, MSO_SHAPE.RECTANGLE, 0.7, 5.1, 0.05, 1.1, a)
     text(s, 1.0, 5.35, 11.2, 0.7,
@@ -385,7 +424,7 @@ def s6(prs):
         s.shapes.add_picture(str(chart), Inches(0.85), Inches(4.15), width=Inches(7.1))
     box(s, 8.4, 3.95, 4.2, 2.75, PANEL)
     shape(s, MSO_SHAPE.RECTANGLE, 8.4, 3.95, 0.05, 2.75, a)
-    text(s, 8.7, 4.2, 3.6, 0.28, "HONEST READING", size=FONT_META, color=a, bold=True)
+    text(s, 8.7, 4.2, 3.6, 0.28, "HONEST READING", size=FONT_META, color=T_AMBER, bold=True)
     text(s, 8.7, 4.65, 3.6, 1.8,
          "Above neutral ≠ unhappy.\nGood-but-not-great baseline.\nWe claim refinement, not rescue.",
          size=FONT_BODY, color=WHITE)
@@ -406,7 +445,7 @@ def s7(prs):
          size=FONT_META, color=MUTED, align=PP_ALIGN.CENTER)
     box(s, 4.85, 1.95, 7.75, 2.1, PANEL2)
     shape(s, MSO_SHAPE.RECTANGLE, 4.85, 1.95, 0.05, 2.1, a)
-    text(s, 5.15, 2.15, 7.1, 0.28, "POINT OF VIEW", size=FONT_META, color=a, bold=True)
+    text(s, 5.15, 2.15, 7.1, 0.28, "POINT OF VIEW", size=FONT_META, color=T_AMBER, bold=True)
     text(s, 5.15, 2.55, 7.1, 1.3,
          "A listener who saves but cannot rediscover, and feels recommendations only 'somewhat' match their taste, needs familiarity control and mood-based retrieval.",
          size=FONT_BODY, color=WHITE)
@@ -440,7 +479,7 @@ def s8(prs):
         else:
             shape(s, MSO_SHAPE.LEFT_ARROW, x - 1.45, y + 0.25, 1.35, 0.28, c)
     box(s, 8.6, 4.55, 3.9, 1.9, PANEL)
-    text(s, 8.9, 4.75, 3.3, 0.28, "10 IDEAS", size=FONT_META, color=a, bold=True)
+    text(s, 8.9, 4.75, 3.3, 0.28, "10 IDEAS", size=FONT_META, color=T_AMBER, bold=True)
     text(s, 8.9, 5.15, 3.3, 1.1,
          "Slider · Vibe tags · Library\nPreferences · Understand\nAI chatbot · Ad blocker",
          size=FONT_META, color=MUTED)
@@ -450,7 +489,7 @@ def s8(prs):
 def s9(prs):
     s, a = new(prs, 9)
     header(s, 9, "Idea selection", "Weighted: desirability 40% · feasibility 35% · viability 25%", a)
-    text(s, 0.7, 1.95, 7.5, 0.28, "WEIGHTED SCORE", size=FONT_META, color=a, bold=True)
+    text(s, 0.7, 1.95, 7.5, 0.28, "WEIGHTED SCORE", size=FONT_META, color=T_AMBER, bold=True)
     y = 2.35
     for label, score, c in [("Discovery slider", 5.0, GREEN), ("Vibe tags", 5.0, GREEN),
                             ("Save + library", 5.0, GREEN), ("Preferences", 4.65, CYAN),
@@ -463,10 +502,10 @@ def s9(prs):
         y += 0.55
     box(s, 7.9, 1.95, 4.7, 4.6, PANEL)
     shape(s, MSO_SHAPE.RECTANGLE, 7.9, 1.95, 0.05, 4.6, a)
-    text(s, 8.2, 2.18, 4.1, 0.28, "HYPOTHESES (FIXED EARLY)", size=FONT_META, color=a, bold=True)
+    text(s, 8.2, 2.18, 4.1, 0.28, "HYPOTHESES (FIXED EARLY)", size=FONT_META, color=T_AMBER, bold=True)
     bullets(s, 8.2, 2.6, 4.0, 3.6,
             ["Retrieval time lower", "Taste rating above 2.33", "SUS above 68",
-             "α = 0.05 · paired design", "Ad blocker rejected"], accent=a, gap=11)
+             "α = 0.05 · paired design", "Ad blocker rejected"], accent=T_AMBER, gap=11)
     footer(s, 9, a)
 
 
@@ -481,7 +520,7 @@ def s10(prs):
              bold=True, align=PP_ALIGN.CENTER)
     arrow(s, 4.3, 2.65, 0.5, 0.35, GREEN)
     arrow(s, 8.5, 2.65, 0.5, 0.35, CYAN)
-    text(s, 0.7, 3.95, 6, 0.28, "KEY FEATURES", size=FONT_META, color=a, bold=True)
+    text(s, 0.7, 3.95, 6, 0.28, "KEY FEATURES", size=FONT_META, color=T_AMBER, bold=True)
     x = 0.7
     for label, c in [("Discover · 3 levels", GREEN), ("Vibe · 8 tags", CYAN),
                      ("My Music · saved list", ORANGE), ("Preferences", PURPLE),
@@ -514,10 +553,10 @@ def s11(prs):
         x += 2.4
     box(s, 0.7, 3.7, 5.7, 2.8, PANEL)
     shape(s, MSO_SHAPE.RECTANGLE, 0.7, 3.7, 0.05, 2.8, a)
-    text(s, 1.0, 3.95, 5.1, 0.28, "MEASURES", size=FONT_META, color=a, bold=True)
+    text(s, 1.0, 3.95, 5.1, 0.28, "MEASURES", size=FONT_META, color=T_AMBER, bold=True)
     bullets(s, 1.0, 4.35, 5.0, 2.0,
             ["Duration per task (ms)", "Clicks and errors counted",
-             "SUS 0–100, benchmark 68", "Wilcoxon / paired t-test"], accent=a, gap=9)
+             "SUS 0–100, benchmark 68", "Wilcoxon / paired t-test"], accent=T_AMBER, gap=9)
     box(s, 6.7, 3.7, 5.9, 2.8, PANEL2)
     text(s, 7.0, 3.95, 5.3, 0.28, "RESULTS STATUS", size=FONT_META, color=GREEN, bold=True)
     text(s, 7.0, 4.4, 5.3, 1.8,
@@ -576,7 +615,7 @@ def s14(prs):
     text(s, 1.0, 2.25, 11.2, 1.1,
          "78% save music. 44% struggle to find old saves.\nA private utility closes that loop — without claiming to fix ads.",
          size=FONT_BODY, color=WHITE, bold=True)
-    text(s, 0.7, 3.95, 6, 0.28, "FUTURE WORK", size=FONT_META, color=a, bold=True)
+    text(s, 0.7, 3.95, 6, 0.28, "FUTURE WORK", size=FONT_META, color=T_AMBER, bold=True)
     x = 0.7
     for title, body, c in [("Real recommender", "Replace demo data with a learned model", GREEN),
                            ("Understand section", "Lyrics and song meaning", CYAN),

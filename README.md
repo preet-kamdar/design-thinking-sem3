@@ -51,18 +51,25 @@ builders so every number in the PPT and paper matches the latest data.
 ### Presentation design rules (keep these when extending the deck)
 
 `docs/build_presentation.py` enforces exactly **three font sizes** — 32pt hero,
-16pt body, 11pt meta — through its `fs()` helper. Each slide gets a two-stop
-gradient plus subtle, low-alpha music motifs (vinyl rings, waveform bars, note
-glyph). To add a slide: write a `sN(prs)` builder that calls `decorate()`,
-append it to `SLIDE_BUILDERS`, and add a note to `docs/slide_notes.json`.
-Theme colours and gradient angles live in the `THEME` table at the top of the
-file. **Text colour is deliberately uniform** — body white, captions grey,
-headings green — enforced by `text_color()` so per-slide accents never bleed
-into typography; accent colours are reserved for shapes. Panels carry a 3–6%
-opacity wash and equaliser motif so they are not flat. After rebuilding, run
-`python3 docs/check_layout.py` — it must report **0 estimated overflowing
-text boxes**. Chart gridlines come from `webapp/analysis/analysis.py` —
-regenerate charts before rebuilding the deck.
+16pt body, 11pt meta — through its `fs()` helper. Each slide has a two-stop
+gradient: a green-tinted start and a **different rich dark end** (indigo, navy,
+plum, burgundy …) defined in the `THEME` table. To add a slide: write a
+`sN(prs)` builder that calls `decorate()`, append it to `SLIDE_BUILDERS`, and
+add a note to `docs/slide_notes.json`.
+
+**Text colours are role-based, not random.** White headings, light body
+(`F0F0F6`), bright captions (`CDCDD7`), amber labels (`FFC107`), green primary
+numbers (`1DB954`), purple secondary (`BA68C8`) and red reserved for
+limitations (`FF6B6B`). `text_color()` maps old accent values onto these fixed
+roles, so the deck never turns into a rainbow. Shapes may still use the full
+accent set.
+
+Panels carry **multiple low-opacity motifs behind the text** — a 3% wash, three
+vinyl grooves, a note glyph and a dot cluster, all at 5–8% opacity so the text
+stays fully readable. The earlier equaliser bars were removed. After
+rebuilding, run `python3 docs/check_layout.py` — it must report **0 estimated
+overflowing text boxes**. Chart gridlines come from `webapp/analysis/analysis.py`
+— regenerate charts before rebuilding the deck.
 
 ## Run the dashboard
 
