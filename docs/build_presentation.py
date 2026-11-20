@@ -8,9 +8,10 @@ Design system
   the nearest allowed size, so adding new slides cannot break the rule.
   ``fit_height()`` grows text boxes to match the larger type — mirroring the
   conservative measurement in check_layout.py, so overflow stays at zero.
-* Pure WHITE slide backgrounds. Boxes use full bright colours with bold black
-  borders, black text, white vinyl/dot motifs: lightly cartoony, not muddy.
-  One bright colour per slide keeps it lively without rainbow-vomit.
+* Pure WHITE slide backgrounds. Boxes use a 3-colour palette (bright yellow,
+  bright blue, coral) with ONE 3pt black border, black text and white
+  vinyl/dot motifs: lightly cartoony, not muddy. No decorative edge bars —
+  they read as a second border. One box colour per slide avoids rainbow-vomit.
 * Charts are generated with gridlines by webapp/analysis/analysis.py.
 
 Extending
@@ -45,20 +46,31 @@ INK = RGBColor(0, 0, 0)              # every piece of text is black
 BLACK = INK
 DARK = INK
 
-# Full bright colours for boxes and shapes — no dark tints any more.
-GREEN = RGBColor(29, 185, 84)
-CYAN = RGBColor(0, 188, 212)
-ORANGE = RGBColor(255, 152, 0)
-PURPLE = RGBColor(156, 39, 176)
-RED = RGBColor(241, 94, 108)
-AMBER = RGBColor(255, 193, 7)
-LILAC = RGBColor(225, 190, 231)
-SKY = RGBColor(179, 235, 242)
-MINT = RGBColor(198, 239, 206)
-PEACH = RGBColor(255, 224, 178)
-ROSE = RGBColor(255, 205, 205)
+# A deliberately TINY palette: three bright colours, used consistently.
+# Green and purple are gone; yellow and blue are brighter; coral owns the
+# "caution / limitation" role. Fewer colours reads as more professional.
+SUN = RGBColor(255, 226, 46)        # FFE22E — bright, popping yellow
+BLUE = RGBColor(69, 196, 248)       # 45C4F8 — bright sky blue
+CORAL = RGBColor(255, 118, 118)     # FF7676 — bright coral
 
-# Legacy aliases still referenced by a few slide builders.
+SUN_SOFT = RGBColor(255, 247, 205)
+BLUE_SOFT = RGBColor(214, 241, 252)
+CORAL_SOFT = RGBColor(255, 226, 226)
+
+# Legacy names map onto the 3-colour palette so existing slide code keeps
+# working without a rewrite. Text is black regardless of what is passed in.
+GREEN = SUN
+CYAN = BLUE
+ORANGE = CORAL
+PURPLE = BLUE
+RED = CORAL
+AMBER = SUN
+LILAC = BLUE_SOFT
+SKY = BLUE_SOFT
+MINT = SUN_SOFT
+PEACH = SUN_SOFT
+ROSE = CORAL_SOFT
+
 PANEL = WHITE
 PANEL2 = WHITE
 MUTED = INK
@@ -70,24 +82,24 @@ T_AMBER = INK
 T_PURPLE = INK
 T_RED = INK
 
-# (box colour, decorative colour, accent for rules/bars)
-# Each slide uses ONE bright colour for all its boxes: lively, never a rainbow.
+# (box colour, decorative colour, accent) — one box colour per slide.
+# Yellow and blue alternate; coral is reserved for the limitations slide.
 THEME = [
-    (GREEN, MINT, GREEN),
-    (CYAN, SKY, CYAN),
-    (GREEN, MINT, GREEN),
-    (PURPLE, LILAC, PURPLE),
-    (AMBER, PEACH, AMBER),
-    (CYAN, SKY, CYAN),
-    (GREEN, MINT, GREEN),
-    (PURPLE, LILAC, PURPLE),
-    (AMBER, PEACH, AMBER),
-    (GREEN, MINT, GREEN),
-    (RED, ROSE, RED),
-    (CYAN, SKY, CYAN),
-    (AMBER, PEACH, AMBER),
-    (GREEN, MINT, GREEN),
-    (GREEN, MINT, GREEN),
+    (SUN, SUN_SOFT, SUN),
+    (BLUE, BLUE_SOFT, BLUE),
+    (SUN, SUN_SOFT, SUN),
+    (BLUE, BLUE_SOFT, BLUE),
+    (SUN, SUN_SOFT, SUN),
+    (BLUE, BLUE_SOFT, BLUE),
+    (SUN, SUN_SOFT, SUN),
+    (BLUE, BLUE_SOFT, BLUE),
+    (SUN, SUN_SOFT, SUN),
+    (BLUE, BLUE_SOFT, BLUE),
+    (CORAL, CORAL_SOFT, CORAL),
+    (SUN, SUN_SOFT, SUN),
+    (BLUE, BLUE_SOFT, BLUE),
+    (SUN, SUN_SOFT, SUN),
+    (BLUE, BLUE_SOFT, BLUE),
 ]
 
 FONT_HERO, FONT_BODY, FONT_META = 38, 22, 16
@@ -195,14 +207,10 @@ def box(slide, x, y, w, h, fill=None, line=None):
     accent = getattr(slide, "_pme_accent", GREEN)
     panel = shape(slide, MSO_SHAPE.ROUNDED_RECTANGLE, x, y, w, h,
                   accent, line or INK)
-    panel.line.width = Pt(2.4)
+    panel.line.width = Pt(3.0)   # one bold black border — no inset wash
     if w >= 2.4 and h >= 0.8:
-        # White motifs behind the text: visible on the bright fill, but
-        # translucent enough that black text stays perfectly readable.
-        wash = shape(slide, MSO_SHAPE.ROUNDED_RECTANGLE,
-                     x + 0.05, y + 0.05, w - 0.1, h - 0.1, WHITE)
-        set_opacity(wash, 26)   # lifts even the purple fill past AA contrast
-
+        # White motifs behind the text. No inset wash: it read as a second
+        # border. All three palette fills are bright enough for black text.
         for d, op in ((1.30, 30), (0.92, 35), (0.54, 40)):
             ring = slide.shapes.add_shape(
                 MSO_SHAPE.OVAL,
@@ -298,7 +306,6 @@ def footer(slide, index, accent):
 
 def stat_card(slide, x, y, w, h, big, label, accent):
     box(slide, x, y, w, h, PANEL)
-    shape(slide, MSO_SHAPE.RECTANGLE, x, y, 0.05, h, accent)
     text(slide, x + 0.22, y + 0.16, w - 0.4, 0.7, big, size=FONT_HERO, color=T_GREEN, bold=True)
     text(slide, x + 0.22, y + 0.95, w - 0.4, h - 1.0, label, size=FONT_META, color=MUTED)
 
@@ -387,7 +394,6 @@ def s2(prs):
     stat_card(s, 4.8, 2.0, 3.7, 1.9, "61%", "say taste is only 'somewhat'\nor 'poorly' understood", ORANGE)
     stat_card(s, 8.9, 2.0, 3.7, 1.9, "39%", "say taste is understood\n'very well'", GREEN)
     box(s, 0.7, 4.35, 11.9, 1.9, PANEL)
-    shape(s, MSO_SHAPE.RECTANGLE, 0.7, 4.35, 0.05, 1.9, a)
     text(s, 1.0, 4.6, 11.2, 0.3, "THE QUESTION", size=FONT_META, color=T_AMBER, bold=True)
     text(s, 1.0, 5.0, 11.2, 1.0,
          "Can a lightweight utility improve discovery and rediscovery\nwithout private streaming APIs?",
@@ -410,7 +416,6 @@ def s3(prs):
     x = 0.7
     for label, c in chips:
         box(s, x, 4.9, 2.85, 0.8, PANEL2)
-        shape(s, MSO_SHAPE.RECTANGLE, x, 4.9, 2.85, 0.05, c)
         text(s, x + 0.1, 5.12, 2.65, 0.45, label, size=FONT_META,
              color=WHITE, bold=True, align=PP_ALIGN.CENTER)
         x += 3.0
@@ -428,14 +433,13 @@ def s4(prs):
         shape(s, MSO_SHAPE.RECTANGLE, 2.8, y + 0.05, 3.9 * pct / 100, 0.24, c)
         text(s, 6.85, y - 0.02, 0.8, 0.3, f"{pct}%", size=FONT_META, color=c, bold=True)
         y += 0.65
-    box(s, 8.1, 1.98, 4.5, 3.0, PANEL)
+    box(s, 8.1, 1.98, 4.5, 3.3, PANEL)
     text(s, 8.4, 2.2, 4.0, 0.28, "METHOD", size=FONT_META, color=T_AMBER, bold=True)
     bullets(s, 8.4, 2.6, 3.9, 2.3,
             ["MCQ + ordinal + numeric + open", "78% Spotify — platform imbalance",
              "Below target of 30 — declared"], accent=T_AMBER, gap=8)
-    box(s, 0.7, 5.1, 11.9, 1.1, PANEL)
-    shape(s, MSO_SHAPE.RECTANGLE, 0.7, 5.1, 0.05, 1.1, a)
-    text(s, 1.0, 5.35, 11.2, 0.7,
+    box(s, 0.7, 5.4, 11.9, 1.1, PANEL)
+    text(s, 1.0, 5.62, 11.2, 0.6,
          "33% discover OUTSIDE the app  ·  78% save or like tracks  ·  44% struggle to find old saves",
          size=FONT_BODY, color=WHITE, bold=True)
     footer(s, 4, a)
@@ -452,7 +456,6 @@ def s5(prs):
     ]
     for x, y, label, c, items in quads:
         box(s, x, y, 5.8, 2.0, PANEL)
-        shape(s, MSO_SHAPE.RECTANGLE, x, y, 5.8, 0.05, c)
         text(s, x + 0.25, y + 0.18, 5.3, 0.28, label, size=FONT_META, color=c, bold=True)
         bullets(s, x + 0.25, y + 0.58, 5.3, 1.3, items, accent=c, gap=4)
     footer(s, 5, a)
@@ -468,10 +471,9 @@ def s6(prs):
     if chart.exists():
         box(s, 0.7, 3.95, 7.4, 2.75, PANEL)
         s.shapes.add_picture(str(chart), Inches(0.85), Inches(4.15), width=Inches(7.1))
-    box(s, 8.4, 3.95, 4.2, 2.75, PANEL)
-    shape(s, MSO_SHAPE.RECTANGLE, 8.4, 3.95, 0.05, 2.75, a)
-    text(s, 8.7, 4.2, 3.6, 0.28, "HONEST READING", size=FONT_META, color=T_AMBER, bold=True)
-    text(s, 8.7, 4.65, 3.6, 1.8,
+    box(s, 8.4, 3.95, 4.2, 2.95, PANEL)
+    text(s, 8.7, 4.1, 3.6, 0.28, "HONEST READING", size=FONT_META, color=T_AMBER, bold=True)
+    text(s, 8.7, 4.5, 3.6, 1.8,
          "Above neutral ≠ unhappy.\nGood-but-not-great baseline.\nWe claim refinement, not rescue.",
          size=FONT_BODY, color=WHITE)
     footer(s, 6, a)
@@ -489,14 +491,12 @@ def s7(prs):
     text(s, 0.95, 4.25, 3.4, 2.1,
          "B.Tech student\nDaily Spotify listener\nDiscovers music outside apps\nSaves tracks, rarely revisits\nWants mood-based choice",
          size=FONT_META, color=MUTED, align=PP_ALIGN.CENTER)
-    box(s, 4.85, 1.95, 7.75, 2.1, PANEL2)
-    shape(s, MSO_SHAPE.RECTANGLE, 4.85, 1.95, 0.05, 2.1, a)
+    box(s, 4.85, 1.95, 7.75, 2.2, PANEL2)
     text(s, 5.15, 2.15, 7.1, 0.28, "POINT OF VIEW", size=FONT_META, color=T_AMBER, bold=True)
     text(s, 5.15, 2.55, 7.1, 1.3,
          "A listener who saves but cannot rediscover, and feels recommendations only 'somewhat' match their taste, needs familiarity control and mood-based retrieval.",
          size=FONT_BODY, color=WHITE)
-    box(s, 4.85, 4.2, 7.75, 0.95, PANEL)
-    shape(s, MSO_SHAPE.RECTANGLE, 4.85, 4.2, 0.05, 0.95, CYAN)
+    box(s, 4.85, 4.2, 7.75, 1.05, PANEL)
     text(s, 5.15, 4.4, 7.1, 0.6,
          "HMW: give that control without a paid subscription?",
          size=FONT_BODY, color=CYAN, bold=True)
@@ -518,7 +518,6 @@ def s8(prs):
                            (0.7, 4.55, "Library", ORANGE), (9.6, 1.95, "Understanding", PURPLE),
                            (9.6, 3.25, "Preferences", RED)]:
         box(s, x, y, 2.9, 0.8, PANEL)
-        shape(s, MSO_SHAPE.RECTANGLE, x, y, 0.05, 0.8, c)
         text(s, x + 0.2, y + 0.22, 2.5, 0.4, label, size=FONT_BODY, color=WHITE, bold=True)
         if x < 5:
             arrow(s, x + 2.95, y + 0.25, 1.4, 0.28, c)
@@ -547,7 +546,6 @@ def s9(prs):
         text(s, 6.75, y - 0.02, 0.8, 0.28, f"{score:.2f}", size=FONT_META, color=c, bold=True)
         y += 0.55
     box(s, 7.9, 1.95, 4.7, 4.6, PANEL)
-    shape(s, MSO_SHAPE.RECTANGLE, 7.9, 1.95, 0.05, 4.6, a)
     text(s, 8.2, 2.18, 4.1, 0.28, "HYPOTHESES (FIXED EARLY)", size=FONT_META, color=T_AMBER, bold=True)
     bullets(s, 8.2, 2.6, 4.0, 3.6,
             ["Retrieval time lower", "Taste rating above 2.33", "SUS above 68",
@@ -561,7 +559,6 @@ def s10(prs):
     for x, label, c in [(0.7, "CHROME\nEXTENSION", GREEN), (4.9, "FLASK\nBACKEND", CYAN),
                         (9.1, "SQLITE\nDATABASE", ORANGE)]:
         box(s, x, 2.1, 3.5, 1.5, PANEL)
-        shape(s, MSO_SHAPE.RECTANGLE, x, 2.1, 3.5, 0.06, c)
         text(s, x + 0.1, 2.5, 3.3, 0.8, label, size=FONT_BODY, color=WHITE,
              bold=True, align=PP_ALIGN.CENTER)
     arrow(s, 4.3, 2.65, 0.5, 0.35, GREEN)
@@ -572,7 +569,6 @@ def s10(prs):
                      ("My Music · saved list", ORANGE), ("Preferences", PURPLE),
                      ("Usage logging", RED)]:
         box(s, x, 4.35, 2.28, 0.85, PANEL2)
-        shape(s, MSO_SHAPE.RECTANGLE, x, 4.35, 2.28, 0.05, c)
         text(s, x + 0.1, 4.6, 2.08, 0.45, label, size=FONT_META, color=WHITE,
              bold=True, align=PP_ALIGN.CENTER)
         x += 2.42
@@ -598,7 +594,6 @@ def s11(prs):
             arrow(s, x + 1.72, 2.23, 0.55, 0.28, c)
         x += 2.4
     box(s, 0.7, 3.7, 5.7, 2.8, PANEL)
-    shape(s, MSO_SHAPE.RECTANGLE, 0.7, 3.7, 0.05, 2.8, a)
     text(s, 1.0, 3.95, 5.1, 0.28, "MEASURES", size=FONT_META, color=T_AMBER, bold=True)
     bullets(s, 1.0, 4.35, 5.0, 2.0,
             ["Duration per task (ms)", "Clicks and errors counted",
@@ -637,14 +632,12 @@ def s13(prs):
     s, a = new(prs, 13)
     header(s, 13, "Impact and limitations", "Benefits weighed against threats to validity", a)
     box(s, 0.7, 1.95, 5.8, 4.6, PANEL)
-    shape(s, MSO_SHAPE.RECTANGLE, 0.7, 1.95, 5.8, 0.06, GREEN)
     text(s, 1.0, 2.2, 5.2, 0.28, "BENEFITS", size=FONT_META, color=GREEN, bold=True)
     bullets(s, 1.0, 2.65, 5.1, 3.6,
             ["No account or login required", "Data never leaves the machine",
              "Works across three platforms", "Addresses the retrieval gap",
              "Built-in measurement"], accent=GREEN, gap=12)
     box(s, 6.8, 1.95, 5.8, 4.6, PANEL)
-    shape(s, MSO_SHAPE.RECTANGLE, 6.8, 1.95, 5.8, 0.06, RED)
     text(s, 7.1, 2.2, 5.2, 0.28, "LIMITATIONS", size=FONT_META, color=RED, bold=True)
     bullets(s, 7.1, 2.65, 5.1, 3.6,
             ["n = 18, below target of 30", "78% Spotify; no Apple Music users",
@@ -657,7 +650,6 @@ def s14(prs):
     s, a = new(prs, 14)
     header(s, 14, "Conclusion and future scope", "A small utility addressing a measured gap", a)
     box(s, 0.7, 1.95, 11.9, 1.65, PANEL)
-    shape(s, MSO_SHAPE.RECTANGLE, 0.7, 1.95, 0.05, 1.65, a)
     text(s, 1.0, 2.25, 11.2, 1.1,
          "78% save music. 44% struggle to find old saves.\nA private utility closes that loop — without claiming to fix ads.",
          size=FONT_BODY, color=WHITE, bold=True)
@@ -667,7 +659,6 @@ def s14(prs):
                            ("Understand section", "Lyrics and song meaning", CYAN),
                            ("Larger sample", "30+ responses and a full SUS study", ORANGE)]:
         box(s, x, 4.35, 3.8, 1.85, PANEL)
-        shape(s, MSO_SHAPE.RECTANGLE, x, 4.35, 3.8, 0.06, c)
         text(s, x + 0.25, 4.65, 3.3, 0.4, title, size=FONT_BODY, color=WHITE, bold=True)
         text(s, x + 0.25, 5.2, 3.3, 0.9, body, size=FONT_META, color=MUTED)
         x += 3.95

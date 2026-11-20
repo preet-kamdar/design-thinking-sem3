@@ -60,15 +60,20 @@ to `docs/slide_notes.json`.
 **The deck is light and lightly cartoony.** Every slide has a **pure white
 background** with a bold colour stripe and soft confetti/corner circles.
 **All content text is black** (the only white text is the decorative ♪ glyph).
-Colours come from shapes, not typography, so it cannot turn into rainbow vomit.
+Colours come from shapes, not typography.
 
-Boxes **pop out**: every panel uses a **full bright fill** (green, cyan, amber,
-purple, red) with a **2.4pt bold black border**. Because a slide uses only one
-box colour throughout, the deck stays coherent. Behind the text sit a 26% white
-wash (keeps even purple past AA contrast for black text), three vinyl grooves,
-a ♪ glyph and a dot cluster, all translucent. After rebuilding, run
-`python3 docs/check_layout.py` — it must report **0 estimated overflowing text
-boxes**. Chart gridlines come from `webapp/analysis/analysis.py` — regenerate
+**Exactly three bright colours are used across the whole deck** — yellow
+`FFE22E`, blue `45C4F8`, and coral `FF7676` (coral only on the limitations
+slide). Green and purple were removed; the palette is deliberately small so
+it reads as professional rather than rainbow-vomit. Legacy colour names in the
+builder map onto these three.
+
+Boxes **pop out** with a full bright fill and **one 3pt black border**. There
+is no inset wash and no thin decorative bar on the box edges — both read as a
+second border. Only the white vinyl-groove, ♪ and dot motifs sit behind text.
+After rebuilding, run `python3 docs/check_layout.py` — it must report **0
+estimated overflowing text boxes**, and text must also stay inside its coloured
+panel. Chart gridlines come from `webapp/analysis/analysis.py` — regenerate
 charts before rebuilding the deck.
 
 ## Run the dashboard
