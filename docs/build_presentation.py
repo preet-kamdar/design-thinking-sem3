@@ -68,7 +68,7 @@ THEME = [
     (RGBColor(9, 26, 17), RGBColor(30, 18, 44), GREEN, 45),
 ]
 
-FONT_HERO, FONT_BODY, FONT_META = 32, 16, 11
+FONT_HERO, FONT_BODY, FONT_META = 36, 19, 13
 FONTS = (FONT_HERO, FONT_BODY, FONT_META)   # the ONLY font sizes allowed
 
 # Controlled TEXT palette. Headings are white; body light; captions readable.
@@ -81,6 +81,16 @@ T_GREEN = GREEN
 T_AMBER = RGBColor(255, 193, 7)
 T_PURPLE = RGBColor(186, 104, 200)
 T_RED = RGBColor(255, 107, 107)
+
+# Bright-but-dark panel tints, one per accent. Each slide uses a single tint
+# for all its boxes, so the deck feels lively without becoming a rainbow.
+PANEL_TINTS = {
+    GREEN:  RGBColor(18, 48, 31),
+    CYAN:   RGBColor(14, 45, 52),
+    ORANGE: RGBColor(50, 37, 16),
+    PURPLE: RGBColor(41, 23, 54),
+    RED:    RGBColor(52, 23, 29),
+}
 
 TEXT_COLOR_MAP = {
     GREEN: T_GREEN,
@@ -144,8 +154,13 @@ def shape(slide, kind, x, y, w, h, fill, line=None):
     return s
 
 
-def box(slide, x, y, w, h, fill=PANEL, line=None):
-    panel = shape(slide, MSO_SHAPE.ROUNDED_RECTANGLE, x, y, w, h, fill, line)
+def box(slide, x, y, w, h, fill=None, line=None):
+    # Keep the slide's single accent as the box fill + bright border.
+    accent = getattr(slide, "_pme_accent", GREEN)
+    tint = PANEL_TINTS.get(accent, PANEL)
+    panel = shape(slide, MSO_SHAPE.ROUNDED_RECTANGLE, x, y, w, h,
+                  tint, line or accent)
+    panel.line.width = Pt(1.4)
     if w >= 2.4 and h >= 0.8:
         # Motif hue shifts gently across the slide: green → amber → purple.
         mc = T_GREEN if x < 4 else (T_AMBER if x < 8 else T_PURPLE)
@@ -198,7 +213,7 @@ def text(slide, x, y, w, h, value, size=FONT_BODY, color=T_BODY, bold=False,
     for i, part in enumerate(str(value).split("\n")):
         p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
         p.alignment = align
-        p.space_after = Pt(3)
+        p.space_after = Pt(1)
         r = p.add_run()
         r.text = part
         r.font.size = Pt(fs(size))
@@ -209,7 +224,7 @@ def text(slide, x, y, w, h, value, size=FONT_BODY, color=T_BODY, bold=False,
     return tb
 
 
-def bullets(slide, x, y, w, h, items, color=T_BODY, accent=T_AMBER, gap=9):
+def bullets(slide, x, y, w, h, items, color=T_BODY, accent=T_AMBER, gap=6):
     tb = slide.shapes.add_textbox(Inches(x), Inches(y), Inches(w), Inches(h))
     tf = tb.text_frame
     tf.word_wrap = True
@@ -298,7 +313,7 @@ def decorate(slide, index: int) -> RGBColor:
         set_opacity(bar, 10)
 
     # Faint music note glyph (alpha applied to the run's colour)
-    note = text(slide, 11.9, 5.95, 0.7, 0.6, "♫", size=FONT_HERO, color=accent)
+    note = text(slide, 11.9, 5.95, 0.7, 0.6, "♫", size=FONT_BODY, color=accent)
     for p in note.text_frame.paragraphs:
         for r in p.runs:
             _alpha(r.font.color, 14)
@@ -310,7 +325,9 @@ def decorate(slide, index: int) -> RGBColor:
 # --------------------------------------------------------------------------- #
 def new(prs, index):
     s = prs.slides.add_slide(prs.slide_layouts[6])
-    return s, decorate(s, index)
+    a = decorate(s, index)
+    s._pme_accent = a          # box() reads this to tint every panel consistently
+    return s, a
 
 
 def s1(prs):
@@ -382,9 +399,9 @@ def s4(prs):
         shape(s, MSO_SHAPE.RECTANGLE, 2.8, y + 0.05, 3.9 * pct / 100, 0.24, c)
         text(s, 6.85, y - 0.02, 0.8, 0.3, f"{pct}%", size=FONT_META, color=c, bold=True)
         y += 0.65
-    box(s, 8.1, 1.98, 4.5, 2.9, PANEL)
+    box(s, 8.1, 1.98, 4.5, 3.0, PANEL)
     text(s, 8.4, 2.2, 4.0, 0.28, "METHOD", size=FONT_META, color=T_AMBER, bold=True)
-    bullets(s, 8.4, 2.6, 3.9, 2.1,
+    bullets(s, 8.4, 2.6, 3.9, 2.3,
             ["MCQ + ordinal + numeric + open", "78% Spotify — platform imbalance",
              "Below target of 30 — declared"], accent=T_AMBER, gap=8)
     box(s, 0.7, 5.1, 11.9, 1.1, PANEL)
@@ -436,7 +453,7 @@ def s7(prs):
     header(s, 7, "Define", "Persona · POV · HMW · MoSCoW", a)
     box(s, 0.7, 1.95, 3.9, 4.65, PANEL)
     circle(s, 1.85, 2.2, 1.1, GREEN)
-    text(s, 1.85, 2.42, 1.1, 0.62, "A", size=FONT_HERO, color=DARK,
+    text(s, 1.85, 2.42, 1.1, 0.7, "A", size=FONT_HERO, color=DARK,
          bold=True, align=PP_ALIGN.CENTER)
     text(s, 0.95, 3.38, 3.4, 0.72, "Aarav, 19", size=FONT_HERO, color=WHITE,
          bold=True, align=PP_ALIGN.CENTER)
