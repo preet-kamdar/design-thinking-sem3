@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}My Music — Personal Music Experience{% endblock %}
+{% block content %}
+<section class="hero">
+  <div>
+    <p class="eyebrow">Your dashboard</p>
+    <h1>My Music</h1>
+    <p class="lead">Every track you saved from Discover or Find by Vibe, in one place — stored in SQLite on this machine.</p>
+  </div>
+  <div class="stat-grid">
+    <div class="stat"><strong>{{ stats.saved }}</strong><span>Saved tracks</span></div>
+    <div class="stat"><strong>{{ stats.events }}</strong><span>Interactions logged</span></div>
+    <div class="stat"><strong>{{ stats.platforms }}</strong><span>Platforms</span></div>
+  </div>
+</section>
+
+<section class="card">
+  <div class="section-head">
+    <h2>Saved collection</h2>
+    <a class="btn small" href="{{ url_for('discover') }}">Find more music</a>
+  </div>
+
+  {% if saved %}
+    <ul class="song-list" id="saved-list">
+      {% for s in saved %}
+      <li class="song-row" data-id="{{ s.id }}">
+        <div class="song-main">
+          <strong>{{ s.title }}</strong>
+          <span>{{ s.artist }}</span>
+          {% if s.genre %}<span class="tag">{{ s.genre }}</span>{% endif %}
+        </div>
+        {% if s.reason %}<p class="reason">{{ s.reason }}</p>{% endif %}
+        <div class="song-meta">{{ s.source }} &middot; {{ s.created_at }}</div>
+        <button class="btn danger small unsave" data-id="{{ s.id }}">Remove</button>
+      </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <div class="empty">
+      <p><strong>Nothing saved yet.</strong></p>
+      <p>Open Discover or Find by Vibe and press Save on a recommendation to see it here.</p>
+      <a class="btn" href="{{ url_for('discover') }}">Go to Discover</a>
+    </div>
+  {% endif %}
+</section>
+
+<section class="card">
+  <h2>What this page proves</h2>
+  <ul class="checks">
+    <li>Frontend: responsive HTML + CSS + JavaScript (this page).</li>
+    <li>Backend: Flask route <code>/</code> reads from a SQLite <code>saved_songs</code> table.</li>
+    <li>Built-in measurement: every save, view and click is written to <code>usage_events</code>.</li>
+  </ul>
+</section>
+{% endblock %}

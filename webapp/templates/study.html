@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Study — Personal Music Experience{% endblock %}
+{% block content %}
+<section class="hero">
+  <div>
+    <p class="eyebrow">Stage 5 &middot; Test and validate</p>
+    <h1>Usability study</h1>
+    <p class="lead">Three short tasks. The app records time taken, clicks and errors — no guessing, real measurement.</p>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Your task history</h2>
+  {% if tasks %}
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Task</th><th>Duration</th><th>Clicks</th><th>Errors</th><th>Completed</th></tr></thead>
+      <tbody>
+        {% for t in tasks %}
+        <tr>
+          <td>{{ t.task_name }}</td>
+          <td>{{ (t.duration_ms / 1000)|round(1) if t.duration_ms else '&mdash;'|safe }} s</td>
+          <td>{{ t.clicks }}</td><td>{{ t.errors }}</td>
+          <td>{{ 'Yes' if t.completed else 'No' }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}<p class="muted">No tasks recorded yet for this browser.</p>{% endif %}
+</section>
+
+<section class="card">
+  <h2>Run a task</h2>
+  <p class="muted">Start a task, complete it in another tab, then stop it. Clicks are counted automatically.</p>
+  <div class="task-grid" id="task-panel" data-active="">
+    <button class="btn task-start" data-task="Discover a new song">
+      <strong>1. Discover a new song</strong><span>Start timer</span>
+    </button>
+    <button class="btn task-start" data-task="Find music by vibe">
+      <strong>2. Find music by vibe</strong><span>Start timer</span>
+    </button>
+    <button class="btn task-start" data-task="Retrieve a saved song">
+      <strong>3. Retrieve a saved song</strong><span>Start timer</span>
+    </button>
+  </div>
+  <div id="task-status" class="notice" aria-live="polite"></div>
+</section>
+
+<section class="card">
+  <h2>System Usability Scale (SUS)</h2>
+  <p class="muted">Answer after trying the prototype. Odd items are positive, even items are negative — scored 0–100.</p>
+  <form id="sus-form">
+    <ol class="sus-list">
+      <li>I think I would like to use this system frequently.
+        <div class="likert">{% for i in range(1,6) %}<label><input type="radio" name="q1" value="{{ i }}" required>{{ i }}</label>{% endfor %}</div></li>
+      <li>I found the system unnecessarily complex.
+        <div class="likert">{% for i in range(1,6) %}<label><input type="radio" name="q2" value="{{ i }}" required>{{ i }}</label>{% endfor %}</div></li>
+      <li>I thought the system was easy to use.
+        <div class="likert">{% for i in range(1,6) %}<label><input type="radio" name="q3" value="{{ i }}" required>{{ i }}</label>{% endfor %}</div></li>
+      <li>I think I would need technical support to use this system.
+        <div class="likert">{% for i in range(1,6) %}<label><input type="radio" name="q4" value="{{ i }}" required>{{ i }}</label>{% endfor %}</div></li>
+      <li>I found the functions in this system well integrated.
+        <div class="likert">{% for i in range(1,6) %}<label><input type="radio" name="q5" value="{{ i }}" required>{{ i }}</label>{% endfor %}</div></li>
+      <li>I thought there was too much inconsistency in this system.
+        <div class="likert">{% for i in range(1,6) %}<label><input type="radio" name="q6" value="{{ i }}" required>{{ i }}</label>{% endfor %}</div></li>
+      <li>I would imagine most people would learn to use this system very quickly.
+        <div class="likert">{% for i in range(1,6) %}<label><input type="radio" name="q7" value="{{ i }}" required>{{ i }}</label>{% endfor %}</div></li>
+      <li>I found the system very cumbersome to use.
+        <div class="likert">{% for i in range(1,6) %}<label><input type="radio" name="q8" value="{{ i }}" required>{{ i }}</label>{% endfor %}</div></li>
+      <li>I felt very confident using the system.
+        <div class="likert">{% for i in range(1,6) %}<label><input type="radio" name="q9" value="{{ i }}" required>{{ i }}</label>{% endfor %}</div></li>
+      <li>I needed to learn a lot of things before I could get going with this system.
+        <div class="likert">{% for i in range(1,6) %}<label><input type="radio" name="q10" value="{{ i }}" required>{{ i }}</label>{% endfor %}</div></li>
+    </ol>
+    <button class="btn" type="submit">Compute SUS score</button>
+  </form>
+  <div id="sus-result" class="notice" aria-live="polite"></div>
+</section>
+{% endblock %}

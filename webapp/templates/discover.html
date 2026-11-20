@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Discover — Personal Music Experience{% endblock %}
+{% block content %}
+<section class="hero">
+  <div>
+    <p class="eyebrow">Feature 1</p>
+    <h1>Discover something new</h1>
+    <p class="lead">Three levels of familiarity, from comfortable to adventurous. Pick a platform and explore.</p>
+  </div>
+</section>
+
+<section class="card">
+  <form class="controls" method="get" action="{{ url_for('discover') }}">
+    <label>Platform
+      <select name="platform">
+        <option value="Spotify" {{ 'selected' if platform == 'Spotify' }}>Spotify</option>
+        <option value="YouTube Music" {{ 'selected' if platform == 'YouTube Music' }}>YouTube Music</option>
+        <option value="Apple Music" {{ 'selected' if platform == 'Apple Music' }}>Apple Music</option>
+      </select>
+    </label>
+    <label>Discovery level
+      <select name="level">
+        {% for l in levels %}
+        <option value="{{ l }}" {{ 'selected' if level == l }}>{{ l|capitalize }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>Artist context (optional)
+      <input type="text" name="artist" value="{{ artist }}" placeholder="e.g. Arctic Monkeys">
+    </label>
+    <button class="btn" type="submit">Show recommendations</button>
+  </form>
+</section>
+
+<section>
+  <div class="section-head"><h2>{{ level|capitalize }} picks{% if artist %} for {{ artist }}{% endif %}</h2>
+    <span class="muted">{{ items|length }} tracks</span></div>
+  <div class="card-grid">
+    {% for item in items %}
+    <article class="song-card">
+      <h3>{{ item.title }}</h3>
+      <p class="artist">{{ item.artist }}</p>
+      <span class="tag">{{ item.genre }}</span>
+      <p class="reason">{{ item.reason }}</p>
+      <button class="btn small save" data-title="{{ item.title }}" data-artist="{{ item.artist }}"
+              data-genre="{{ item.genre }}" data-reason="{{ item.reason }}" data-source="Discover">
+        {% if item.title in saved_titles %}Saved &check;{% else %}Save{% endif %}
+      </button>
+    </article>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

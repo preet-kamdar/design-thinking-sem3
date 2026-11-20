@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Find by Vibe — Personal Music Experience{% endblock %}
+{% block content %}
+<section class="hero">
+  <div>
+    <p class="eyebrow">Feature 2</p>
+    <h1>Find by Vibe</h1>
+    <p class="lead">Choose a mood instead of a genre. Platform-specific picks with a shared fallback.</p>
+  </div>
+</section>
+
+<section class="card">
+  <form class="controls" method="get" action="{{ url_for('vibe') }}">
+    <label>Platform
+      <select name="platform">
+        <option value="Spotify" {{ 'selected' if platform == 'Spotify' }}>Spotify</option>
+        <option value="YouTube Music" {{ 'selected' if platform == 'YouTube Music' }}>YouTube Music</option>
+        <option value="Apple Music" {{ 'selected' if platform == 'Apple Music' }}>Apple Music</option>
+      </select>
+    </label>
+  </form>
+  <div class="vibe-tags" role="group" aria-label="Choose a vibe">
+    {% for v in vibe_tags %}
+    <a class="vibe-tag {{ 'active' if selected == v }}" href="{{ url_for('vibe', vibe=v, platform=platform) }}">{{ v|title }}</a>
+    {% endfor %}
+  </div>
+</section>
+
+{% if selected %}
+<section>
+  <div class="section-head"><h2>{{ selected|title }} picks</h2><span class="muted">{{ items|length }} tracks</span></div>
+  <div class="card-grid">
+    {% for item in items %}
+    <article class="song-card">
+      <h3>{{ item.title }}</h3>
+      <p class="artist">{{ item.artist }}</p>
+      <span class="tag">{{ item.genre }}</span>
+      <p class="reason">{{ item.reason }}</p>
+      <button class="btn small save" data-title="{{ item.title }}" data-artist="{{ item.artist }}"
+              data-genre="{{ item.genre }}" data-reason="{{ item.reason }}" data-source="Vibe: {{ selected }}">
+        {% if item.title in saved_titles %}Saved &check;{% else %}Save{% endif %}
+      </button>
+    </article>
+    {% endfor %}
+  </div>
+</section>
+{% else %}
+<div class="empty"><p>Select a vibe above to see recommendations.</p></div>
+{% endif %}
+{% endblock %}

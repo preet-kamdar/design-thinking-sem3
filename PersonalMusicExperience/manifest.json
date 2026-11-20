@@ -1,0 +1,41 @@
+{
+  "manifest_version": 3,
+  "name": "Personal Music Experience",
+  "version": "1.0",
+  "description": "A design thinking prototype for a modern music utility side panel.",
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "https://open.spotify.com/*",
+    "https://music.youtube.com/*",
+    "https://music.apple.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Personal Music Experience"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://open.spotify.com/*",
+        "https://music.youtube.com/*",
+        "https://music.apple.com/*"
+      ],
+      "css": [
+        "content.css"
+      ],
+      "js": [
+        "utils.js",
+        "recommendation-engine.js",
+        "platforms/spotify.js",
+        "platforms/youtube-music.js",
+        "platforms/apple-music.js",
+        "content.js"
+      ]
+    }
+  ]
+}

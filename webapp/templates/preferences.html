@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}My Preferences — Personal Music Experience{% endblock %}
+{% block content %}
+<section class="hero">
+  <div>
+    <p class="eyebrow">Feature 4</p>
+    <h1>My Preferences</h1>
+    <p class="lead">Tune the discovery algorithm. Saved in SQLite and applied to Discover and Find by Vibe.</p>
+  </div>
+</section>
+
+{% if saved %}<div class="notice" role="status">Preferences saved.</div>{% endif %}
+
+<section class="card narrow">
+  <form method="post" action="{{ url_for('preferences') }}">
+    <label>Default discovery level
+      <select name="level">
+        {% for l in levels %}
+        <option value="{{ l }}" {{ 'selected' if prefs.discovery_level == l }}>{{ l|capitalize }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>Preferred vibe
+      <select name="vibe">
+        {% for v in vibe_tags %}
+        <option value="{{ v }}" {{ 'selected' if prefs.preferred_vibe == v }}>{{ v|title }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label class="check">
+      <input type="checkbox" name="tracking" value="1" {{ 'checked' if prefs.tracking_enabled }}>
+      <span>Allow anonymous usage measurement (time, clicks, errors) for testing</span>
+    </label>
+    <button class="btn" type="submit">Save preferences</button>
+  </form>
+  <p class="muted">Last updated: {{ prefs.updated_at }}</p>
+</section>
+{% endblock %}

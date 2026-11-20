@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Personal Music Experience{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="{{ url_for('index') }}">
+      <span class="brand-mark">&#9835;</span>
+      <span>Personal Music Experience</span>
+    </a>
+    <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">&#9776;</button>
+    <nav class="nav" aria-label="Main">
+      <a href="{{ url_for('index') }}" class="{{ 'active' if active == 'home' }}">My Music</a>
+      <a href="{{ url_for('discover') }}" class="{{ 'active' if active == 'discover' }}">Discover</a>
+      <a href="{{ url_for('vibe') }}" class="{{ 'active' if active == 'vibe' }}">Find by Vibe</a>
+      <a href="{{ url_for('preferences') }}" class="{{ 'active' if active == 'preferences' }}">Preferences</a>
+      <a href="{{ url_for('study') }}" class="{{ 'active' if active == 'study' }}">Study</a>
+      <a href="{{ url_for('results') }}" class="{{ 'active' if active == 'results' }}">Findings</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer">
+    <p>Design Thinking prototype &middot; Frontend (HTML/CSS/JS) + Python/Flask + SQLite &middot;
+       All data stored locally on this machine.</p>
+  </footer>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

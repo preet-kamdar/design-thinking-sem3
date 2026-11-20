@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="header">
+    <h1>Personal Music Experience</h1>
+  </div>
+  
+  <div class="content">
+    <p class="description">
+      A design thinking prototype for a modern music utility.
+    </p>
+
+    <div class="status-box">
+      <div class="status-row">
+        <span>Extension Enabled</span>
+        <label class="switch">
+          <input type="checkbox" id="enable-toggle">
+          <span class="slider round"></span>
+        </label>
+      </div>
+      <p class="reload-msg">Reload music tabs to apply changes.</p>
+    </div>
+    
+    <div class="platforms">
+      <h3>Supported Platforms</h3>
+      <ul>
+        <li>Spotify Web</li>
+        <li>YouTube Music</li>
+        <li>Apple Music Web</li>
+      </ul>
+    </div>
+    
+    <div class="actions">
+      <button id="reset-btn" class="danger-btn">Reset Local Data</button>
+      <div id="reset-msg" class="msg"></div>
+    </div>
+  </div>
+  
+  <script src="utils.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
