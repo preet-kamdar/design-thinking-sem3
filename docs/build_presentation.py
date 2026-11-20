@@ -3,15 +3,15 @@
 
 Design system
 -------------
-* Exactly THREE font sizes: 38 (hero), 22 (body), 16 (meta).
-  Every text helper passes requested sizes through ``fs()`` which snaps to
-  the nearest allowed size, so adding new slides cannot break the rule.
-  ``fit_height()`` grows text boxes to match the larger type — mirroring the
-  conservative measurement in check_layout.py, so overflow stays at zero.
-* Pure WHITE slide backgrounds. Boxes use a 3-colour palette (bright yellow,
-  bright blue, coral) with ONE 3pt black border, black text and white
-  vinyl/dot motifs: lightly cartoony, not muddy. No decorative edge bars —
-  they read as a second border. One box colour per slide avoids rainbow-vomit.
+* Exactly TWO font sizes: 36 (hero) and 20 (everything else). Bold is used
+  only on hero text, so a slide never looks like a jumble of weights/sizes.
+  ``fs()`` snaps requests to these two; ``fit_height()`` grows text boxes
+  using the same wide-font measurement as check_layout.py, so overflow is 0.
+* Pure WHITE slide backgrounds. Boxes use a 4-colour palette (yellow, aqua,
+  blue, coral) with ONE 3pt black border and black text. Slides step gently
+  yellow → aqua → blue so transitions between slides stay soft. Coral marks
+  limitations only. No box-edge bars or per-box rings — one real vinyl disc
+  per slide is placed around the slide by ``decorate()``.
 * Charts are generated with gridlines by webapp/analysis/analysis.py.
 
 Extending
@@ -50,10 +50,12 @@ DARK = INK
 # Green and purple are gone; yellow and blue are brighter; coral owns the
 # "caution / limitation" role. Fewer colours reads as more professional.
 SUN = RGBColor(255, 226, 46)        # FFE22E — bright, popping yellow
+AQUA = RGBColor(94, 214, 200)       # 5ED6C8 — bridge between yellow and blue
 BLUE = RGBColor(69, 196, 248)       # 45C4F8 — bright sky blue
 CORAL = RGBColor(255, 118, 118)     # FF7676 — bright coral
 
 SUN_SOFT = RGBColor(255, 247, 205)
+AQUA_SOFT = RGBColor(218, 246, 241)
 BLUE_SOFT = RGBColor(214, 241, 252)
 CORAL_SOFT = RGBColor(255, 226, 226)
 
@@ -62,10 +64,10 @@ CORAL_SOFT = RGBColor(255, 226, 226)
 GREEN = SUN
 CYAN = BLUE
 ORANGE = CORAL
-PURPLE = BLUE
+PURPLE = AQUA
 RED = CORAL
 AMBER = SUN
-LILAC = BLUE_SOFT
+LILAC = AQUA_SOFT
 SKY = BLUE_SOFT
 MINT = SUN_SOFT
 PEACH = SUN_SOFT
@@ -83,27 +85,31 @@ T_PURPLE = INK
 T_RED = INK
 
 # (box colour, decorative colour, accent) — one box colour per slide.
-# Yellow and blue alternate; coral is reserved for the limitations slide.
+# Slides step gently through yellow → aqua → blue so the change between
+# consecutive slides is soft rather than a jarring jump. Coral marks limits.
 THEME = [
     (SUN, SUN_SOFT, SUN),
+    (AQUA, AQUA_SOFT, AQUA),
     (BLUE, BLUE_SOFT, BLUE),
-    (SUN, SUN_SOFT, SUN),
     (BLUE, BLUE_SOFT, BLUE),
+    (AQUA, AQUA_SOFT, AQUA),
     (SUN, SUN_SOFT, SUN),
+    (SUN, SUN_SOFT, SUN),
+    (AQUA, AQUA_SOFT, AQUA),
     (BLUE, BLUE_SOFT, BLUE),
-    (SUN, SUN_SOFT, SUN),
-    (BLUE, BLUE_SOFT, BLUE),
-    (SUN, SUN_SOFT, SUN),
     (BLUE, BLUE_SOFT, BLUE),
     (CORAL, CORAL_SOFT, CORAL),
+    (AQUA, AQUA_SOFT, AQUA),
     (SUN, SUN_SOFT, SUN),
-    (BLUE, BLUE_SOFT, BLUE),
     (SUN, SUN_SOFT, SUN),
-    (BLUE, BLUE_SOFT, BLUE),
+    (AQUA, AQUA_SOFT, AQUA),
 ]
 
-FONT_HERO, FONT_BODY, FONT_META = 38, 22, 16
-FONTS = (FONT_HERO, FONT_BODY, FONT_META)   # the ONLY font sizes allowed
+# Only TWO type sizes: a hero for titles/big numbers, one size for everything
+# else. Bold is reserved for hero text, so a slide no longer reads as a mess
+# of competing sizes and weights.
+FONT_HERO, FONT_BODY, FONT_META = 36, 20, 20
+FONTS = (FONT_HERO, FONT_BODY)              # the ONLY font sizes allowed
 
 
 def text_color(color):
@@ -203,37 +209,13 @@ def shape(slide, kind, x, y, w, h, fill, line=None):
 
 
 def box(slide, x, y, w, h, fill=None, line=None):
-    # Full bright fill + bold black border: the lightly cartoony look.
+    # Full bright fill + one bold black border. No per-box vinyl/dot motifs —
+    # the record now lives at slide level (see vinyl_record) so it is spread
+    # around the slide instead of repeated in every box corner.
     accent = getattr(slide, "_pme_accent", GREEN)
     panel = shape(slide, MSO_SHAPE.ROUNDED_RECTANGLE, x, y, w, h,
                   accent, line or INK)
-    panel.line.width = Pt(3.0)   # one bold black border — no inset wash
-    if w >= 2.4 and h >= 0.8:
-        # White motifs behind the text. No inset wash: it read as a second
-        # border. All three palette fills are bright enough for black text.
-        for d, op in ((1.30, 30), (0.92, 35), (0.54, 40)):
-            ring = slide.shapes.add_shape(
-                MSO_SHAPE.OVAL,
-                Inches(x + w - d / 2 - 0.2), Inches(y + h - d / 2 - 0.2),
-                Inches(d), Inches(d))
-            ring.fill.background()
-            ring.line.color.rgb = WHITE
-            ring.line.width = Pt(2.0)
-            set_opacity(ring, op)
-
-        note = text(slide, x + w - 0.66, y + 0.10, 0.46, 0.46,
-                    "♪", size=FONT_BODY, color=WHITE)
-        for par in note.text_frame.paragraphs:
-            for run in par.runs:
-                run.font.color.rgb = WHITE
-                _alpha(run.font.color, 45)
-
-        for i in range(3):
-            for j in range(2):
-                dot = shape(slide, MSO_SHAPE.OVAL,
-                            x + 0.20 + i * 0.15, y + h - 0.42 + j * 0.15,
-                            0.055, 0.055, WHITE)
-                set_opacity(dot, 45)
+    panel.line.width = Pt(3.0)
     return panel
 
 
@@ -256,7 +238,7 @@ def text(slide, x, y, w, h, value, size=FONT_BODY, color=T_BODY, bold=False,
         r = p.add_run()
         r.text = part
         r.font.size = Pt(fs(size))
-        r.font.bold = bold
+        r.font.bold = bool(bold and fs(size) == FONT_HERO)
         r.font.italic = italic
         r.font.color.rgb = text_color(color)
         r.font.name = "Calibri"
@@ -324,8 +306,33 @@ def arrow(slide, x, y, w=0.5, h=0.3, color=GREEN):
 
 
 # --------------------------------------------------------------------------- #
-# Decoration — pure white background + bright corner shapes
+# Decoration — pure white background, one vinyl disc, soft corner shapes
 # --------------------------------------------------------------------------- #
+def vinyl_record(slide, cx, cy, d, label_color):
+    """One readable vinyl disc: dark disc, grooves, coloured label + spindle."""
+    disc = shape(slide, MSO_SHAPE.OVAL, cx - d / 2, cy - d / 2, d, d, INK)
+    set_opacity(disc, 9)
+    for frac, op in ((0.84, 14), (0.68, 18), (0.52, 24), (0.38, 30)):
+        r = d * frac
+        ring = slide.shapes.add_shape(MSO_SHAPE.OVAL, Inches(cx - r / 2),
+                                      Inches(cy - r / 2), Inches(r), Inches(r))
+        ring.fill.background()
+        ring.line.color.rgb = INK
+        ring.line.width = Pt(1.1)
+        set_opacity(ring, op)
+    lr = d * 0.30
+    label = shape(slide, MSO_SHAPE.OVAL, cx - lr / 2, cy - lr / 2, lr, lr,
+                  label_color)
+    set_opacity(label, 62)
+    hole = shape(slide, MSO_SHAPE.OVAL, cx - 0.04, cy - 0.04, 0.08, 0.08, WHITE)
+    set_opacity(hole, 85)
+
+
+# One record per slide, cycling through different corners so it is spread
+# around the deck rather than repeated in every box.
+VINYL_SPOTS = ((W - 0.9, 1.1), (1.0, H - 0.8), (W - 0.9, H - 0.8), (0.8, 1.2))
+
+
 def decorate(slide, index: int) -> RGBColor:
     box_color, deco_color, accent = THEME[(index - 1) % len(THEME)]
 
@@ -336,16 +343,19 @@ def decorate(slide, index: int) -> RGBColor:
     # Bold accent stripe down the left edge.
     shape(slide, MSO_SHAPE.RECTANGLE, 0, 0, 0.20, H, accent)
 
-    # Big soft circles bleeding off the corners — lively, not overwhelming.
-    for d, x, y, op in ((3.6, W - 1.5, -1.4, 28),
-                        (2.4, -0.8, H - 1.7, 24),
-                        (1.5, W - 0.7, H - 0.9, 34)):
+    # Two soft corner washes — reduced from three so the slide stays calm.
+    for d, x, y, op in ((3.2, W - 1.3, -1.5, 22),
+                        (2.2, -0.9, H - 1.6, 18)):
         c = slide.shapes.add_shape(MSO_SHAPE.OVAL, Inches(x), Inches(y),
                                    Inches(d), Inches(d))
         c.fill.solid()
         c.fill.fore_color.rgb = deco_color
         c.line.fill.background()
         set_opacity(c, op)
+
+    # A single vinyl record, placed at a different edge on each slide.
+    cx, cy = VINYL_SPOTS[(index - 1) % len(VINYL_SPOTS)]
+    vinyl_record(slide, cx, cy, 2.4, box_color)
 
     # Small confetti dots in the top-right corner.
     for i in range(4):
@@ -390,9 +400,9 @@ def s1(prs):
 def s2(prs):
     s, a = new(prs, 2)
     header(s, 2, "Introduction", "Everyday routine, uneven personalisation", a)
-    stat_card(s, 0.7, 2.0, 3.7, 1.9, "78%", "use their app daily or\nseveral times a week", a)
-    stat_card(s, 4.8, 2.0, 3.7, 1.9, "61%", "say taste is only 'somewhat'\nor 'poorly' understood", ORANGE)
-    stat_card(s, 8.9, 2.0, 3.7, 1.9, "39%", "say taste is understood\n'very well'", GREEN)
+    stat_card(s, 0.7, 2.0, 3.7, 2.2, "78%", "use their app daily or\nseveral times a week", a)
+    stat_card(s, 4.8, 2.0, 3.7, 2.2, "61%", "say taste is only 'somewhat'\nor 'poorly' understood", ORANGE)
+    stat_card(s, 8.9, 2.0, 3.7, 2.2, "39%", "say taste is understood\n'very well'", GREEN)
     box(s, 0.7, 4.35, 11.9, 1.9, PANEL)
     text(s, 1.0, 4.6, 11.2, 0.3, "THE QUESTION", size=FONT_META, color=T_AMBER, bold=True)
     text(s, 1.0, 5.0, 11.2, 1.0,
@@ -415,7 +425,7 @@ def s3(prs):
              ("Responsive dashboard", ORANGE), ("Re-runnable analysis", PURPLE)]
     x = 0.7
     for label, c in chips:
-        box(s, x, 4.9, 2.85, 0.8, PANEL2)
+        box(s, x, 4.9, 2.85, 1.0, PANEL2)
         text(s, x + 0.1, 5.12, 2.65, 0.45, label, size=FONT_META,
              color=WHITE, bold=True, align=PP_ALIGN.CENTER)
         x += 3.0
@@ -489,7 +499,7 @@ def s7(prs):
     text(s, 0.95, 3.38, 3.4, 0.72, "Aarav, 19", size=FONT_HERO, color=WHITE,
          bold=True, align=PP_ALIGN.CENTER)
     text(s, 0.95, 4.25, 3.4, 2.1,
-         "B.Tech student\nDaily Spotify listener\nDiscovers music outside apps\nSaves tracks, rarely revisits\nWants mood-based choice",
+         "B.Tech student · 19\nDaily Spotify listener\nSaves but rarely revisits\nWants mood-based choice",
          size=FONT_META, color=MUTED, align=PP_ALIGN.CENTER)
     box(s, 4.85, 1.95, 7.75, 2.2, PANEL2)
     text(s, 5.15, 2.15, 7.1, 0.28, "POINT OF VIEW", size=FONT_META, color=T_AMBER, bold=True)
@@ -523,9 +533,9 @@ def s8(prs):
             arrow(s, x + 2.95, y + 0.25, 1.4, 0.28, c)
         else:
             shape(s, MSO_SHAPE.LEFT_ARROW, x - 1.45, y + 0.25, 1.35, 0.28, c)
-    box(s, 8.6, 4.55, 3.9, 1.9, PANEL)
+    box(s, 8.6, 4.55, 3.9, 2.35, PANEL)
     text(s, 8.9, 4.75, 3.3, 0.28, "10 IDEAS", size=FONT_META, color=T_AMBER, bold=True)
-    text(s, 8.9, 5.15, 3.3, 1.1,
+    text(s, 8.9, 5.05, 3.3, 1.1,
          "Slider · Vibe tags · Library\nPreferences · Understand\nAI chatbot · Ad blocker",
          size=FONT_META, color=MUTED)
     footer(s, 8, a)
@@ -568,11 +578,11 @@ def s10(prs):
     for label, c in [("Discover · 3 levels", GREEN), ("Vibe · 8 tags", CYAN),
                      ("My Music · saved list", ORANGE), ("Preferences", PURPLE),
                      ("Usage logging", RED)]:
-        box(s, x, 4.35, 2.28, 0.85, PANEL2)
+        box(s, x, 4.35, 2.28, 1.05, PANEL2)
         text(s, x + 0.1, 4.6, 2.08, 0.45, label, size=FONT_META, color=WHITE,
              bold=True, align=PP_ALIGN.CENTER)
         x += 2.42
-    box(s, 0.7, 5.5, 11.9, 0.9, PANEL)
+    box(s, 0.7, 5.5, 11.9, 1.05, PANEL)
     text(s, 1.0, 5.75, 11.3, 0.5,
          "Per-platform adapters · 2-second polling · No login · No external API · Responsive dashboard",
          size=FONT_META, color=WHITE, align=PP_ALIGN.CENTER)

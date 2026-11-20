@@ -50,31 +50,31 @@ builders so every number in the PPT and paper matches the latest data.
 
 ### Presentation design rules (keep these when extending the deck)
 
-`docs/build_presentation.py` enforces exactly **three font sizes** — 38pt hero,
-22pt body, 16pt meta — through its `fs()` helper. `fit_height()` grows each
-text box to match the larger type (using the same wide DejaVuSans measurement
-as the checker), so text never overflows. To add a slide: write a `sN(prs)`
+`docs/build_presentation.py` enforces exactly **two font sizes** — 36pt hero,
+20pt for everything else — through its `fs()` helper. Bold is applied only to
+hero text, so a slide never reads as a jumble of competing weights and sizes.
+`fit_height()` grows each text box using the same wide DejaVuSans measurement
+as the checker, so text never overflows. To add a slide: write a `sN(prs)`
 builder that calls `decorate()`, append it to `SLIDE_BUILDERS`, and add a note
 to `docs/slide_notes.json`.
 
 **The deck is light and lightly cartoony.** Every slide has a **pure white
-background** with a bold colour stripe and soft confetti/corner circles.
-**All content text is black** (the only white text is the decorative ♪ glyph).
-Colours come from shapes, not typography.
+background** with a bold colour stripe, soft corner circles and a single real
+vinyl disc (dark disc, grooves, coloured label, spindle hole) placed at a
+different edge of the slide. **All text is black**. Colours come from shapes,
+not typography.
 
-**Exactly three bright colours are used across the whole deck** — yellow
-`FFE22E`, blue `45C4F8`, and coral `FF7676` (coral only on the limitations
-slide). Green and purple were removed; the palette is deliberately small so
-it reads as professional rather than rainbow-vomit. Legacy colour names in the
-builder map onto these three.
+**Four bright colours, used softly:** yellow `FFE22E`, aqua `5ED6C8`, blue
+`45C4F8` and coral `FF7676` (coral only on the limitations slide). Aqua is the
+bridge between yellow and blue, and `THEME` steps through them gradually so
+consecutive slides never jump harshly. Green and purple are gone.
 
 Boxes **pop out** with a full bright fill and **one 3pt black border**. There
-is no inset wash and no thin decorative bar on the box edges — both read as a
-second border. Only the white vinyl-groove, ♪ and dot motifs sit behind text.
-After rebuilding, run `python3 docs/check_layout.py` — it must report **0
-estimated overflowing text boxes**, and text must also stay inside its coloured
-panel. Chart gridlines come from `webapp/analysis/analysis.py` — regenerate
-charts before rebuilding the deck.
+is no inset wash, no box-edge bar and no per-box repeated rings — those read
+as clutter. After rebuilding, run `python3 docs/check_layout.py` — it must
+report **0 estimated overflowing text boxes**, and text must also stay inside
+its coloured panel. Chart gridlines come from `webapp/analysis/analysis.py` —
+regenerate charts before rebuilding the deck.
 
 ## Run the dashboard
 
