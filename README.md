@@ -56,8 +56,13 @@ gradient plus subtle, low-alpha music motifs (vinyl rings, waveform bars, note
 glyph). To add a slide: write a `sN(prs)` builder that calls `decorate()`,
 append it to `SLIDE_BUILDERS`, and add a note to `docs/slide_notes.json`.
 Theme colours and gradient angles live in the `THEME` table at the top of the
-file. Chart gridlines come from `webapp/analysis/analysis.py` — regenerate
-charts before rebuilding the deck.
+file. **Text colour is deliberately uniform** — body white, captions grey,
+headings green — enforced by `text_color()` so per-slide accents never bleed
+into typography; accent colours are reserved for shapes. Panels carry a 3–6%
+opacity wash and equaliser motif so they are not flat. After rebuilding, run
+`python3 docs/check_layout.py` — it must report **0 estimated overflowing
+text boxes**. Chart gridlines come from `webapp/analysis/analysis.py` —
+regenerate charts before rebuilding the deck.
 
 ## Run the dashboard
 

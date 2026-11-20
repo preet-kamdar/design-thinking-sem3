@@ -67,8 +67,18 @@ THEME = [
     (RGBColor(9, 26, 17), RGBColor(14, 14, 16), GREEN, 45),
 ]
 
-FONTS = (11, 16, 32)          # the ONLY font sizes allowed
-FONT_HERO, FONT_BODY, FONT_META = FONTS
+FONT_HERO, FONT_BODY, FONT_META = 32, 16, 11
+FONTS = (FONT_HERO, FONT_BODY, FONT_META)   # the ONLY font sizes allowed
+
+# Uniform TEXT palette. Accent colours are for SHAPES only — every piece of
+# text resolves to white (body), muted grey (captions) or green (headings).
+T_HEAD, T_BODY, T_MUTED = GREEN, WHITE, MUTED
+ACCENTS = (GREEN, CYAN, ORANGE, PURPLE, RED)
+
+
+def text_color(color):
+    """Collapse any per-slide accent colour to the single heading colour."""
+    return T_HEAD if color in ACCENTS else color
 
 W, H = 13.333, 7.5
 
@@ -120,7 +130,19 @@ def shape(slide, kind, x, y, w, h, fill, line=None):
 
 
 def box(slide, x, y, w, h, fill=PANEL, line=None):
-    return shape(slide, MSO_SHAPE.ROUNDED_RECTANGLE, x, y, w, h, fill, line)
+    panel = shape(slide, MSO_SHAPE.ROUNDED_RECTANGLE, x, y, w, h, fill, line)
+    if w >= 2.4 and h >= 0.8:
+        # Faint tinted wash stops large panels reading as flat blocks.
+        wash = shape(slide, MSO_SHAPE.ROUNDED_RECTANGLE,
+                     x + 0.02, y + 0.02, w - 0.04, h - 0.04, T_HEAD)
+        set_opacity(wash, 3)
+        # Tiny equaliser motif: 6% opacity keeps text fully readable.
+        for i, extra in enumerate((0.12, 0.30, 0.16, 0.36, 0.22)):
+            bar = shape(slide, MSO_SHAPE.RECTANGLE,
+                        x + w - 1.2 + i * 0.2, y + h - 0.55,
+                        0.07, 0.18 + extra, T_HEAD)
+            set_opacity(bar, 6)
+    return panel
 
 
 def circle(slide, x, y, d, fill):
@@ -144,7 +166,7 @@ def text(slide, x, y, w, h, value, size=FONT_BODY, color=WHITE, bold=False,
         r.font.size = Pt(fs(size))
         r.font.bold = bold
         r.font.italic = italic
-        r.font.color.rgb = color
+        r.font.color.rgb = text_color(color)
         r.font.name = "Calibri"
     return tb
 
@@ -157,10 +179,10 @@ def bullets(slide, x, y, w, h, items, color=WHITE, accent=GREEN, gap=9):
         p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
         b = p.add_run(); b.text = "●  "
         b.font.size = Pt(FONT_META if len(item) > 48 else FONT_BODY)
-        b.font.color.rgb = accent; b.font.name = "Calibri"
+        b.font.color.rgb = text_color(accent or color); b.font.name = "Calibri"
         r = p.add_run(); r.text = item
         r.font.size = Pt(FONT_META if len(item) > 48 else FONT_BODY)
-        r.font.color.rgb = color; r.font.name = "Calibri"
+        r.font.color.rgb = text_color(color); r.font.name = "Calibri"
         p.space_after = Pt(gap)
     return tb
 
@@ -178,9 +200,9 @@ def header(slide, index, title, subtitle, accent):
 
 
 def footer(slide, index, accent):
-    text(slide, 0.7, 7.02, 9, 0.22, "Reimagining the Personal Music Experience",
+    text(slide, 0.7, 6.95, 9, 0.35, "Reimagining the Personal Music Experience",
          size=FONT_META, color=MUTED)
-    text(slide, 11.85, 7.02, 0.8, 0.22, f"{index:02d}", size=FONT_META,
+    text(slide, 11.85, 6.95, 0.8, 0.35, f"{index:02d}", size=FONT_META,
          color=accent, align=PP_ALIGN.RIGHT)
 
 
@@ -375,11 +397,11 @@ def s7(prs):
     header(s, 7, "Define", "Persona · POV · HMW · MoSCoW", a)
     box(s, 0.7, 1.95, 3.9, 4.65, PANEL)
     circle(s, 1.85, 2.2, 1.1, GREEN)
-    text(s, 1.85, 2.5, 1.1, 0.4, "A", size=FONT_HERO, color=DARK,
+    text(s, 1.85, 2.42, 1.1, 0.62, "A", size=FONT_HERO, color=DARK,
          bold=True, align=PP_ALIGN.CENTER)
-    text(s, 0.95, 3.5, 3.4, 0.4, "Aarav, 19", size=FONT_HERO, color=WHITE,
+    text(s, 0.95, 3.38, 3.4, 0.72, "Aarav, 19", size=FONT_HERO, color=WHITE,
          bold=True, align=PP_ALIGN.CENTER)
-    text(s, 0.95, 4.15, 3.4, 2.2,
+    text(s, 0.95, 4.25, 3.4, 2.1,
          "B.Tech student\nDaily Spotify listener\nDiscovers music outside apps\nSaves tracks, rarely revisits\nWants mood-based choice",
          size=FONT_META, color=MUTED, align=PP_ALIGN.CENTER)
     box(s, 4.85, 1.95, 7.75, 2.1, PANEL2)
