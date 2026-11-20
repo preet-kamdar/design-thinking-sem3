@@ -48,6 +48,17 @@ python3 docs/build_paper.py
 After new survey responses arrive, run the analysis script first, then these two
 builders so every number in the PPT and paper matches the latest data.
 
+### Presentation design rules (keep these when extending the deck)
+
+`docs/build_presentation.py` enforces exactly **three font sizes** — 32pt hero,
+16pt body, 11pt meta — through its `fs()` helper. Each slide gets a two-stop
+gradient plus subtle, low-alpha music motifs (vinyl rings, waveform bars, note
+glyph). To add a slide: write a `sN(prs)` builder that calls `decorate()`,
+append it to `SLIDE_BUILDERS`, and add a note to `docs/slide_notes.json`.
+Theme colours and gradient angles live in the `THEME` table at the top of the
+file. Chart gridlines come from `webapp/analysis/analysis.py` — regenerate
+charts before rebuilding the deck.
+
 ## Run the dashboard
 
 ```bash
