@@ -59,10 +59,11 @@ builder that calls `decorate()`, append it to `SLIDE_BUILDERS`, and add a note
 to `docs/slide_notes.json`.
 
 **The deck is light and lightly cartoony.** Every slide has a **pure white
-background** with a bold colour stripe, soft corner circles and a single real
-vinyl disc (dark disc, grooves, coloured label, spindle hole) placed at a
-different edge of the slide. **All text is black**. Colours come from shapes,
-not typography.
+background** and a bold colour stripe. The soft corner circles were removed —
+on white they looked like a second pair of discs. A single, subtle vinyl
+(disc, grooves, coloured label, spindle hole) appears only on the two sparse
+bookend slides (1 and 15); content-heavy slides get none. **All text is
+black**. Colours come from shapes, not typography.
 
 **Four bright colours, used softly:** yellow `FFE22E`, aqua `5ED6C8`, blue
 `45C4F8` and coral `FF7676` (coral only on the limitations slide). Aqua is the

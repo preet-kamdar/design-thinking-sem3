@@ -311,8 +311,8 @@ def arrow(slide, x, y, w=0.5, h=0.3, color=GREEN):
 def vinyl_record(slide, cx, cy, d, label_color):
     """One readable vinyl disc: dark disc, grooves, coloured label + spindle."""
     disc = shape(slide, MSO_SHAPE.OVAL, cx - d / 2, cy - d / 2, d, d, INK)
-    set_opacity(disc, 9)
-    for frac, op in ((0.84, 14), (0.68, 18), (0.52, 24), (0.38, 30)):
+    set_opacity(disc, 6)
+    for frac, op in ((0.84, 10), (0.68, 13), (0.52, 17), (0.38, 22)):
         r = d * frac
         ring = slide.shapes.add_shape(MSO_SHAPE.OVAL, Inches(cx - r / 2),
                                       Inches(cy - r / 2), Inches(r), Inches(r))
@@ -323,13 +323,14 @@ def vinyl_record(slide, cx, cy, d, label_color):
     lr = d * 0.30
     label = shape(slide, MSO_SHAPE.OVAL, cx - lr / 2, cy - lr / 2, lr, lr,
                   label_color)
-    set_opacity(label, 62)
+    set_opacity(label, 45)
     hole = shape(slide, MSO_SHAPE.OVAL, cx - 0.04, cy - 0.04, 0.08, 0.08, WHITE)
-    set_opacity(hole, 85)
+    set_opacity(hole, 70)
 
 
-# One record per slide, cycling through different corners so it is spread
-# around the deck rather than repeated in every box.
+# The record is decoration, so it only appears on the two sparse bookend
+# slides (title + Q&A). Content-heavy slides get none — they are already full.
+VINYL_SLIDES = {1, 15}
 VINYL_SPOTS = ((W - 0.9, 1.1), (1.0, H - 0.8), (W - 0.9, H - 0.8), (0.8, 1.2))
 
 
@@ -343,19 +344,12 @@ def decorate(slide, index: int) -> RGBColor:
     # Bold accent stripe down the left edge.
     shape(slide, MSO_SHAPE.RECTANGLE, 0, 0, 0.20, H, accent)
 
-    # Two soft corner washes — reduced from three so the slide stays calm.
-    for d, x, y, op in ((3.2, W - 1.3, -1.5, 22),
-                        (2.2, -0.9, H - 1.6, 18)):
-        c = slide.shapes.add_shape(MSO_SHAPE.OVAL, Inches(x), Inches(y),
-                                   Inches(d), Inches(d))
-        c.fill.solid()
-        c.fill.fore_color.rgb = deco_color
-        c.line.fill.background()
-        set_opacity(c, op)
-
-    # A single vinyl record, placed at a different edge on each slide.
-    cx, cy = VINYL_SPOTS[(index - 1) % len(VINYL_SPOTS)]
-    vinyl_record(slide, cx, cy, 2.4, box_color)
+    # The soft corner circles are gone — on white slides they read as a
+    # second, accidental pair of discs. Only the sparse bookends keep a
+    # single, subtle vinyl record.
+    if index in VINYL_SLIDES:
+        cx, cy = VINYL_SPOTS[(index - 1) % len(VINYL_SPOTS)]
+        vinyl_record(slide, cx, cy, 2.0, box_color)
 
     # Small confetti dots in the top-right corner.
     for i in range(4):
