@@ -3,11 +3,14 @@
 
 Design system
 -------------
-* Exactly THREE font sizes: 32 (hero), 16 (body), 11 (meta).
+* Exactly THREE font sizes: 38 (hero), 22 (body), 16 (meta).
   Every text helper passes requested sizes through ``fs()`` which snaps to
   the nearest allowed size, so adding new slides cannot break the rule.
-* Each slide gets a two-stop gradient background plus subtle music motifs
-  (vinyl rings, waveform bars, note glyph) at low opacity.
+  ``fit_height()`` grows text boxes to match the larger type — mirroring the
+  conservative measurement in check_layout.py, so overflow stays at zero.
+* Pure WHITE slide backgrounds. Boxes use full bright colours with bold black
+  borders, black text, white vinyl/dot motifs: lightly cartoony, not muddy.
+  One bright colour per slide keeps it lively without rainbow-vomit.
 * Charts are generated with gridlines by webapp/analysis/analysis.py.
 
 Extending
@@ -20,6 +23,7 @@ Extending
 import json
 from pathlib import Path
 
+from PIL import ImageFont
 from pptx import Presentation
 from pptx.dml.color import RGBColor
 from pptx.enum.shapes import MSO_SHAPE
@@ -36,74 +40,63 @@ CHARTS = ROOT / "data" / "charts"
 # --------------------------------------------------------------------------- #
 # Theme — edit here to restyle the whole deck
 # --------------------------------------------------------------------------- #
-BLACK = RGBColor(14, 14, 16)
-PANEL = RGBColor(26, 26, 30)
-PANEL2 = RGBColor(36, 36, 42)
+WHITE = RGBColor(255, 255, 255)      # pure white slide background
+INK = RGBColor(0, 0, 0)              # every piece of text is black
+BLACK = INK
+DARK = INK
+
+# Full bright colours for boxes and shapes — no dark tints any more.
 GREEN = RGBColor(29, 185, 84)
 CYAN = RGBColor(0, 188, 212)
 ORANGE = RGBColor(255, 152, 0)
 PURPLE = RGBColor(156, 39, 176)
 RED = RGBColor(241, 94, 108)
-WHITE = RGBColor(245, 245, 245)
-MUTED = RGBColor(205, 205, 215)   # brightened so captions never blend into panels
-DARK = RGBColor(10, 10, 12)
+AMBER = RGBColor(255, 193, 7)
+LILAC = RGBColor(225, 190, 231)
+SKY = RGBColor(179, 235, 242)
+MINT = RGBColor(198, 239, 206)
+PEACH = RGBColor(255, 224, 178)
+ROSE = RGBColor(255, 205, 205)
 
-# (green-tinted start, rich dark end, accent, angle)
-# The dark end used to be near-black on every slide — that was the blandness.
+# Legacy aliases still referenced by a few slide builders.
+PANEL = WHITE
+PANEL2 = WHITE
+MUTED = INK
+T_HEAD = INK
+T_BODY = INK
+T_MUTED = INK
+T_GREEN = INK
+T_AMBER = INK
+T_PURPLE = INK
+T_RED = INK
+
+# (box colour, decorative colour, accent for rules/bars)
+# Each slide uses ONE bright colour for all its boxes: lively, never a rainbow.
 THEME = [
-    (RGBColor(9, 26, 17), RGBColor(26, 16, 42), GREEN, 45),
-    (RGBColor(9, 28, 32), RGBColor(16, 28, 52), CYAN, 135),
-    (RGBColor(12, 24, 18), RGBColor(38, 18, 44), GREEN, 45),
-    (RGBColor(24, 14, 34), RGBColor(18, 20, 48), PURPLE, 135),
-    (RGBColor(30, 20, 10), RGBColor(44, 18, 26), ORANGE, 45),
-    (RGBColor(9, 28, 32), RGBColor(20, 22, 52), CYAN, 135),
-    (RGBColor(12, 26, 18), RGBColor(28, 18, 46), GREEN, 45),
-    (RGBColor(24, 14, 34), RGBColor(16, 30, 44), PURPLE, 135),
-    (RGBColor(30, 20, 10), RGBColor(48, 20, 28), ORANGE, 45),
-    (RGBColor(12, 24, 18), RGBColor(22, 26, 50), GREEN, 135),
-    (RGBColor(30, 14, 18), RGBColor(48, 16, 30), RED, 45),
-    (RGBColor(9, 28, 32), RGBColor(18, 28, 48), CYAN, 135),
-    (RGBColor(30, 20, 10), RGBColor(42, 20, 36), ORANGE, 45),
-    (RGBColor(12, 26, 18), RGBColor(24, 26, 52), GREEN, 135),
-    (RGBColor(9, 26, 17), RGBColor(30, 18, 44), GREEN, 45),
+    (GREEN, MINT, GREEN),
+    (CYAN, SKY, CYAN),
+    (GREEN, MINT, GREEN),
+    (PURPLE, LILAC, PURPLE),
+    (AMBER, PEACH, AMBER),
+    (CYAN, SKY, CYAN),
+    (GREEN, MINT, GREEN),
+    (PURPLE, LILAC, PURPLE),
+    (AMBER, PEACH, AMBER),
+    (GREEN, MINT, GREEN),
+    (RED, ROSE, RED),
+    (CYAN, SKY, CYAN),
+    (AMBER, PEACH, AMBER),
+    (GREEN, MINT, GREEN),
+    (GREEN, MINT, GREEN),
 ]
 
-FONT_HERO, FONT_BODY, FONT_META = 36, 19, 13
+FONT_HERO, FONT_BODY, FONT_META = 38, 22, 16
 FONTS = (FONT_HERO, FONT_BODY, FONT_META)   # the ONLY font sizes allowed
-
-# Controlled TEXT palette. Headings are white; body light; captions readable.
-# Amber and purple carry secondary roles, red is reserved for limitations —
-# so green no longer floods the typography. Shapes keep the full accent set.
-T_HEAD = WHITE
-T_BODY = RGBColor(240, 240, 246)
-T_MUTED = MUTED
-T_GREEN = GREEN
-T_AMBER = RGBColor(255, 193, 7)
-T_PURPLE = RGBColor(186, 104, 200)
-T_RED = RGBColor(255, 107, 107)
-
-# Bright-but-dark panel tints, one per accent. Each slide uses a single tint
-# for all its boxes, so the deck feels lively without becoming a rainbow.
-PANEL_TINTS = {
-    GREEN:  RGBColor(18, 48, 31),
-    CYAN:   RGBColor(14, 45, 52),
-    ORANGE: RGBColor(50, 37, 16),
-    PURPLE: RGBColor(41, 23, 54),
-    RED:    RGBColor(52, 23, 29),
-}
-
-TEXT_COLOR_MAP = {
-    GREEN: T_GREEN,
-    CYAN: T_PURPLE,
-    ORANGE: T_AMBER,
-    PURPLE: T_PURPLE,
-    RED: T_RED,
-}
 
 
 def text_color(color):
-    """Resolve an accent to its fixed role colour — no per-slide rainbow."""
-    return TEXT_COLOR_MAP.get(color, color)
+    """All typography is black — bright colours belong to shapes, not text."""
+    return INK
 
 W, H = 13.333, 7.5
 
@@ -111,6 +104,49 @@ W, H = 13.333, 7.5
 def fs(size: int) -> int:
     """Snap any requested size to the nearest of the three allowed sizes."""
     return min(FONTS, key=lambda f: abs(f - size))
+
+
+# --- Conservative text measurement (mirrors docs/check_layout.py) ----------- #
+_FONT_PATH = "/usr/share/fonts/TTF/DejaVuSans.ttf"
+_FONT_CACHE = {}
+
+
+def _pil_font(pt):
+    key = max(1, int(round(pt * 96 / 72)))
+    if key not in _FONT_CACHE:
+        try:
+            _FONT_CACHE[key] = ImageFont.truetype(_FONT_PATH, key)
+        except Exception:
+            _FONT_CACHE[key] = None
+    return _FONT_CACHE[key]
+
+
+def _wrap_lines(part, pt, width_in):
+    font = _pil_font(pt)
+    avail_w = max(1, width_in * 96 - 6)          # 0.06" of text-box margins
+    lines, cur = 0, ""
+    for word in str(part).split():
+        trial = (cur + " " + word).strip()
+        if font and (font.getlength(trial) <= avail_w or not cur):
+            cur = trial
+        else:
+            lines += 1
+            cur = word
+    return max(1, lines + 1 if cur else lines)
+
+
+def fit_height(height_in, width_in, paras):
+    """Grow a text box so larger fonts never overflow its own box.
+
+    ``paras`` is a list of ``(text, pt, space_after_pt)``. Uses DejaVuSans,
+    the same deliberately-wide stand-in the layout checker uses, plus a small
+    safety margin.
+    """
+    needed = 0.0
+    for part, pt, gap in paras:
+        needed += _wrap_lines(part, pt, width_in) * (pt * 96 / 72 * 1.2)
+        needed += gap * 96 / 72
+    return max(height_in, (needed + 4) / 96)
 
 
 def _alpha(color_format, opacity_percent: int) -> bool:
@@ -155,46 +191,41 @@ def shape(slide, kind, x, y, w, h, fill, line=None):
 
 
 def box(slide, x, y, w, h, fill=None, line=None):
-    # Keep the slide's single accent as the box fill + bright border.
+    # Full bright fill + bold black border: the lightly cartoony look.
     accent = getattr(slide, "_pme_accent", GREEN)
-    tint = PANEL_TINTS.get(accent, PANEL)
     panel = shape(slide, MSO_SHAPE.ROUNDED_RECTANGLE, x, y, w, h,
-                  tint, line or accent)
-    panel.line.width = Pt(1.4)
+                  accent, line or INK)
+    panel.line.width = Pt(2.4)
     if w >= 2.4 and h >= 0.8:
-        # Motif hue shifts gently across the slide: green → amber → purple.
-        mc = T_GREEN if x < 4 else (T_AMBER if x < 8 else T_PURPLE)
-
-        # 1) Faint tinted wash so the panel is never a flat block.
+        # White motifs behind the text: visible on the bright fill, but
+        # translucent enough that black text stays perfectly readable.
         wash = shape(slide, MSO_SHAPE.ROUNDED_RECTANGLE,
-                     x + 0.02, y + 0.02, w - 0.04, h - 0.04, mc)
-        set_opacity(wash, 3)
+                     x + 0.05, y + 0.05, w - 0.1, h - 0.1, WHITE)
+        set_opacity(wash, 26)   # lifts even the purple fill past AA contrast
 
-        # 2) Three vinyl grooves tucked into the bottom-right corner.
-        for d, op in ((1.30, 5), (0.92, 6), (0.54, 7)):
+        for d, op in ((1.30, 30), (0.92, 35), (0.54, 40)):
             ring = slide.shapes.add_shape(
                 MSO_SHAPE.OVAL,
-                Inches(x + w - d / 2 - 0.18), Inches(y + h - d / 2 - 0.18),
+                Inches(x + w - d / 2 - 0.2), Inches(y + h - d / 2 - 0.2),
                 Inches(d), Inches(d))
             ring.fill.background()
-            ring.line.color.rgb = mc
-            ring.line.width = Pt(1.1)
+            ring.line.color.rgb = WHITE
+            ring.line.width = Pt(2.0)
             set_opacity(ring, op)
 
-        # 3) A small note glyph near the top-right, behind the content text.
-        note = text(slide, x + w - 0.62, y + 0.12, 0.42, 0.42,
-                    "♪", size=FONT_BODY, color=mc)
+        note = text(slide, x + w - 0.66, y + 0.10, 0.46, 0.46,
+                    "♪", size=FONT_BODY, color=WHITE)
         for par in note.text_frame.paragraphs:
             for run in par.runs:
-                _alpha(run.font.color, 8)
+                run.font.color.rgb = WHITE
+                _alpha(run.font.color, 45)
 
-        # 4) A soft dot cluster in the bottom-left corner.
         for i in range(3):
             for j in range(2):
                 dot = shape(slide, MSO_SHAPE.OVAL,
                             x + 0.20 + i * 0.15, y + h - 0.42 + j * 0.15,
-                            0.045, 0.045, mc)
-                set_opacity(dot, 6)
+                            0.055, 0.055, WHITE)
+                set_opacity(dot, 45)
     return panel
 
 
@@ -221,6 +252,8 @@ def text(slide, x, y, w, h, value, size=FONT_BODY, color=T_BODY, bold=False,
         r.font.italic = italic
         r.font.color.rgb = text_color(color)
         r.font.name = "Calibri"
+    pt = fs(size)
+    tb.height = Inches(fit_height(h, w, [(p, pt, 1) for p in str(value).split("\n")]))
     return tb
 
 
@@ -237,6 +270,9 @@ def bullets(slide, x, y, w, h, items, color=T_BODY, accent=T_AMBER, gap=6):
         r.font.size = Pt(FONT_META if len(item) > 48 else FONT_BODY)
         r.font.color.rgb = text_color(color); r.font.name = "Calibri"
         p.space_after = Pt(gap)
+    paras = [("●  " + item, FONT_META if len(item) > 48 else FONT_BODY, gap)
+             for item in items]
+    tb.height = Inches(fit_height(h, w, paras))
     return tb
 
 
@@ -281,43 +317,36 @@ def arrow(slide, x, y, w=0.5, h=0.3, color=GREEN):
 
 
 # --------------------------------------------------------------------------- #
-# Decoration — gradient + subtle music motifs on every slide
+# Decoration — pure white background + bright corner shapes
 # --------------------------------------------------------------------------- #
 def decorate(slide, index: int) -> RGBColor:
-    c1, c2, accent, angle = THEME[(index - 1) % len(THEME)]
+    box_color, deco_color, accent = THEME[(index - 1) % len(THEME)]
 
-    # Gradient background
-    bg = shape(slide, MSO_SHAPE.RECTANGLE, 0, 0, W, H, c1)
-    bg.fill.gradient()
-    stops = bg.fill.gradient_stops
-    stops[0].color.rgb = c1
-    stops[0].position = 0.0
-    stops[1].color.rgb = c2
-    stops[1].position = 1.0
-    bg.fill.gradient_angle = angle
+    # Pure white background.
+    bg = shape(slide, MSO_SHAPE.RECTANGLE, 0, 0, W, H, WHITE)
     bg.line.fill.background()
 
-    # Subtle vinyl record rings bleeding off the top-right corner
-    for d, op in [(3.4, 8), (2.5, 10), (1.6, 12), (0.7, 16)]:
-        ring = slide.shapes.add_shape(MSO_SHAPE.OVAL, Inches(W - d / 2 - 0.4),
-                                      Inches(-d / 2 - 0.3), Inches(d), Inches(d))
-        ring.fill.background()
-        ring.line.color.rgb = accent
-        ring.line.width = Pt(1.2)
-        set_opacity(ring, op)
+    # Bold accent stripe down the left edge.
+    shape(slide, MSO_SHAPE.RECTANGLE, 0, 0, 0.20, H, accent)
 
-    # Subtle waveform bars along the bottom edge
-    for i, height in enumerate([0.32, 0.55, 0.24, 0.7, 0.4, 0.62, 0.3, 0.48]):
-        bar = shape(slide, MSO_SHAPE.RECTANGLE, 0.7 + i * 0.28, H - height - 0.18,
-                    0.1, height, accent)
-        set_opacity(bar, 10)
+    # Big soft circles bleeding off the corners — lively, not overwhelming.
+    for d, x, y, op in ((3.6, W - 1.5, -1.4, 28),
+                        (2.4, -0.8, H - 1.7, 24),
+                        (1.5, W - 0.7, H - 0.9, 34)):
+        c = slide.shapes.add_shape(MSO_SHAPE.OVAL, Inches(x), Inches(y),
+                                   Inches(d), Inches(d))
+        c.fill.solid()
+        c.fill.fore_color.rgb = deco_color
+        c.line.fill.background()
+        set_opacity(c, op)
 
-    # Faint music note glyph (alpha applied to the run's colour)
-    note = text(slide, 11.9, 5.95, 0.7, 0.6, "♫", size=FONT_BODY, color=accent)
-    for p in note.text_frame.paragraphs:
-        for r in p.runs:
-            _alpha(r.font.color, 14)
-    return accent
+    # Small confetti dots in the top-right corner.
+    for i in range(4):
+        dot = shape(slide, MSO_SHAPE.OVAL, 12.1 + (i % 2) * 0.35,
+                    0.5 + (i // 2) * 0.35, 0.12, 0.12, accent)
+        set_opacity(dot, 55)
+
+    return box_color
 
 
 # --------------------------------------------------------------------------- #

@@ -50,29 +50,26 @@ builders so every number in the PPT and paper matches the latest data.
 
 ### Presentation design rules (keep these when extending the deck)
 
-`docs/build_presentation.py` enforces exactly **three font sizes** — 36pt hero,
-19pt body, 13pt meta — through its `fs()` helper. Each slide has a two-stop
-gradient: a green-tinted start and a **different rich dark end** (indigo, navy,
-plum, burgundy …) defined in the `THEME` table. To add a slide: write a
-`sN(prs)` builder that calls `decorate()`, append it to `SLIDE_BUILDERS`, and
-add a note to `docs/slide_notes.json`.
+`docs/build_presentation.py` enforces exactly **three font sizes** — 38pt hero,
+22pt body, 16pt meta — through its `fs()` helper. `fit_height()` grows each
+text box to match the larger type (using the same wide DejaVuSans measurement
+as the checker), so text never overflows. To add a slide: write a `sN(prs)`
+builder that calls `decorate()`, append it to `SLIDE_BUILDERS`, and add a note
+to `docs/slide_notes.json`.
 
-**Text colours are role-based, not random.** White headings, light body
-(`F0F0F6`), bright captions (`CDCDD7`), amber labels (`FFC107`), green primary
-numbers (`1DB954`), purple secondary (`BA68C8`) and red reserved for
-limitations (`FF6B6B`). `text_color()` maps old accent values onto these fixed
-roles, so the deck never turns into a rainbow. Shapes may still use the full
-accent set.
+**The deck is light and lightly cartoony.** Every slide has a **pure white
+background** with a bold colour stripe and soft confetti/corner circles.
+**All content text is black** (the only white text is the decorative ♪ glyph).
+Colours come from shapes, not typography, so it cannot turn into rainbow vomit.
 
-Boxes **pop out with bright tint + border**: every panel on a slide shares one
-bright-but-dark tint (`PANEL_TINTS`) and a 1.4pt border in that slide's accent —
-coherent per slide, never a rainbow of box colours. Panels also carry **multiple
-low-opacity motifs behind the text** — a 3% wash, three vinyl grooves, a note
-glyph and a dot cluster, all at 5–8% opacity so the text stays fully readable.
-The earlier equaliser bars were removed. After
-rebuilding, run `python3 docs/check_layout.py` — it must report **0 estimated
-overflowing text boxes**. Chart gridlines come from `webapp/analysis/analysis.py`
-— regenerate charts before rebuilding the deck.
+Boxes **pop out**: every panel uses a **full bright fill** (green, cyan, amber,
+purple, red) with a **2.4pt bold black border**. Because a slide uses only one
+box colour throughout, the deck stays coherent. Behind the text sit a 26% white
+wash (keeps even purple past AA contrast for black text), three vinyl grooves,
+a ♪ glyph and a dot cluster, all translucent. After rebuilding, run
+`python3 docs/check_layout.py` — it must report **0 estimated overflowing text
+boxes**. Chart gridlines come from `webapp/analysis/analysis.py` — regenerate
+charts before rebuilding the deck.
 
 ## Run the dashboard
 
