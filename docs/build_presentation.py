@@ -142,9 +142,10 @@ def apply_palette(name):
     """Swap every colour role, then rebuild THEME in the same soft order."""
     global SUN, AQUA, BLUE, CORAL, SUN_SOFT, AQUA_SOFT, BLUE_SOFT, CORAL_SOFT
     global THEME, GREEN, CYAN, ORANGE, PURPLE, RED, AMBER, LILAC, SKY, MINT, PEACH, ROSE
-    global BG, INK, BG_INK
+    global BG, INK, BG_INK, LIMIT_BOX
     p = PALETTES[name]
     BG, INK, BG_INK = _rgb(p["bg"]), _rgb(p["ink"]), _rgb(p["bg_ink"])
+    LIMIT_BOX = _rgb(p.get("limit_box", p["limit"]))
     SUN, AQUA, BLUE, CORAL = (_rgb(p[k]) for k in
                               ("primary", "bridge", "secondary", "limit"))
     SUN_SOFT, AQUA_SOFT, BLUE_SOFT, CORAL_SOFT = (
@@ -295,6 +296,14 @@ def box(slide, x, y, w, h, fill=None, line=None):
     accent = getattr(slide, "_pme_accent", GREEN)
     panel = shape(slide, MSO_SHAPE.ROUNDED_RECTANGLE, x, y, w, h,
                   accent, line or INK)
+    panel.line.width = Pt(3.0)
+    return panel
+
+
+def tinted_box(slide, x, y, w, h, fill, line=None):
+    """A rounded panel with an explicit fill colour, for one-off accent boxes."""
+    panel = shape(slide, MSO_SHAPE.ROUNDED_RECTANGLE, x, y, w, h,
+                  fill, line or INK)
     panel.line.width = Pt(3.0)
     return panel
 
@@ -769,9 +778,9 @@ def s14(prs):
         shape(s, MSO_SHAPE.RECTANGLE, 2.9, y + 0.03, 3.7 * score / 5, 0.2, c)
         text(s, 6.75, y - 0.02, 0.8, 0.28, f"{score:.2f}", size=FONT_META, color=c, bold=True)
         y += 0.55
-    box(s, 7.9, 1.95, 4.7, 4.6, PANEL)
+    tinted_box(s, 7.9, 1.95, 4.7, 3.25, LIMIT_BOX)
     text(s, 8.2, 2.18, 4.1, 0.28, "HYPOTHESES (FIXED EARLY)", size=FONT_META, color=T_AMBER, bold=True)
-    bullets(s, 8.2, 2.6, 4.0, 3.6,
+    bullets(s, 8.2, 2.55, 4.0, 2.35,
             ["Retrieval time lower", "Taste rating above 2.33", "SUS above 68",
              "α = 0.05 · paired design", "Ad blocker rejected"], accent=T_AMBER, gap=11)
     footer(s, 14, a)
@@ -862,13 +871,15 @@ def s18(prs):
     bullets(s, 1.0, 2.65, 5.1, 3.6,
             ["No account or login required", "Data never leaves the machine",
              "Works across three platforms", "Addresses the retrieval gap",
-             "Built-in measurement"], accent=GREEN, gap=12)
+             "Built-in measurement", "Three-part working prototype",
+             "Hypotheses fixed before testing"], accent=GREEN, gap=12)
     box(s, 6.8, 1.95, 5.8, 4.6, PANEL)
     text(s, 7.1, 2.2, 5.2, 0.28, "LIMITATIONS", size=FONT_META, color=RED, bold=True)
     bullets(s, 7.1, 2.65, 5.1, 3.6,
             ["n = 18, below target of 30", "78% Spotify; no Apple Music users",
              "Ads (50%) out of scope", "Demo recommendation database",
-             "Single-contributor scope"], accent=RED, gap=12)
+             "Single-contributor scope", "Junk / joke rows flagged",
+             "Underpowered at n = 18"], accent=RED, gap=12)
     footer(s, 18, a)
 
 
@@ -881,9 +892,9 @@ def s19(prs):
          size=FONT_BODY, color=WHITE, bold=True)
     text(s, 0.7, 3.95, 6, 0.28, "FUTURE WORK", size=FONT_META, color=T_AMBER, bold=True)
     x = 0.7
-    for title, body, c in [("Real recommender", "Replace demo data with a learned model", GREEN),
-                           ("Understand section", "Lyrics and song meaning", CYAN),
-                           ("Larger sample", "30+ responses and a full SUS study", ORANGE)]:
+    for title, body, c in [("Real recommender", "Replace demo data with a learned model, then re-test.", GREEN),
+                           ("Understand section", "Lyrics and song context, opened from the vibe view.", CYAN),
+                           ("Larger sample", "30+ responses and a full SUS study; re-test at α=0.05.", ORANGE)]:
         box(s, x, 4.35, 3.8, 1.85, PANEL)
         text(s, x + 0.25, 4.65, 3.3, 0.4, title, size=FONT_BODY, color=WHITE, bold=True)
         text(s, x + 0.25, 5.2, 3.3, 0.9, body, size=FONT_META, color=MUTED)
