@@ -86,6 +86,8 @@ def main():
     meta.add_run("Integrated Group Project — B.Tech Second Year\n"
                  "Introduction to Design Thinking · Web Technology · Python · Probability and Statistics\n\n"
                  "Preet Kamdar · 256019\n"
+                 "B.Tech CSE (AI & ML)\n"
+                 "Faculty mentors: Suryansh Rajput · Tanya Verma · Harsh Bhojak · Neelu Verma\n\n"
                  "Combined project: Python · Web Technology · Design Thinking · Probability & Statistics")
     doc.add_paragraph()
     note = doc.add_paragraph()
