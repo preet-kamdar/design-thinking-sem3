@@ -821,8 +821,13 @@ def s16(prs):
     for i, (n, label) in enumerate([("1", "Recruit"), ("2", "3 tasks"),
                                     ("3", "SUS form"), ("4", "Analyse")]):
         circle(s, x + 0.42, 2.0, 0.75, AQUA)
-        centered_text(s, x + 0.42, 2.0, 0.75, 0.75, n,
-                      size=FONT_BODY, color=DARK, bold=True)
+        badge = centered_text(s, x + 0.42, 2.0, 0.75, 0.75, n,
+                              size=FONT_BODY, color=DARK, bold=True)
+        # The shared text helper forces dark ink on shapes; these four glyphs
+        # deliberately use the light red from the slide-14 hypothesis box.
+        for par in badge.text_frame.paragraphs:
+            for run in par.runs:
+                run.font.color.rgb = LIMIT_BOX
         centered_text(s, x, 2.9, 1.6, 0.4, label,
                       size=FONT_META, color=WHITE, bold=True)
         if i < 3:
