@@ -81,6 +81,19 @@ document.querySelectorAll('.unsave').forEach(function (button) {
 });
 
 
+// 3b. SHARED CLICK COUNTER (used by the study timer)
+//     A study task is done in another tab, so a counter inside the study page
+//     would miss those clicks. localStorage is shared by every tab of this site,
+//     so each dashboard page can add to the same number while a task is running.
+document.addEventListener('click', function (event) {
+  if (localStorage.getItem('pme_task_active') !== '1') return;
+  // Ignore the timer buttons themselves — they are not part of the task.
+  if (event.target.closest && event.target.closest('#task-panel')) return;
+  const count = Number(localStorage.getItem('pme_task_clicks') || '0');
+  localStorage.setItem('pme_task_clicks', String(count + 1));
+}, true);
+
+
 // 4. STUDY PAGE — TASK TIMER
 //    Start: remember the time. Stop: work out the duration, count clicks, send
 //    everything to /api/task so Flask can store it in the test_tasks table.
@@ -93,10 +106,7 @@ if (taskPanel) {
   let clicks = 0;
   let errors = 0;
 
-  // The "true" counts clicks anywhere on the page, including inside buttons.
-  document.addEventListener('click', function () {
-    if (activeTask) clicks++;
-  }, true);
+  // Clicks come from the shared counter above, so clicks in other tabs count too.
 
   taskPanel.querySelectorAll('.task-start').forEach(function (button) {
     button.addEventListener('click', async function () {
@@ -107,6 +117,8 @@ if (taskPanel) {
         startTime = performance.now();
         clicks = 0;
         errors = 0;
+        localStorage.setItem('pme_task_active', '1');
+        localStorage.setItem('pme_task_clicks', '0');
         button.classList.add('running');
         button.querySelector('span').textContent = 'Running… click again to stop';
         taskStatus.textContent = 'Task started: ' + activeTask;
@@ -119,6 +131,8 @@ if (taskPanel) {
         button.querySelector('span').textContent = 'Start timer';
         const completed = confirm('Did you complete the task successfully?');
         if (!completed) errors++;
+        clicks = Number(localStorage.getItem('pme_task_clicks') || '0');
+        localStorage.setItem('pme_task_active', '0');
 
         await postJSON('/api/task', {
           task: activeTask,

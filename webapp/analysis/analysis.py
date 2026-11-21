@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import argparse
 import math
+import os
 import re
 from pathlib import Path
 
@@ -349,7 +350,9 @@ def write_report(df: pd.DataFrame, tests: pd.DataFrame, corrs: pd.DataFrame,
     for _, r in themes.iterrows():
         lines.append(f"| {r.Theme} | {int(r.Respondents)} | {r.Percent:.1f} |")
     lines += ["", "## 6. Charts", ""]
-    lines += [f"![{Path(p).stem}]({Path(p).name})" for p in chart_paths]
+    # Link relative to the report file so images resolve from any --report path.
+    lines += [f"![{Path(p).stem}]({Path(os.path.relpath(p, outpath.parent)).as_posix()})"
+              for p in chart_paths]
     lines += ["", "---", "", "*Regenerate with:* `python3 webapp/analysis/analysis.py --csv <updated.csv>`"]
 
     outpath.write_text("\n".join(lines) + "\n", encoding="utf-8")

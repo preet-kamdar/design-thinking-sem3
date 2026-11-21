@@ -116,11 +116,11 @@ Critical |r| at n≈29, alpha=0.05 (two-tailed) ≈ 0.367. Associations below th
 
 ## 6. Charts
 
-![platform_and_frequency](platform_and_frequency.png)
-![discovery_and_saving](discovery_and_saving.png)
-![ordinal_distributions](ordinal_distributions.png)
-![age_and_boxplots](age_and_boxplots.png)
-![correlation_heatmap](correlation_heatmap.png)
+![platform_and_frequency](../data/charts/platform_and_frequency.png)
+![discovery_and_saving](../data/charts/discovery_and_saving.png)
+![ordinal_distributions](../data/charts/ordinal_distributions.png)
+![age_and_boxplots](../data/charts/age_and_boxplots.png)
+![correlation_heatmap](../data/charts/correlation_heatmap.png)
 
 ---
 
