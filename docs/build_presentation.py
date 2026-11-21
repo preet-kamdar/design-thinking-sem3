@@ -120,12 +120,14 @@ PALETTES = {
     "dandadan":     dict(primary="E3F21C", bridge="ADFB70", secondary="13A3B5", limit="B73B36",
                          bg="FFFFFF", ink="000000", bg_ink="000000"),
     # Tinted companions: pale themed backgrounds + dark, soft ink.
-    "dandadan_tinted": dict(primary="E3F21C", bridge="ADFB70", secondary="13A3B5", limit="B73B36",
-                            bg="F2F7EA", ink="14201A", bg_ink="1B2C24"),
+    "dandadan_tinted": dict(primary="F5E3A0", bridge="ADFB70", secondary="2FB4C2",
+                            limit="B73B36", limit_box="E89A8A",
+                            bg="F2F7EA", ink="0E3B2A", bg_ink="1B5E3F"),
     "crimson_gold": dict(primary="E5D561", bridge="F2B8C6", secondary="E56595", limit="D11544",
                          bg="FFFFFF", ink="000000", bg_ink="000000"),
-    "crimson_gold_tinted": dict(primary="E5D561", bridge="F2B8C6", secondary="E56595", limit="D11544",
-                                bg="FBF3E9", ink="2A1820", bg_ink="3A1F2B"),
+    "crimson_gold_tinted": dict(primary="E5D561", bridge="F2B8C6", secondary="E56595",
+                                limit="D11544", limit_box="E8A0A0",
+                                bg="FBF3E9", ink="3D1029", bg_ink="6A2447"),
     "teal_red":     dict(primary="EDE6E0", bridge="8FC3C9", secondary="E8A0A0", limit="C0504F",
                          bg="FFFFFF", ink="000000", bg_ink="000000"),
 }
@@ -161,10 +163,15 @@ def apply_palette(name):
     SKY = BLUE_SOFT
     MINT = PEACH = SUN_SOFT
     ROSE = CORAL_SOFT
-    colors = dict(primary=SUN, bridge=AQUA, secondary=BLUE, limit=CORAL)
+    # The limitations slide gets a LIGHTER box fill so dark box-ink stays
+    # readable, while the stripe/accent keeps the true dark red of the source
+    # palette. Palettes without limit_box use the limit colour for both.
+    limit_box = _rgb(p.get("limit_box", p["limit"]))
+    colors = dict(primary=SUN, bridge=AQUA, secondary=BLUE, limit=limit_box)
     softs = dict(primary=SUN_SOFT, bridge=AQUA_SOFT,
-                 secondary=BLUE_SOFT, limit=CORAL_SOFT)
-    THEME = [(colors[r], softs[r], colors[r]) for r in THEME_ORDER]
+                 secondary=BLUE_SOFT, limit=_soft(limit_box))
+    accents = dict(primary=SUN, bridge=AQUA, secondary=BLUE, limit=CORAL)
+    THEME = [(colors[r], softs[r], accents[r]) for r in THEME_ORDER]
 
 
 # Only TWO type sizes: a hero for titles/big numbers, one size for everything
