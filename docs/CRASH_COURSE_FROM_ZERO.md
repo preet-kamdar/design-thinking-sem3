@@ -1,9 +1,101 @@
 # Viva Crash Course From Zero
 
-Read this file **in order, cover to cover**, over the next two days. It assumes you
-know nothing. Every technical term is explained the first time it appears.
+Read this file in order. It assumes you know nothing: every technical term is
+explained the first time it appears. The full course below is for anyone with
+more time. **If you have exams too, use the fast track immediately below it.**
 
-## The one rule for studying
+---
+
+# FAST TRACK — about 4 hours total, no writing
+
+This is the version for someone with limited time. You will **not** write a
+single thing. You will only read, look away, and speak. Four short sessions,
+spaced across Saturday and Sunday. Spacing matters more than duration.
+
+## The no-writing memory loop
+
+For each question or fact below:
+
+1. **Look** at the answer for 15 seconds.
+2. **Cover** the screen with your thumb (or look away).
+3. **Say** the answer out loud, in your own words, in 20–30 seconds.
+4. **Reveal** and check. If you missed it, say the correct version out loud once.
+
+Do **look → cover → say → check** three times for hard items, once for easy ones.
+You must hear your own voice. Silent reading does not build recall.
+
+Two extra tricks that replace writing:
+
+- **Voice note:** record yourself answering a question, then play it back while
+  walking, eating or commuting. Re-record only the weak answers. One recording
+  of 15 answers is about 6 minutes of listening.
+- **Say the number and its label together, always.** Never say "44". Say
+  "44 percent — struggle to find old saves". A naked number is useless; a
+  number glued to a phrase survives pressure.
+
+## The 14 numbers that cover almost everything
+
+Say each one out loud with its label, five times per session:
+
+1. **25** responses, target 30
+2. **84%** save or playlist a liked track
+3. **44%** struggle to find old saves
+4. **48%** mention ads, out of scope
+5. **64%** Spotify, platform imbalance
+6. **52%** taste only somewhat or poorly understood
+7. **2.40, p 0.005** — taste above neutral, significant
+8. **2.48, p 0.001** — vibe ease above neutral, significant
+9. **2.12, p 0.559** — retrieval, **not** significant
+10. **0.396** — critical |r| at n=25
+11. **+0.417, p 0.038** — retrieval ↔ taste, the only significant pair
+12. **68** — SUS benchmark
+13. **0.05** — alpha
+14. **5** stages, and 40/35/25 weights
+
+## The 15 questions that cover most of the marks
+
+Use §8's full answers, but prioritise these numbers: **1, 6, 9, 12, 17, 23,
+30, 31, 32, 34, 38, 43, 45, 53, 67.** Fifteen answers. That is the whole exam
+in miniature. Do the rest only if a spare ten minutes appears.
+
+## The four sessions
+
+| When | Time | What to do |
+|---|---|---|
+| **Saturday now** | 18:00–19:30 | Read §1, §2, §3 and §4. Use look–cover–say on the 14 numbers and questions 1, 6, 9, 12, 17, 23, 30, 31, 32, 34, 38. Finish by recording the 14 numbers as a voice note. |
+| **Sunday morning** | 08:30–09:00 | Listen to the voice note. Then answer the 11 questions from session 1 out loud without looking. Only redo what you missed. |
+| **Sunday late afternoon** | 16:00–17:15 | Read §6 and §6.12. Open `http://127.0.0.1:5000`, click through all six pages, and say each page's route and table out loud. Practise questions 43, 45, 53. |
+| **Sunday night** | 20:30–21:15 | Record all 15 priority questions. Play back. Re-record the weak ones. Finish by saying the three killer answers and the honesty lines (§4.5, Appendix D). Then sleep. |
+
+That is **4 hours 15 minutes** total. Everything else in this document is
+backup material — read it only if a question takes you there.
+
+## The three killer answers (say these perfectly)
+
+**"Are your results significant?"**
+> "Taste and vibe ease are significantly above neutral, p = 0.0049 and p =
+> 0.0012. Saved retrieval is not, at p = 0.559. So I claim good but not great —
+> refinement, not rescue."
+
+**"Isn't n=25 too small for that correlation?"**
+> "Yes. Critical value is 0.396; retrieval with taste reaches 0.417 at p =
+> 0.038. Small sample, several comparisons — I treat it as directional and
+> never claim causation."
+
+**"Where's your actual usability result?"**
+> "I built and instrumented the study page, but participant runs were still
+> being collected. I don't claim a SUS score or task-time result; Section 10.3
+> says so."
+
+## When you don't know
+
+> "I'm not certain about that detail — the place to check would be ___."
+
+Say it and move on. Never invent a number.
+
+---
+
+## The one rule for studying the full course
 
 For every section, do this four-step loop. **Do not skip the writing or the speaking.**
 
