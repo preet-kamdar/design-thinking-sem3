@@ -2,3 +2,8 @@ __pycache__/
 *.pyc
 .~*.pptx
 .~*.docx
+
+# Raw survey export contains respondent names — never publish it.
+# Share data/survey_responses_anonymised.csv instead.
+Music Streaming Platform Experience (Responses) - Form responses 1.csv
+

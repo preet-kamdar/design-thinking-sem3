@@ -13,10 +13,10 @@
 
 **Flagged low-quality / duplicate responses (declared, not silently removed):**
 
-- row 2 (Yuvraj): all open answers non-substantive
-- row 9 (Jyot): non-serious open answers
-- Possible duplicate: ayush appears 2 times
-- Possible duplicate: somya appears 2 times
+- row 2 (R01): all open answers non-substantive
+- row 9 (R08): non-serious open answers
+- Possible duplicate: 2 rows share a name
+- Possible duplicate: 2 rows share a name
 
 ## 2. Descriptive statistics
 

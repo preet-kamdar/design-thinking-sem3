@@ -92,15 +92,16 @@ def quality_flags(df: pd.DataFrame) -> list[str]:
     for idx, row in df.iterrows():
         answers = [str(row[c]).strip().lower() for c in OPEN_COLS]
         if all(a in JUNK_TOKENS or not a for a in answers):
-            flags.append(f"row {idx + 2} ({row[C_NAME]}): all open answers non-substantive")
+            flags.append(f"row {idx + 2} (R{idx + 1:02d}): all open answers non-substantive")
         elif "iphone" in " ".join(answers) or "concert" in " ".join(answers):
-            flags.append(f"row {idx + 2} ({row[C_NAME]}): non-serious open answers")
+            flags.append(f"row {idx + 2} (R{idx + 1:02d}): non-serious open answers")
     return flags
 
 
 def duplicate_names(df: pd.DataFrame) -> list[str]:
+    """Report duplicate counts without printing respondent names."""
     counts = df[C_NAME].astype(str).str.strip().str.lower().value_counts()
-    return [f"{name} appears {n} times" for name, n in counts[counts > 1].items()]
+    return [f"{n} rows share a name" for _, n in counts[counts > 1].items()]
 
 
 def ordinal_scores(df: pd.DataFrame) -> dict[str, pd.Series]:

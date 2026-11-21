@@ -35,7 +35,7 @@ companion web dashboard with a Python (Flask) backend and SQLite database.
     ├── presentation_script.md                # 20-slide script with memorisable numbers
     ├── viva_cheat_sheet.md                    # likely questions and answers
     ├── viva_prep_guide.md                     # study method + inspect-element answers
-    ├── CRASH_COURSE_FROM_ZERO.md              # from-scratch crash course + 70 question answers
+    ├── VIVA_ONE_PAGER.md                      # project facts, numbers and direct answers only
     ├── build_presentation.py                 # regenerates Presentation.pptx
     └── build_paper.py                        # regenerates Research_Paper.docx
 ```
@@ -97,6 +97,9 @@ Pages: `/` (My Music), `/discover`, `/vibe`, `/preferences`, `/study` (timed tas
 ## Regenerate all statistics after new survey responses
 
 Export the updated Google Forms CSV into this folder, then:
+
+> The raw export is **intentionally not committed** — it contains respondent names.
+> The shareable results file is `data/survey_responses_anonymised.csv` (R01–R29).
 
 ```bash
 python3 webapp/analysis/analysis.py \
