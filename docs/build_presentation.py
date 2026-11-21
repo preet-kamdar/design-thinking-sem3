@@ -1,31 +1,34 @@
 #!/usr/bin/env python3
-"""Generate the designed 15-slide presentation deck.
+"""Generate the official 20-slide presentation deck.
 
 Design system
 -------------
 * Exactly TWO font sizes: 36 (hero) and 20 (everything else). Bold is used
-  only on hero text, so a slide never looks like a jumble of weights/sizes.
-  ``fs()`` snaps requests to these two; ``fit_height()`` grows text boxes
-  using the same wide-font measurement as check_layout.py, so overflow is 0.
-* Pure WHITE slide backgrounds. Boxes use a 4-colour palette (yellow, aqua,
-  blue, coral) with ONE 3pt black border and black text. Slides step gently
-  yellow → aqua → blue so transitions between slides stay soft. Coral marks
-  limitations only. No box-edge bars or per-box rings — one real vinyl disc
-  per slide is placed around the slide by ``decorate()``.
-* Charts are generated with gridlines by webapp/analysis/analysis.py.
+  only on hero text. ``fs()`` snaps requests to these two; ``fit_height()``
+  grows text boxes using the same measurement as check_layout.py, so overflow
+  is 0.
+* OFFICIAL "Dandadan tinted" theme: pale lime background `#F2F7EA`, two dark
+  green text inks, soft cream-yellow / green / teal boxes, dark red only for
+  limitations. ONE 3pt dark border per box. The five real survey charts are
+  placed full-width on their own evidence slides, never squeezed into a corner.
+* Subtle vinyl records appear on a curated set of slides, placed at slide
+  level (never pinned to a box corner). Only the bottom-right slide number is
+  shown.
+* Charts are generated with grids and large labels by
+  webapp/analysis/analysis.py.
 
 Extending
 ---------
-1. Add a builder function ``sN(prs)`` that calls ``decorate(prs.slides[-1], N)``.
-2. Append it to ``SLIDE_BUILDERS``. Speaker notes come from slide_notes.json.
-3. Change palette / gradient angles in THEME at the top of this file.
+1. Add a builder function ``sN(prs)`` that calls ``new(prs, N)``.
+2. Append it to ``SLIDE_BUILDERS`` and add a note to slide_notes.json.
+3. Update the numbered builder calls if you insert a slide mid-deck.
 """
 
 import argparse
 import json
 from pathlib import Path
 
-from PIL import ImageFont
+from PIL import Image, ImageFont
 from pptx import Presentation
 from pptx.dml.color import RGBColor
 from pptx.enum.shapes import MSO_SHAPE
@@ -112,24 +115,11 @@ THEME = [
 # Each entry maps to the four roles used by the slide code. The "soft" colours
 # are auto-derived for the faint decorative shapes. Dark reference hues are
 # lightened here so black text stays readable on every box.
+# OFFICIAL THEME — Dandadan tinted. No trials remain; this is the deck.
 PALETTES = {
-    "current":      dict(primary="FFE22E", bridge="5ED6C8", secondary="45C4F8", limit="FF7676",
-                         bg="FFFFFF", ink="000000", bg_ink="000000"),
-    "yellow_coral": dict(primary="FEF200", bridge="F2D21C", secondary="F7A6A6", limit="E7575D",
-                         bg="FFFFFF", ink="000000", bg_ink="000000"),
-    "dandadan":     dict(primary="E3F21C", bridge="ADFB70", secondary="13A3B5", limit="B73B36",
-                         bg="FFFFFF", ink="000000", bg_ink="000000"),
-    # Tinted companions: pale themed backgrounds + dark, soft ink.
-    "dandadan_tinted": dict(primary="F5E3A0", bridge="ADFB70", secondary="2FB4C2",
-                            limit="B73B36", limit_box="E89A8A",
-                            bg="F2F7EA", ink="0E3B2A", bg_ink="1B5E3F"),
-    "crimson_gold": dict(primary="E5D561", bridge="F2B8C6", secondary="E56595", limit="D11544",
-                         bg="FFFFFF", ink="000000", bg_ink="000000"),
-    "crimson_gold_tinted": dict(primary="E5D561", bridge="F2B8C6", secondary="E56595",
-                                limit="D11544", limit_box="E8A0A0",
-                                bg="FBF3E9", ink="3D1029", bg_ink="6A2447"),
-    "teal_red":     dict(primary="EDE6E0", bridge="8FC3C9", secondary="E8A0A0", limit="C0504F",
-                         bg="FFFFFF", ink="000000", bg_ink="000000"),
+    "official": dict(primary="F5E3A0", bridge="ADFB70", secondary="2FB4C2",
+                     limit="B73B36", limit_box="E89A8A",
+                     bg="F2F7EA", ink="0E3B2A", bg_ink="1B5E3F"),
 }
 THEME_ORDER = ("primary", "bridge", "secondary", "secondary", "bridge",
                "primary", "primary", "bridge", "secondary", "secondary",
@@ -348,17 +338,13 @@ def bullets(slide, x, y, w, h, items, color=T_BODY, accent=T_AMBER, gap=6):
     return tb
 
 
-def kicker(slide, label, accent):
-    text(slide, 0.7, 0.33, 8, 0.28, label.upper(), size=FONT_META,
-         color=T_AMBER, bold=True)
-
-
 def header(slide, index, title, subtitle, accent):
-    kicker(slide, f"{index:02d} / 15", accent)
-    text(slide, 0.7, 0.62, 12, 0.65, title, size=FONT_HERO, color=WHITE, bold=True)
+    # Only ONE slide number (the bottom-right footer). The old top-left
+    # "NN / 15" kicker was a duplicate and is removed.
+    text(slide, 0.7, 0.55, 12, 0.65, title, size=FONT_HERO, color=WHITE, bold=True)
     if subtitle:
-        text(slide, 0.72, 1.3, 11.8, 0.35, subtitle, size=FONT_META, color=MUTED)
-    shape(slide, MSO_SHAPE.RECTANGLE, 0.7, 1.72, 1.0, 0.05, accent)
+        text(slide, 0.72, 1.23, 11.8, 0.35, subtitle, size=FONT_META, color=MUTED)
+    shape(slide, MSO_SHAPE.RECTANGLE, 0.7, 1.65, 1.0, 0.05, accent)
 
 
 def footer(slide, index, accent):
@@ -387,8 +373,34 @@ def arrow(slide, x, y, w=0.5, h=0.3, color=GREEN):
     return shape(slide, MSO_SHAPE.RIGHT_ARROW, x, y, w, h, color)
 
 
+def chart_frame(slide, x, y, w, h, filename, pad=0.16):
+    """White framed panel with the generated chart fitted inside, full size."""
+    frame = shape(slide, MSO_SHAPE.ROUNDED_RECTANGLE, x, y, w, h, WHITE, INK)
+    frame.line.width = Pt(2.5)
+    chart = CHARTS / filename
+    if not chart.exists():
+        text(slide, x, y + h / 2, w, 0.4,
+             "Chart missing — re-run webapp/analysis/analysis.py",
+             size=FONT_META, color=T_RED, align=PP_ALIGN.CENTER)
+        return
+    with Image.open(chart) as im:
+        iw, ih = im.size
+    scale = min((w - 2 * pad) / iw, (h - 2 * pad) / ih)
+    pw, ph = iw * scale, ih * scale
+    slide.shapes.add_picture(str(chart), Inches(x + (w - pw) / 2),
+                             Inches(y + (h - ph) / 2),
+                             width=Inches(pw), height=Inches(ph))
+
+
+def takeaway(slide, index, message):
+    """One honest reading line under a chart, above the footer."""
+    box(slide, 0.7, 6.35, 11.9, 0.5, PANEL)
+    text(slide, 0.95, 6.47, 11.4, 0.3, message, size=FONT_META, color=MUTED)
+    footer(slide, index, getattr(slide, "_pme_accent", GREEN))
+
+
 # --------------------------------------------------------------------------- #
-# Decoration — pure white background, one vinyl disc, soft corner shapes
+# Decoration — pale tinted background, occasional subtle vinyl disc
 # --------------------------------------------------------------------------- #
 def vinyl_record(slide, cx, cy, d, label_color):
     """One readable vinyl disc: dark disc, grooves, coloured label + spindle."""
@@ -410,9 +422,11 @@ def vinyl_record(slide, cx, cy, d, label_color):
     set_opacity(hole, 70)
 
 
-# The record is decoration, so it only appears on the two sparse bookend
-# slides (title + Q&A). Content-heavy slides get none — they are already full.
-VINYL_SLIDES = {1, 15}
+# Records are an occasional motif, not wallpaper: a curated set spread across
+# the deck. Sparse bookends get a larger disc; elsewhere it is smaller and
+# sits behind content so it never competes with a chart.
+VINYL_SLIDES = {1, 4, 6, 9, 12, 15, 18, 20}
+VINYL_BOOKENDS = {1, 20}
 VINYL_SPOTS = ((W - 0.9, 1.1), (1.0, H - 0.8), (W - 0.9, H - 0.8), (0.8, 1.2))
 
 
@@ -426,12 +440,12 @@ def decorate(slide, index: int) -> RGBColor:
     # Bold accent stripe down the left edge.
     shape(slide, MSO_SHAPE.RECTANGLE, 0, 0, 0.20, H, accent)
 
-    # The soft corner circles are gone — on white slides they read as a
-    # second, accidental pair of discs. Only the sparse bookends keep a
-    # single, subtle vinyl record.
+    # One subtle record on curated slides, at an edge that varies across the
+    # deck. Drawn before content, so charts/boxes always sit above it.
     if index in VINYL_SLIDES:
         cx, cy = VINYL_SPOTS[(index - 1) % len(VINYL_SPOTS)]
-        vinyl_record(slide, cx, cy, 2.0, box_color)
+        d = 2.0 if index in VINYL_BOOKENDS else 1.5
+        vinyl_record(slide, cx, cy, d, box_color)
 
     # Small confetti dots in the top-right corner.
     for i in range(4):
@@ -550,24 +564,57 @@ def s5(prs):
 def s6(prs):
     s, a = new(prs, 6)
     header(s, 6, "Statistical findings", "Ordinal 1–3 · neutral = 2 · one-sample t-tests", a)
-    stat_card(s, 0.7, 1.95, 3.7, 1.8, "2.50", "Vibe ease · p = 0.003", GREEN)
-    stat_card(s, 4.8, 1.95, 3.7, 1.8, "2.33", "Taste · p = 0.029", a)
-    stat_card(s, 8.9, 1.95, 3.7, 1.8, "2.11", "Retrieval · p = 0.651", ORANGE)
-    chart = CHARTS / "ordinal_distributions.png"
-    if chart.exists():
-        box(s, 0.7, 3.95, 7.4, 2.75, PANEL)
-        s.shapes.add_picture(str(chart), Inches(0.85), Inches(4.15), width=Inches(7.1))
-    box(s, 8.4, 3.95, 4.2, 2.95, PANEL)
-    text(s, 8.7, 4.1, 3.6, 0.28, "HONEST READING", size=FONT_META, color=T_AMBER, bold=True)
-    text(s, 8.7, 4.5, 3.6, 1.8,
-         "Above neutral ≠ unhappy.\nGood-but-not-great baseline.\nWe claim refinement, not rescue.",
-         size=FONT_BODY, color=WHITE)
+    stat_card(s, 0.7, 2.0, 3.7, 1.8, "2.50", "Vibe ease · p = 0.003", GREEN)
+    stat_card(s, 4.8, 2.0, 3.7, 1.8, "2.33", "Taste · p = 0.029", a)
+    stat_card(s, 8.9, 2.0, 3.7, 1.8, "2.11", "Retrieval · p = 0.651", ORANGE)
+    box(s, 0.7, 4.0, 11.9, 2.25, PANEL)
+    text(s, 1.0, 4.25, 11.2, 0.3, "HONEST READING", size=FONT_META, color=T_AMBER, bold=True)
+    text(s, 1.0, 4.72, 11.2, 1.3,
+         "Above neutral ≠ unhappy. This is a good-but-not-great baseline.\n"
+         "We claim refinement, not rescue — every distribution follows on the next five slides.",
+         size=FONT_BODY, color=MUTED)
     footer(s, 6, a)
 
 
+# --- Five full-size evidence slides: every real chart gets its own slide ---- #
 def s7(prs):
     s, a = new(prs, 7)
-    header(s, 7, "Define", "Persona · POV · HMW · MoSCoW", a)
+    header(s, 7, "Evidence 1 · platform and usage", "Who answered, and how often they listen", a)
+    chart_frame(s, 0.7, 1.95, 11.9, 4.3, "platform_and_frequency.png")
+    takeaway(s, 7, "Spotify 78%; 9 listen daily. The platform imbalance is a stated limitation.")
+
+
+def s8(prs):
+    s, a = new(prs, 8)
+    header(s, 8, "Evidence 2 · discovery and saving", "How tracks are found and kept", a)
+    chart_frame(s, 0.7, 1.95, 11.9, 4.3, "discovery_and_saving.png")
+    takeaway(s, 8, "33% discover outside apps; 78% save tracks. That gap is our design target.")
+
+
+def s9(prs):
+    s, a = new(prs, 9)
+    header(s, 9, "Evidence 3 · ordinal distributions", "Counts behind the three baseline tests", a)
+    chart_frame(s, 0.7, 1.95, 11.9, 4.3, "ordinal_distributions.png")
+    takeaway(s, 9, "Vibe 2.50 (p .003) and taste 2.33 (p .029) beat neutral; retrieval does not.")
+
+
+def s10(prs):
+    s, a = new(prs, 10)
+    header(s, 10, "Evidence 4 · age and score spread", "Sample profile and ordinal spread", a)
+    chart_frame(s, 0.7, 1.95, 11.9, 4.3, "age_and_boxplots.png")
+    takeaway(s, 10, "17 numeric ages, mean 19.7. Retrieval spread is widest — directional only.")
+
+
+def s11(prs):
+    s, a = new(prs, 11)
+    header(s, 11, "Evidence 5 · correlations", "Spearman rho · n = 18 · critical |r| ≈ 0.468", a)
+    chart_frame(s, 0.7, 1.95, 11.9, 4.3, "correlation_heatmap.png")
+    takeaway(s, 11, "All correlations are weak and non-significant. No causal claims.")
+
+
+def s12(prs):
+    s, a = new(prs, 12)
+    header(s, 12, "Define", "Persona · POV · HMW · MoSCoW", a)
     box(s, 0.7, 1.95, 3.9, 4.65, PANEL)
     circle(s, 1.85, 2.2, 1.1, GREEN)
     text(s, 1.85, 2.42, 1.1, 0.7, "A", size=FONT_HERO, color=DARK,
@@ -591,12 +638,12 @@ def s7(prs):
     text(s, 5.15, 5.85, 7.1, 0.6,
          "Must: Discover, My Music, backend   |   Won't: ads, offline downloads",
          size=FONT_META, color=WHITE)
-    footer(s, 7, a)
+    footer(s, 12, a)
 
 
-def s8(prs):
-    s, a = new(prs, 8)
-    header(s, 8, "Ideation", "10 ideas · mind map · SWOT", a)
+def s13(prs):
+    s, a = new(prs, 13)
+    header(s, 13, "Ideation", "10 ideas · mind map · SWOT", a)
     box(s, 5.1, 3.25, 3.1, 0.85, GREEN)
     text(s, 5.1, 3.48, 3.1, 0.4, "PERSONAL MUSIC", size=FONT_META,
          color=DARK, bold=True, align=PP_ALIGN.CENTER)
@@ -614,12 +661,12 @@ def s8(prs):
     text(s, 8.9, 5.05, 3.3, 1.1,
          "Slider · Vibe tags · Library\nPreferences · Understand\nAI chatbot · Ad blocker",
          size=FONT_META, color=MUTED)
-    footer(s, 8, a)
+    footer(s, 13, a)
 
 
-def s9(prs):
-    s, a = new(prs, 9)
-    header(s, 9, "Idea selection", "Weighted: desirability 40% · feasibility 35% · viability 25%", a)
+def s14(prs):
+    s, a = new(prs, 14)
+    header(s, 14, "Idea selection", "Weighted: desirability 40% · feasibility 35% · viability 25%", a)
     text(s, 0.7, 1.95, 7.5, 0.28, "WEIGHTED SCORE", size=FONT_META, color=T_AMBER, bold=True)
     y = 2.35
     for label, score, c in [("Discovery slider", 5.0, GREEN), ("Vibe tags", 5.0, GREEN),
@@ -636,12 +683,12 @@ def s9(prs):
     bullets(s, 8.2, 2.6, 4.0, 3.6,
             ["Retrieval time lower", "Taste rating above 2.33", "SUS above 68",
              "α = 0.05 · paired design", "Ad blocker rejected"], accent=T_AMBER, gap=11)
-    footer(s, 9, a)
+    footer(s, 14, a)
 
 
-def s10(prs):
-    s, a = new(prs, 10)
-    header(s, 10, "Prototype", "Extension → Flask → SQLite · all data local", a)
+def s15(prs):
+    s, a = new(prs, 15)
+    header(s, 15, "Prototype", "Extension → Flask → SQLite · all data local", a)
     for x, label, c in [(0.7, "CHROME\nEXTENSION", GREEN), (4.9, "FLASK\nBACKEND", CYAN),
                         (9.1, "SQLITE\nDATABASE", ORANGE)]:
         box(s, x, 2.1, 3.5, 1.5, PANEL)
@@ -662,12 +709,12 @@ def s10(prs):
     text(s, 1.0, 5.75, 11.3, 0.5,
          "Per-platform adapters · 2-second polling · No login · No external API · Responsive dashboard",
          size=FONT_META, color=WHITE, align=PP_ALIGN.CENTER)
-    footer(s, 10, a)
+    footer(s, 15, a)
 
 
-def s11(prs):
-    s, a = new(prs, 11)
-    header(s, 11, "Testing and validation", "Paired design · timed tasks · SUS", a)
+def s16(prs):
+    s, a = new(prs, 16)
+    header(s, 16, "Testing and validation", "Paired design · timed tasks · SUS", a)
     x = 0.7
     for i, (n, label, c) in enumerate([("1", "Recruit", RED), ("2", "3 tasks", ORANGE),
                                        ("3", "SUS form", CYAN), ("4", "Analyse", GREEN)]):
@@ -689,12 +736,12 @@ def s11(prs):
     text(s, 7.0, 4.4, 5.3, 1.8,
          "Instrument and logging are built.\n\nParticipant runs still being collected — add real SUS and task numbers.",
          size=FONT_BODY, color=WHITE)
-    footer(s, 11, a)
+    footer(s, 16, a)
 
 
-def s12(prs):
-    s, a = new(prs, 12)
-    header(s, 12, "Results and iterations", "Three changes driven by testing and reflection", a)
+def s17(prs):
+    s, a = new(prs, 17)
+    header(s, 17, "Results and iterations", "Three changes driven by testing and reflection", a)
     y = 1.95
     for n, title, body, c in [
         ("1", "Per-platform adapters", "Single selector broke on YouTube Music; split into one adapter per site.", GREEN),
@@ -711,12 +758,12 @@ def s12(prs):
     text(s, 0.7, 6.7, 11.9, 0.25,
          "Add measured SUS and task-time changes once real runs are complete.",
          size=FONT_META, color=MUTED, italic=True)
-    footer(s, 12, a)
+    footer(s, 17, a)
 
 
-def s13(prs):
-    s, a = new(prs, 13)
-    header(s, 13, "Impact and limitations", "Benefits weighed against threats to validity", a)
+def s18(prs):
+    s, a = new(prs, 18)
+    header(s, 18, "Impact and limitations", "Benefits weighed against threats to validity", a)
     box(s, 0.7, 1.95, 5.8, 4.6, PANEL)
     text(s, 1.0, 2.2, 5.2, 0.28, "BENEFITS", size=FONT_META, color=GREEN, bold=True)
     bullets(s, 1.0, 2.65, 5.1, 3.6,
@@ -729,12 +776,12 @@ def s13(prs):
             ["n = 18, below target of 30", "78% Spotify; no Apple Music users",
              "Ads (50%) out of scope", "Demo recommendation database",
              "Single-contributor scope"], accent=RED, gap=12)
-    footer(s, 13, a)
+    footer(s, 18, a)
 
 
-def s14(prs):
-    s, a = new(prs, 14)
-    header(s, 14, "Conclusion and future scope", "A small utility addressing a measured gap", a)
+def s19(prs):
+    s, a = new(prs, 19)
+    header(s, 19, "Conclusion and future scope", "A small utility addressing a measured gap", a)
     box(s, 0.7, 1.95, 11.9, 1.65, PANEL)
     text(s, 1.0, 2.25, 11.2, 1.1,
          "78% save music. 44% struggle to find old saves.\nA private utility closes that loop — without claiming to fix ads.",
@@ -748,11 +795,11 @@ def s14(prs):
         text(s, x + 0.25, 4.65, 3.3, 0.4, title, size=FONT_BODY, color=WHITE, bold=True)
         text(s, x + 0.25, 5.2, 3.3, 0.9, body, size=FONT_META, color=MUTED)
         x += 3.95
-    footer(s, 14, a)
+    footer(s, 19, a)
 
 
-def s15(prs):
-    s, a = new(prs, 15)
+def s20(prs):
+    s, a = new(prs, 20)
     shape(s, MSO_SHAPE.RECTANGLE, 0, 0, 0.18, H, GREEN)
     text(s, 0.9, 1.2, 8, 0.3, "REFERENCES & Q&A", size=FONT_META, color=GREEN, bold=True)
     text(s, 0.9, 1.85, 11, 1.1, "Thank you.", size=FONT_HERO, color=WHITE, bold=True)
@@ -761,20 +808,19 @@ def s15(prs):
             ["Anonymised survey dataset (R01–R18)", "Integrated assignment brief",
              "Libraries: Flask, pandas, SciPy, matplotlib", "AI tooling disclosed per brief"],
             accent=GREEN, gap=9)
-    footer(s, 15, a)
+    footer(s, 20, a)
 
 
-SLIDE_BUILDERS = [s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, s14, s15]
+SLIDE_BUILDERS = [s1, s2, s3, s4, s5, s6, s7, s8, s9, s10,
+                  s11, s12, s13, s14, s15, s16, s17, s18, s19, s20]
 
 
 def main():
     global OUT
     ap = argparse.ArgumentParser()
-    ap.add_argument("--palette", default="current", choices=sorted(PALETTES),
-                    help="which reference palette to build")
     ap.add_argument("--out", default=None, help="output .pptx path")
     args = ap.parse_args()
-    apply_palette(args.palette)
+    apply_palette("official")
     if args.out:
         OUT = Path(args.out)
 

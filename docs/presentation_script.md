@@ -1,6 +1,6 @@
-# Presentation Script — 15 Slides
+# Presentation Script — 20 Slides
 **Reimagining the Personal Music Experience**
-Target: 10–12 minutes + 5 minutes Q&A. Memorise the **bold numbers** in each slide.
+Target: 12–15 minutes + 5 minutes Q&A. Memorise the **bold numbers** in each slide.
 
 ---
 
@@ -49,7 +49,7 @@ recommendations/taste **44%**; retrieval **44%**."
 ---
 
 ### Slide 6 — Statistical findings
-**On slide:** Charts + table: taste 2.33, t=2.38, p=0.029, CI [2.04, 2.63]; vibe 2.50, p=0.003; retrieval 2.11, p=0.651.
+**On slide:** Three summary cards + honest reading. The five full-size charts are on slides 7–11.
 **Say:** "Ordinal coding was 1–3 with neutral 2. One-sample t-tests show responses were
 significantly *above* neutral for vibe-finding ease, **mean 2.50, p = 0.003**, and taste
 understanding, **mean 2.33, p = 0.029**. Saved retrieval was **mean 2.11, p = 0.651** —
@@ -58,7 +58,47 @@ baseline is good-but-not-great, and the opportunity is refinement."
 
 ---
 
-### Slide 7 — Define
+### Slide 7 — Evidence 1: platform and usage
+**On slide:** Primary-platform and usage-frequency bar charts, full width.
+**Say:** "This is our platform mix: **14 of 18 use Spotify — 78%**, three use YouTube Music,
+one other, and no Apple Music users. **Nine listen daily** and five several times a week.
+The imbalance is a limitation we state rather than hide."
+
+---
+
+### Slide 8 — Evidence 2: discovery and saving
+**On slide:** Discovery-source and post-like action charts, full width.
+**Say:** "Discovery is split: **six find music outside the app**, five through recommendations,
+four by search and three via playlists. Yet **14 of 18 save or like tracks**. That gap between
+saving and finding them again is exactly what our library feature addresses."
+
+---
+
+### Slide 9 — Evidence 3: ordinal distributions
+**On slide:** Four bar charts showing the raw 1–3 counts behind the baseline tests.
+**Say:** "These are the raw counts behind the tests. Vibe-finding ease averages **2.50, p = 0.003**,
+taste understanding **2.33, p = 0.029**, but saved-song retrieval is **2.11, p = 0.651**. Above
+neutral is not dissatisfaction — it is room to refine."
+
+---
+
+### Slide 10 — Evidence 4: age and score spread
+**On slide:** Age histogram and box plots of the three ordinal scores.
+**Say:** "We have **17 numeric ages, mean 19.7, median 19**; one respondent wrote '18+'. The box
+plots show the spread — retrieval is the widest. With n = 18 we treat this as directional
+evidence only, not proof."
+
+---
+
+### Slide 11 — Evidence 5: correlations
+**On slide:** Spearman correlation heatmap with grids and readable labels.
+**Say:** "The correlation matrix is weak throughout. At this sample size a coefficient would
+need about **0.468** to be significant, and none reach it. So we do not claim that one habit
+causes another — we only describe what we observed."
+
+---
+
+### Slide 12 — Define
 **On slide:** Persona "Aarav, 19" · POV · HMW · MoSCoW highlights.
 **Say:** "Our composite persona is Aarav, a 19-year-old daily Spotify user who discovers
 music outside the app and saves tracks he rarely revisits. POV: a listener who saves but
@@ -69,7 +109,7 @@ downloads in Won't."
 
 ---
 
-### Slide 8 — Ideation
+### Slide 13 — Ideation
 **On slide:** Mind map + 10 ideas (show the list, highlight the top four).
 **Say:** "We generated ten ideas, from a discovery slider and vibe tags to an AI chatbot and
 an ad blocker. We mapped them across discovery, mood, library, understanding and preferences,
@@ -77,7 +117,7 @@ then scored each on desirability, feasibility and viability."
 
 ---
 
-### Slide 9 — Idea selection + hypotheses
+### Slide 14 — Idea selection + hypotheses
 **On slide:** Weighted matrix (D 40% / F 35% / V 25%); top score 5.00; H₀/H₁ written in advance.
 **Say:** "Weighted scoring put the discovery slider, vibe tags, and save-plus-library at
 **5.00**, highest. AI chatbot scored **2.45** and ad blocker **2.80** — rejected on
@@ -86,7 +126,7 @@ retrieval time, taste satisfaction above baseline 2.33, and SUS above 68, at alp
 
 ---
 
-### Slide 10 — Prototype
+### Slide 15 — Prototype
 **On slide:** Architecture diagram: Extension (HTML/CSS/JS) → Flask routes → SQLite; screenshots of panel, dashboard, study page.
 **Say:** "The prototype has two parts. The Chrome extension injects a side panel into three
 music sites and detects the current track using one adapter per platform. The companion
@@ -96,7 +136,7 @@ no login, no external API. Let me demonstrate [open /discover, save a song, show
 
 ---
 
-### Slide 11 — Testing and validation
+### Slide 16 — Testing and validation
 **On slide:** Paired design · timed tasks · SUS · tests chosen · [insert results once collected].
 **Say:** "Testing uses the same participants on both methods — a paired design. The study
 page times three tasks and counts clicks and errors, then computes a SUS score out of 100.
@@ -106,7 +146,7 @@ statistic, p-value and confidence interval here once runs are complete.]**"
 
 ---
 
-### Slide 12 — Results and iterations
+### Slide 17 — Results and iterations
 **On slide:** Three improvements made; before/after numbers [fill after testing].
 **Say:** "Iteration one: we split track detection into per-platform adapters after the
 single-file version broke on YouTube Music's changing DOM. Iteration two: we added a
@@ -116,7 +156,7 @@ on measurement. **[Add SUS and task-time changes from real testing here.]**"
 
 ---
 
-### Slide 13 — Impact and limitations
+### Slide 18 — Impact and limitations
 **On slide:** Benefits · feasibility · threats to validity.
 **Say:** "Benefits: no account required, data never leaves the browser, works across three
 platforms. Limitations: **n = 18 not 30**; **78% Spotify, zero Apple Music users**; ads —
@@ -126,7 +166,7 @@ these rather than hide them."
 
 ---
 
-### Slide 14 — Conclusion and future scope
+### Slide 19 — Conclusion and future scope
 **On slide:** Key learning · conclusion · future work.
 **Say:** "We learned that a small, focused utility can address a real, measured gap —
 saved-song retrieval and taste control — without complex infrastructure. The prototype
@@ -135,7 +175,7 @@ recommendation model, the Understand section, and a larger, stratified sample."
 
 ---
 
-### Slide 15 — References and Q&A
+### Slide 20 — References and Q&A
 **On slide:** Google Forms dataset · brief · libraries (Flask, pandas, scipy, matplotlib) · sites' UI.
 **Say:** "Sources: our anonymised survey dataset, the assignment brief, and the open-source
 libraries used. AI tools were used for code drafting and documentation, disclosed per the

@@ -168,31 +168,38 @@ def make_charts(df: pd.DataFrame, scores: dict[str, pd.Series], outdir: Path) ->
 
     def save(fig, filename: str):
         p = outdir / filename
-        fig.patch.set_facecolor("#121216")
-        fig.tight_layout()
+        fig.patch.set_facecolor("#FFFFFF")
+        fig.tight_layout(pad=1.4)
         fig.savefig(p, dpi=150, facecolor=fig.get_facecolor())
         plt.close(fig)
         paths.append(str(p))
 
-    palette = ["#1DB954", "#00BCD4", "#FF9800", "#9C27B0", "#f15e6c"]
+    # Light, soft palette that matches the official presentation theme. All
+    # five colours stay legible against white with the dark green ink below.
+    palette = ["#E3D27A", "#2FB4C2", "#7FCB6B", "#E89A8A", "#6E8C7C"]
+    ink = "#14201A"
+    ink_soft = "#1B5E3F"
 
     def style_axes(ax):
-        ax.set_facecolor("#18181c")
-        ax.grid(True, axis="both", color="#3a3a42", linestyle="--", linewidth=0.6, alpha=0.75)
+        ax.set_facecolor("#FFFFFF")
+        ax.grid(True, axis="both", color="#D5DFD2", linestyle="-", linewidth=0.8, alpha=0.9)
         ax.set_axisbelow(True)
         for spine in ax.spines.values():
-            spine.set_color("#44444c")
-            spine.set_linewidth(0.8)
-        ax.tick_params(colors="#c8c8d0", labelsize=8)
-        ax.set_title_color = None
-        ax.title.set_color("#f5f5f5")
+            spine.set_color("#C9D4C2")
+            spine.set_linewidth(1.0)
+        ax.tick_params(colors=ink_soft, labelsize=11)
+        ax.title.set_color(ink)
+        ax.title.set_fontsize(15)
+        ax.title.set_fontweight("bold")
         if ax.get_ylabel():
-            ax.yaxis.label.set_color("#a0a0a8")
+            ax.yaxis.label.set_color(ink_soft)
+            ax.yaxis.label.set_fontsize(12)
         if ax.get_xlabel():
-            ax.xaxis.label.set_color("#a0a0a8")
+            ax.xaxis.label.set_color(ink_soft)
+            ax.xaxis.label.set_fontsize(12)
 
     # Platform + frequency
-    fig, axes = plt.subplots(1, 2, figsize=(11, 4))
+    fig, axes = plt.subplots(1, 2, figsize=(12, 5))
     for ax, col, title in zip(axes, [C_PLATFORM, C_FREQ], ["Primary platform", "Usage frequency"]):
         vc = df[col].astype(str).str.strip().value_counts()
         ax.bar(vc.index, vc.values, color=palette[: len(vc)])
@@ -203,7 +210,7 @@ def make_charts(df: pd.DataFrame, scores: dict[str, pd.Series], outdir: Path) ->
     save(fig, "platform_and_frequency.png")
 
     # Discovery + save behaviour
-    fig, axes = plt.subplots(1, 2, figsize=(11, 4))
+    fig, axes = plt.subplots(1, 2, figsize=(12, 5))
     for ax, col, title in zip(axes, [C_DISCOVER, C_SAVE_BEHAVIOUR], ["Discovery source", "Action after liking a song"]):
         vc = df[col].astype(str).str.strip().value_counts()
         ax.bar(vc.index, vc.values, color=palette[: len(vc)])
@@ -214,7 +221,7 @@ def make_charts(df: pd.DataFrame, scores: dict[str, pd.Series], outdir: Path) ->
     save(fig, "discovery_and_saving.png")
 
     # Ordinal distributions
-    fig, axes = plt.subplots(1, 4, figsize=(15, 4))
+    fig, axes = plt.subplots(1, 4, figsize=(16, 5))
     for ax, (label, (col, mapping)) in zip(axes, ORDINAL_MAPS.items()):
         vc = df[col].astype(str).str.strip().value_counts()
         order = [k for k in mapping if k in vc.index]
@@ -226,8 +233,8 @@ def make_charts(df: pd.DataFrame, scores: dict[str, pd.Series], outdir: Path) ->
 
     # Age histogram + box plot of ordinal scores
     ages = pd.to_numeric(df[C_AGE], errors="coerce").dropna()
-    fig, axes = plt.subplots(1, 2, figsize=(10, 4))
-    axes[0].hist(ages, bins=max(4, int(ages.max() - ages.min()) + 1), color="#1DB954", edgecolor="#121212")
+    fig, axes = plt.subplots(1, 2, figsize=(12, 5))
+    axes[0].hist(ages, bins=max(4, int(ages.max() - ages.min()) + 1), color="#7FCB6B", edgecolor="#FFFFFF")
     axes[0].set_title(f"Age (n={len(ages)}, mean={ages.mean():.1f})")
     axes[1].boxplot([scores[k].values for k in scores], tick_labels=list(scores))
     axes[1].set_title("Ordinal score distributions (1–3)")
@@ -244,22 +251,26 @@ def make_charts(df: pd.DataFrame, scores: dict[str, pd.Series], outdir: Path) ->
                 continue
             common = scores[a].index.intersection(scores[b].index)
             mat[i, j] = stats.spearmanr(scores[a].loc[common], scores[b].loc[common]).statistic
-    fig, ax = plt.subplots(figsize=(7, 6))
-    ax.set_facecolor("#18181c")
-    im = ax.imshow(mat, cmap="RdYlGn", vmin=-1, vmax=1, alpha=0.9)
+    fig, ax = plt.subplots(figsize=(11, 4.5))
+    ax.set_facecolor("#FFFFFF")
+    im = ax.imshow(mat, cmap="RdYlGn", vmin=-1, vmax=1, alpha=0.85)
     ax.set_xticks(range(len(keys)), keys, rotation=30, ha="right")
     ax.set_yticks(range(len(keys)), keys)
     ax.set_xticks(np.arange(-0.5, len(keys), 1), minor=True)
     ax.set_yticks(np.arange(-0.5, len(keys), 1), minor=True)
-    ax.grid(which="minor", color="#3a3a42", linestyle="--", linewidth=0.7)
-    ax.tick_params(colors="#c8c8d0", labelsize=8)
-    ax.title.set_color("#f5f5f5")
+    ax.grid(which="minor", color="#D5DFD2", linestyle="-", linewidth=0.9)
+    ax.tick_params(colors=ink_soft, labelsize=12)
+    ax.title.set_color(ink)
+    ax.title.set_fontsize(15)
+    ax.title.set_fontweight("bold")
     for i in range(len(keys)):
         for j in range(len(keys)):
-            ax.text(j, i, f"{mat[i, j]:.2f}", ha="center", va="center", fontsize=9, color="#f5f5f5")
+            ax.text(j, i, f"{mat[i, j]:.2f}", ha="center", va="center",
+                    fontsize=12, color=ink, fontweight="bold")
     cbar = fig.colorbar(im, ax=ax, label="Spearman rho")
-    cbar.ax.yaxis.label.set_color("#a0a0a8")
-    cbar.ax.tick_params(colors="#c8c8d0", labelsize=8)
+    cbar.ax.yaxis.label.set_color(ink_soft)
+    cbar.ax.yaxis.label.set_fontsize(12)
+    cbar.ax.tick_params(colors=ink_soft, labelsize=11)
     ax.set_title("Correlation matrix (Spearman)")
     save(fig, "correlation_heatmap.png")
 
