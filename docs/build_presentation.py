@@ -42,8 +42,10 @@ CHARTS = ROOT / "data" / "charts"
 # --------------------------------------------------------------------------- #
 # Theme — edit here to restyle the whole deck
 # --------------------------------------------------------------------------- #
-WHITE = RGBColor(255, 255, 255)      # pure white slide background
-INK = RGBColor(0, 0, 0)              # every piece of text is black
+WHITE = RGBColor(255, 255, 255)
+BG = WHITE                           # slide background (palette-dependent)
+INK = RGBColor(0, 0, 0)              # ink on the bright boxes
+BG_INK = RGBColor(0, 0, 0)           # ink on the slide background
 BLACK = INK
 DARK = INK
 
@@ -111,11 +113,21 @@ THEME = [
 # are auto-derived for the faint decorative shapes. Dark reference hues are
 # lightened here so black text stays readable on every box.
 PALETTES = {
-    "current":      dict(primary="FFE22E", bridge="5ED6C8", secondary="45C4F8", limit="FF7676"),
-    "yellow_coral": dict(primary="FEF200", bridge="F2D21C", secondary="F7A6A6", limit="E7575D"),
-    "dandadan":     dict(primary="E3F21C", bridge="ADFB70", secondary="13A3B5", limit="B73B36"),
-    "crimson_gold": dict(primary="E5D561", bridge="F2B8C6", secondary="E56595", limit="D11544"),
-    "teal_red":     dict(primary="EDE6E0", bridge="8FC3C9", secondary="E8A0A0", limit="C0504F"),
+    "current":      dict(primary="FFE22E", bridge="5ED6C8", secondary="45C4F8", limit="FF7676",
+                         bg="FFFFFF", ink="000000", bg_ink="000000"),
+    "yellow_coral": dict(primary="FEF200", bridge="F2D21C", secondary="F7A6A6", limit="E7575D",
+                         bg="FFFFFF", ink="000000", bg_ink="000000"),
+    "dandadan":     dict(primary="E3F21C", bridge="ADFB70", secondary="13A3B5", limit="B73B36",
+                         bg="FFFFFF", ink="000000", bg_ink="000000"),
+    # Tinted companions: pale themed backgrounds + dark, soft ink.
+    "dandadan_tinted": dict(primary="E3F21C", bridge="ADFB70", secondary="13A3B5", limit="B73B36",
+                            bg="F2F7EA", ink="14201A", bg_ink="1B2C24"),
+    "crimson_gold": dict(primary="E5D561", bridge="F2B8C6", secondary="E56595", limit="D11544",
+                         bg="FFFFFF", ink="000000", bg_ink="000000"),
+    "crimson_gold_tinted": dict(primary="E5D561", bridge="F2B8C6", secondary="E56595", limit="D11544",
+                                bg="FBF3E9", ink="2A1820", bg_ink="3A1F2B"),
+    "teal_red":     dict(primary="EDE6E0", bridge="8FC3C9", secondary="E8A0A0", limit="C0504F",
+                         bg="FFFFFF", ink="000000", bg_ink="000000"),
 }
 THEME_ORDER = ("primary", "bridge", "secondary", "secondary", "bridge",
                "primary", "primary", "bridge", "secondary", "secondary",
@@ -134,7 +146,9 @@ def apply_palette(name):
     """Swap every colour role, then rebuild THEME in the same soft order."""
     global SUN, AQUA, BLUE, CORAL, SUN_SOFT, AQUA_SOFT, BLUE_SOFT, CORAL_SOFT
     global THEME, GREEN, CYAN, ORANGE, PURPLE, RED, AMBER, LILAC, SKY, MINT, PEACH, ROSE
+    global BG, INK, BG_INK
     p = PALETTES[name]
+    BG, INK, BG_INK = _rgb(p["bg"]), _rgb(p["ink"]), _rgb(p["bg_ink"])
     SUN, AQUA, BLUE, CORAL = (_rgb(p[k]) for k in
                               ("primary", "bridge", "secondary", "limit"))
     SUN_SOFT, AQUA_SOFT, BLUE_SOFT, CORAL_SOFT = (
@@ -160,9 +174,20 @@ FONT_HERO, FONT_BODY, FONT_META = 36, 20, 20
 FONTS = (FONT_HERO, FONT_BODY)              # the ONLY font sizes allowed
 
 
-def text_color(color):
-    """All typography is black — bright colours belong to shapes, not text."""
-    return INK
+def text_color(color, on_panel=True):
+    """Dark ink in two matching shades: one for boxes, one for the background."""
+    return INK if on_panel else BG_INK
+
+
+def _on_panel(slide, x, y):
+    """True when a text box sits inside an already-drawn bright panel."""
+    for sh in slide.shapes:
+        if sh.shape_type == 1 and sh.auto_shape_type == MSO_SHAPE.ROUNDED_RECTANGLE:
+            l, t = sh.left / 914400, sh.top / 914400
+            w, h = sh.width / 914400, sh.height / 914400
+            if l <= x <= l + w and t <= y <= t + h:
+                return True
+    return False
 
 W, H = 13.333, 7.5
 
@@ -273,6 +298,7 @@ def circle(slide, x, y, d, fill):
 
 def text(slide, x, y, w, h, value, size=FONT_BODY, color=T_BODY, bold=False,
          align=PP_ALIGN.LEFT, valign=MSO_ANCHOR.TOP, italic=False):
+    on_panel = _on_panel(slide, x, y)
     tb = slide.shapes.add_textbox(Inches(x), Inches(y), Inches(w), Inches(h))
     tf = tb.text_frame
     tf.word_wrap = True
@@ -288,7 +314,7 @@ def text(slide, x, y, w, h, value, size=FONT_BODY, color=T_BODY, bold=False,
         r.font.size = Pt(fs(size))
         r.font.bold = bool(bold and fs(size) == FONT_HERO)
         r.font.italic = italic
-        r.font.color.rgb = text_color(color)
+        r.font.color.rgb = text_color(color, on_panel)
         r.font.name = "Calibri"
     pt = fs(size)
     tb.height = Inches(fit_height(h, w, [(p, pt, 1) for p in str(value).split("\n")]))
@@ -296,6 +322,7 @@ def text(slide, x, y, w, h, value, size=FONT_BODY, color=T_BODY, bold=False,
 
 
 def bullets(slide, x, y, w, h, items, color=T_BODY, accent=T_AMBER, gap=6):
+    on_panel = _on_panel(slide, x, y)
     tb = slide.shapes.add_textbox(Inches(x), Inches(y), Inches(w), Inches(h))
     tf = tb.text_frame
     tf.word_wrap = True
@@ -303,10 +330,10 @@ def bullets(slide, x, y, w, h, items, color=T_BODY, accent=T_AMBER, gap=6):
         p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
         b = p.add_run(); b.text = "●  "
         b.font.size = Pt(FONT_META if len(item) > 48 else FONT_BODY)
-        b.font.color.rgb = text_color(accent or color); b.font.name = "Calibri"
+        b.font.color.rgb = text_color(accent or color, on_panel); b.font.name = "Calibri"
         r = p.add_run(); r.text = item
         r.font.size = Pt(FONT_META if len(item) > 48 else FONT_BODY)
-        r.font.color.rgb = text_color(color); r.font.name = "Calibri"
+        r.font.color.rgb = text_color(color, on_panel); r.font.name = "Calibri"
         p.space_after = Pt(gap)
     paras = [("●  " + item, FONT_META if len(item) > 48 else FONT_BODY, gap)
              for item in items]
@@ -385,8 +412,8 @@ VINYL_SPOTS = ((W - 0.9, 1.1), (1.0, H - 0.8), (W - 0.9, H - 0.8), (0.8, 1.2))
 def decorate(slide, index: int) -> RGBColor:
     box_color, deco_color, accent = THEME[(index - 1) % len(THEME)]
 
-    # Pure white background.
-    bg = shape(slide, MSO_SHAPE.RECTANGLE, 0, 0, W, H, WHITE)
+    # Background fill comes from the chosen palette.
+    bg = shape(slide, MSO_SHAPE.RECTANGLE, 0, 0, W, H, BG)
     bg.line.fill.background()
 
     # Bold accent stripe down the left edge.
