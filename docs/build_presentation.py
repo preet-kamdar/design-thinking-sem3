@@ -816,17 +816,17 @@ def s16(prs):
     s, a = new(prs, 16)
     header(s, 16, "Testing and validation", "Paired design · timed tasks · SUS", a)
     x = 0.7
-    # One colour for the numbered steps — four different colours read as
-    # rainbow vomit. Slide 17 keeps its own colouring, which reads fine.
+    # All four step badges share the bridge green; the arrows match so the
+    # sequence reads as one flow. (Slide 17 uses the blue instead.)
     for i, (n, label) in enumerate([("1", "Recruit"), ("2", "3 tasks"),
                                     ("3", "SUS form"), ("4", "Analyse")]):
-        circle(s, x + 0.42, 2.0, 0.75, GREEN)
+        circle(s, x + 0.42, 2.0, 0.75, AQUA)
         centered_text(s, x + 0.42, 2.0, 0.75, 0.75, n,
                       size=FONT_BODY, color=DARK, bold=True)
         centered_text(s, x, 2.9, 1.6, 0.4, label,
                       size=FONT_META, color=WHITE, bold=True)
         if i < 3:
-            arrow(s, x + 1.72, 2.23, 0.55, 0.28, GREEN)
+            arrow(s, x + 1.72, 2.23, 0.55, 0.28, AQUA)
         x += 2.4
     box(s, 0.7, 3.7, 5.7, 2.8, PANEL)
     text(s, 1.0, 3.95, 5.1, 0.28, "MEASURES", size=FONT_META, color=T_AMBER, bold=True)
@@ -846,9 +846,9 @@ def s17(prs):
     header(s, 17, "Results and iterations", "Three changes driven by testing and reflection", a)
     y = 1.95
     for n, title, body, c in [
-        ("1", "Per-platform adapters", "Single selector broke on YouTube Music; split into one adapter per site.", GREEN),
+        ("1", "Per-platform adapters", "Single selector broke on YouTube Music; split into one adapter per site.", CYAN),
         ("2", "Companion dashboard", "Saved songs had no view; added a SQLite-backed library.", CYAN),
-        ("3", "Usage logging + consent", "Testing needed real measurement; added events and a tracking toggle.", ORANGE),
+        ("3", "Usage logging + consent", "Testing needed real measurement; added events and a tracking toggle.", CYAN),
     ]:
         box(s, 0.7, y, 11.9, 1.4, PANEL)
         circle(s, 0.95, y + 0.32, 0.72, c)
