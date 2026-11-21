@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""Generate a realistic folded-paper crease texture for the crease trial.
+"""Generate a folded-paper crease texture matching the reference photo.
 
-A real crease is NOT a straight line: it is a soft band of shadow with a
-companion highlight, it bends slightly, and it fades in and out along its
-length. This script paints several such bands over the official pale-lime
-background and saves an opaque PNG sized for a 16:9 slide.
+The reference (crease.jpg) is a poster folded into thirds: creases run at
+roughly 1/3 and 2/3 in BOTH directions. Each crease is not a hard line but a
+soft band — a dark shadow gradient on one side, a lighter highlight on the
+other — that bends slightly and breaks/fades along its length. This script
+recreates that exact structure over the official pale-lime slide background.
 """
 from pathlib import Path
 
@@ -17,48 +18,47 @@ BG = np.array([0xF2, 0xF7, 0xEA], dtype=float)   # official pale-lime background
 yy, xx = np.mgrid[0:H, 0:W].astype(float)
 
 
-def crease_band(x0, y0, angle_deg, length, seed,
-                dark_w=10, dark_a=0.20, light_w=16, light_a=0.30,
-                core_w=1.6, core_a=0.28):
-    """Return an RGB-adjustment array for one wavy, fading crease band."""
-    ang = np.deg2rad(angle_deg)
-    ux, uy = np.cos(ang), np.sin(ang)          # along the crease
-    vx, vy = -uy, ux                            # perpendicular to it
+def fold_band(centre, span, axis, seed, w_shadow=24, w_light=32,
+              a_dark=0.85, a_light=0.80, bend_amp=8, gaps=True):
+    """One soft, wavy, breaking fold band perpendicular to ``axis``.
 
-    dx, dy = xx - x0, yy - y0
-    t = dx * ux + dy * uy                       # distance along
-    n = dx * vx + dy * vy                       # signed distance across
+    Returns an RGB adjustment array. ``axis`` is 'x' for a vertical crease
+    (varying across x, running down y) or 'y' for a horizontal crease.
+    """
+    along, across = (yy, xx) if axis == "x" else (xx, yy)
+    a0 = centre
 
-    # Gentle bend: a low-frequency sine plus a slow drift.
-    bend = np.sin(t / 230.0 + seed) * 11 + np.sin(t / 90.0 + seed * 2) * 3
-    wob = np.sin(t / 37.0 + seed * 3) * 1.4     # slight local wobble
-    n = n - bend - wob
+    # Gentle bend + slow wobble so the crease is never ruler-straight.
+    bend = (np.sin(along / 260.0 + seed) * bend_amp +
+            np.sin(along / 95.0 + seed * 2) * (bend_amp * 0.35))
+    n = (across - a0) - bend
 
-    # Fade the band in/out along its length so it breaks, not a ruler line.
-    fade = np.clip(1 - (np.abs(t) / (length / 2)) ** 3, 0, 1)
-    for gap_t in (-length * 0.22, length * 0.18):
-        fade *= np.clip(np.abs(t - gap_t) / 70.0, 0.18, 1)
+    # Fade at the ends; optionally add 2 gaps where the fold pressure eased.
+    fade = np.clip(1 - (np.abs(along - span / 2) / (span / 2)) ** 4, 0, 1)
+    if gaps:
+        for g in (span * 0.31, span * 0.70):
+            fade *= np.clip(np.abs(along - g) / 55.0, 0.12, 1)
 
-    shadow = np.where(n < 0, np.exp(-((n) / dark_w) ** 2), 0) * dark_a
-    highlight = np.where(n > 0, np.exp(-((n) / light_w) ** 2), 0) * light_a
-    core = np.exp(-((n) / core_w) ** 2) * core_a
+    shadow = np.where(n < 0, np.exp(-((n) / w_shadow) ** 2), 0)
+    highlight = np.where(n > 0, np.exp(-((n) / w_light) ** 2), 0)
+    core = np.exp(-((n) / 2.2) ** 2)
 
     adj = np.zeros((H, W, 3), dtype=float)
-    adj += np.array([-26.0, -22.0, -18.0])[None, None, :] * (shadow / dark_a)[..., None]
-    adj += np.array([10.0, 9.0, 6.0])[None, None, :] * (highlight / light_a)[..., None]
-    adj += np.array([-20.0, -17.0, -14.0])[None, None, :] * (core / core_a)[..., None]
-    adj *= fade[..., None]
-    return adj
+    adj += np.array([-46.0, -40.0, -34.0])[None, None, :] * (shadow * a_dark)[..., None]
+    adj += np.array([20.0, 18.0, 13.0])[None, None, :] * (highlight * a_light)[..., None]
+    adj += np.array([-30.0, -26.0, -22.0])[None, None, :] * (core * 0.7)[..., None]
+    return adj * fade[..., None]
 
 
-# A handful of folds at different angles, like a poster folded into thirds and
-# opened again. Overlapping wavy bands give the "shades of lines" look.
+# Tri-fold layout: creases at 1/3 and 2/3 of each dimension, matching the
+# reference poster. Vertical folds are a touch stronger (they read clearly in
+# a photo); horizontal folds are softer. Positions deviate slightly from exact
+# thirds, as real folds do.
 bands = [
-    crease_band(W * 0.32, H * 0.50, 73, H * 1.5, 1, dark_a=0.22, light_a=0.34),
-    crease_band(W * 0.67, H * 0.46, 108, H * 1.5, 2, dark_a=0.20, light_a=0.30),
-    crease_band(W * 0.50, H * 0.52, 4, W * 1.4, 3, dark_a=0.16, light_a=0.24),
-    crease_band(W * 0.18, H * 0.30, 96, H * 1.2, 4, dark_a=0.13, light_a=0.20),
-    crease_band(W * 0.80, H * 0.75, 84, H * 1.2, 5, dark_a=0.13, light_a=0.20),
+    fold_band(W / 3 - 8, H, "x", 1, a_dark=0.34, a_light=0.46, bend_amp=8),
+    fold_band(2 * W / 3 + 11, H, "x", 2, a_dark=0.30, a_light=0.42, bend_amp=7),
+    fold_band(H / 3 + 6, W, "y", 3, a_dark=0.26, a_light=0.36, bend_amp=6),
+    fold_band(2 * H / 3 - 9, W, "y", 4, a_dark=0.24, a_light=0.34, bend_amp=6),
 ]
 
 img = np.broadcast_to(BG, (H, W, 3)).copy()
