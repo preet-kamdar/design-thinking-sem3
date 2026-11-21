@@ -10,7 +10,7 @@ Memorise the **bold** values. Full detail: `docs/design_thinking_artefacts.md`,
 "A Chrome extension that adds a personalisation side panel to Spotify, YouTube Music and
 Apple Music, plus a responsive Flask dashboard backed by SQLite. Its core features are
 Discover with three familiarity levels, Find by Vibe, and a saved-song library. Its design
-was driven by a **29-response** survey and validated with usage logging and a SUS study."
+was driven by a **29-response** survey and checked with usage logging and one author pilot."
 
 ---
 
@@ -125,6 +125,10 @@ This is a documented limitation.
 **Q: What is SUS and how is it scored?**
 System Usability Scale — 10 items, 1–5. Odd items contribute (response − 1), even items
 (5 − response); sum × **2.5** gives 0–100. **68** is the average benchmark.
+
+**Q: Did you run the study?** One author pilot: three tasks (46.6 / 27.0 / 23.4 s, all
+completed) and one SUS self-rating of **35.0**. It verifies the logging; it is not a
+participant result (§10.3).
 
 **Q: What usage data does the prototype record?**
 Page views, saves, preference changes, task start events, and per-task duration, clicks,

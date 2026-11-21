@@ -204,8 +204,9 @@ Built-in measurement: `usage_events` (views, saves, preferences, task events) an
 Study instrument: `webapp/templates/study.html` — three timed tasks and a 10-item SUS
 form. Results are written to SQLite and readable through `/api/summary`.
 
-**Current status:** the study page and logging are built; participant runs are still
-being collected. Do not report SUS or task results until real participants have run them.
+**Current status:** the study page and logging are built. One author pilot verified the
+pipeline (three tasks: 46.6 / 27.0 / 23.4 s, all completed; SUS self-rating 35.0), but no
+participant study was completed, so no SUS result or task-time effect is claimed (§10.3).
 
 ---
 

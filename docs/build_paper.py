@@ -350,11 +350,13 @@ def main():
            "one-sample t-test. Assumption checks (normality, outliers) and effect sizes will be "
            "reported alongside p-values and confidence intervals.")
     h(doc, "10.3 Results status", 2)
-    p(doc, "The study instrument and logging are implemented, but participant runs were still being "
-           "collected at the time of writing. Therefore no SUS score or task-time result is claimed "
-           "in this paper. [Insert the following once real runs are complete: number of participants, "
-           "median times for both methods, test statistic, p-value, 95% CI, effect size, mean SUS "
-           "and interpretation.]")
+    p(doc, "No participant usability study was completed, so this paper claims no SUS result and no "
+           "task-time effect. A single author pilot was run afterwards to verify that the instrument "
+           "works: three timed tasks (46.6 s, 27.0 s and 23.4 s; all completed) and one SUS "
+           "self-rating of 35.0 were written to SQLite. Because this is one self-assessment by the "
+           "designer, it is reported as a system check, not as usability evidence. Proper paired "
+           "runs with real participants, with test statistics, confidence intervals and effect "
+           "sizes, remain future work.")
     h(doc, "10.4 Improvements made during iteration", 2)
     bullets(doc, [
         "Track detection was split from one file into three platform adapters after YouTube Music's DOM broke the shared selector.",

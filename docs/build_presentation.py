@@ -844,7 +844,9 @@ def s16(prs):
     box(s, 6.7, 3.7, 5.9, 2.8, PANEL2)
     text(s, 7.0, 3.95, 5.3, 0.28, "RESULTS STATUS", size=FONT_META, color=GREEN, bold=True)
     text(s, 7.0, 4.4, 5.3, 1.8,
-         "Instrument and logging are built.\n\nParticipant runs still being collected — add real SUS and task numbers.",
+         "One author pilot: 46.6 / 27.0 / 23.4 s,\n"
+         "all completed; SUS self-rating 35.0.\n"
+         "System check only — no participant result.",
          size=FONT_BODY, color=WHITE)
     footer(s, 16, a)
 
@@ -866,7 +868,7 @@ def s17(prs):
         text(s, 1.9, y + 0.68, 10.2, 0.55, body, size=FONT_META, color=MUTED)
         y += 1.53
     text(s, 0.7, 6.7, 11.9, 0.25,
-         "Add measured SUS and task-time changes once real runs are complete.",
+         "A single author pilot verified the logging; real participant runs remain future work.",
          size=FONT_META, color=MUTED, italic=True)
     footer(s, 17, a)
 

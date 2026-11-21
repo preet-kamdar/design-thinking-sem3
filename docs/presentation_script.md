@@ -136,22 +136,23 @@ no login, no external API. Let me demonstrate [open /discover, save a song, show
 ---
 
 ### Slide 16 — Testing and validation
-**On slide:** Paired design · timed tasks · SUS · tests chosen · [insert results once collected].
+**On slide:** Paired design · timed tasks · SUS · tests chosen · one author pilot.
 **Say:** "Testing uses the same participants on both methods — a paired design. The study
 page times three tasks and counts clicks and errors, then computes a SUS score out of 100.
 For time we will use a Wilcoxon signed-rank test if data are non-normal, otherwise a paired
-t-test; for SUS a one-sample t-test against 68. **[Insert actual participant count, test
-statistic, p-value and confidence interval here once runs are complete.]**"
+t-test; for SUS a one-sample t-test against 68. I ran one author pilot to check the
+instrument: 46.6, 27.0 and 23.4 seconds, all completed, and a self-rating of 35.0. That is a
+system check, not validation evidence."
 
 ---
 
 ### Slide 17 — Results and iterations
-**On slide:** Three improvements made; before/after numbers [fill after testing].
+**On slide:** Three improvements made; one author pilot verified the logging.
 **Say:** "Iteration one: we split track detection into per-platform adapters after the
 single-file version broke on YouTube Music's changing DOM. Iteration two: we added a
 companion dashboard because saved songs existed in extension storage but had no view.
 Iteration three: we added explicit usage logging and a consent toggle so testing is based
-on measurement. **[Add SUS and task-time changes from real testing here.]**"
+on measurement. The pilot confirmed that task times, clicks and the SUS score are stored, though real participant runs remain future work."
 
 ---
 

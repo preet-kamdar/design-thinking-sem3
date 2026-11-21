@@ -28,4 +28,4 @@ Then open the paper, point, and answer in your own words.
 
 1. "n = 29, below the target of 30 — reported honestly, nothing fabricated."
 2. "No correlation is significant; strongest is 0.324, p .087. Directional only."
-3. "No SUS score or task-time result is claimed — the instrument was built, runs were incomplete. §10.3."
+3. "One author pilot: 46.6 / 27.0 / 23.4 s, SUS self-rating 35.0 — a system check, not validation. No participant result is claimed. §10.3."

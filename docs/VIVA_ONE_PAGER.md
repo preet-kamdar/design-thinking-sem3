@@ -89,7 +89,9 @@ One-sample t-tests vs neutral 2, two-tailed, df = 28:
 | 2-second polling, not MutationObserver | Hosts are single-page apps that rebuild the DOM; polling is simpler and reliable |
 | Single contributor | Brief assumes five roles; all consolidated and disclosed — no fabricated team or data |
 
-**Not done / pending:** real recommendation model (rule-based demo dictionary), Understand section, offline downloads, cross-platform sync. **No SUS score and no task-time result are claimed** — the study page was built and instrumented, but participant runs were still being collected (paper §10.3, slides 16–17).
+**One author pilot (system check, not validation):** three timed tasks — Discover **46.6 s**, Vibe **27.0 s**, Retrieve **23.4 s** — all completed, **5 / 3 / 0** clicks, **0** errors, plus one SUS self-rating of **35.0 / 100**. Stored in SQLite (`test_tasks` + a `sus_score` event). n=1 by the designer, so this is **not** usability evidence and no participant result is claimed (§10.3).
+
+**Not done / pending:** real recommendation model (rule-based demo dictionary), Understand section, offline downloads, cross-platform sync, and a proper paired study with real participants (SUS, effect sizes, CIs).
 
 ---
 

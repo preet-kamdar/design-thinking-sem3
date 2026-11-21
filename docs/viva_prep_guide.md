@@ -118,10 +118,7 @@ Learn one "hook sentence" per section. If asked about any section, start with it
 > six as weak and directional only — no claim of significance or causation."
 
 **"Where is your actual usability result?"**
-> "I built and instrumented the study page — timed tasks, clicks, errors and the
-> SUS form — but participant runs were still being collected when I wrote the
-> paper. So I explicitly do not claim a SUS score or a task-time result. Section
-> 10.3 says exactly that."
+> "I built and instrumented the study page — timed tasks, clicks, errors and the SUS form — and then ran one author pilot: 46.6, 27.0 and 23.4 seconds, all completed, with a SUS self-rating of 35.0. That verifies the logging, but it is one biased self-assessment by the designer, so I do not claim a participant SUS result or a task-time effect. Section 10.3 says exactly that."
 
 ---
 
@@ -246,8 +243,8 @@ Use these fallback sentences. They are honest and always true:
   Google Forms export; I can point you to the exact row in `statistical_results.md`."
 - **On any code line:** "That's the browser half / server half of the same flow:
   click → API → SQLite → template → page."
-- **On a missing result:** "I instrumented that rather than fabricating a result.
-  Section 10.3 states the runs were still being collected."
+- **On a missing participant result:** "I ran one author pilot to verify the instrument,
+  but no participant study was completed. Section 10.3 says exactly that."
 - **On working alone:** "I consolidated the five brief roles into one contributor
   and disclosed every reduction in Appendix D. No data was invented."
 - **If you genuinely don't know:** "I'm not certain about that detail; the file to
