@@ -11,11 +11,13 @@ Design system
   green text inks, soft cream-yellow / green / teal boxes, dark red only for
   limitations. ONE 3pt dark border per box. The five real survey charts are
   placed full-width on their own evidence slides, never squeezed into a corner.
-* Subtle vinyl records appear on a curated set of slides, placed at slide
-  level (never pinned to a box corner). Only the bottom-right slide number is
-  shown.
+* Subtle vinyl records appear on a curated set of slides, each placed by hand
+  in empty space or behind an opaque box so they never cover text. Only the
+  bottom-right slide number is shown. Text is vertically centred in its box.
 * Charts are generated with grids and large labels by
   webapp/analysis/analysis.py.
+* ``--crease`` builds a trial copy with folded-paper background creases; the
+  official deck is unchanged by that flag.
 
 Extending
 ---------
@@ -46,6 +48,8 @@ CHARTS = ROOT / "data" / "charts"
 # Theme — edit here to restyle the whole deck
 # --------------------------------------------------------------------------- #
 WHITE = RGBColor(255, 255, 255)
+CREASE = False                       # --crease adds trial folded-paper folds
+CREASE_DARK = RGBColor(214, 227, 205)
 BG = WHITE                           # slide background (palette-dependent)
 INK = RGBColor(0, 0, 0)              # ink on the bright boxes
 BG_INK = RGBColor(0, 0, 0)           # ink on the slide background
@@ -294,7 +298,7 @@ def circle(slide, x, y, d, fill):
 
 
 def text(slide, x, y, w, h, value, size=FONT_BODY, color=T_BODY, bold=False,
-         align=PP_ALIGN.LEFT, valign=MSO_ANCHOR.TOP, italic=False):
+         align=PP_ALIGN.LEFT, valign=MSO_ANCHOR.MIDDLE, italic=False):
     on_panel = _on_panel(slide, x, y)
     tb = slide.shapes.add_textbox(Inches(x), Inches(y), Inches(w), Inches(h))
     tf = tb.text_frame
@@ -315,6 +319,29 @@ def text(slide, x, y, w, h, value, size=FONT_BODY, color=T_BODY, bold=False,
         r.font.name = "Calibri"
     pt = fs(size)
     tb.height = Inches(fit_height(h, w, [(p, pt, 1) for p in str(value).split("\n")]))
+    return tb
+
+
+def centered_text(slide, x, y, w, h, value, size=FONT_BODY, color=T_BODY,
+                  bold=False):
+    """Pin text to the exact centre of a rectangle (no height auto-growth)."""
+    on_panel = _on_panel(slide, x, y)
+    tb = slide.shapes.add_textbox(Inches(x), Inches(y), Inches(w), Inches(h))
+    tf = tb.text_frame
+    tf.word_wrap = True
+    tf.vertical_anchor = MSO_ANCHOR.MIDDLE
+    tf.margin_left = tf.margin_right = Inches(0.02)
+    tf.margin_top = tf.margin_bottom = 0
+    for i, part in enumerate(str(value).split("\n")):
+        p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
+        p.alignment = PP_ALIGN.CENTER
+        p.space_after = Pt(0)
+        r = p.add_run()
+        r.text = part
+        r.font.size = Pt(fs(size))
+        r.font.bold = bool(bold and fs(size) == FONT_HERO)
+        r.font.color.rgb = text_color(color, on_panel)
+        r.font.name = "Calibri"
     return tb
 
 
@@ -363,8 +390,8 @@ def stat_card(slide, x, y, w, h, big, label, accent):
 def feature_card(slide, x, y, w, h, tag, title, body, accent):
     box(slide, x, y, w, h, PANEL)
     circle(slide, x + 0.22, y + 0.22, 0.42, accent)
-    text(slide, x + 0.22, y + 0.28, 0.42, 0.3, tag, size=FONT_META, color=DARK,
-         bold=True, align=PP_ALIGN.CENTER)
+    centered_text(slide, x + 0.22, y + 0.22, 0.42, 0.42, tag,
+                  size=FONT_META, color=DARK, bold=True)
     text(slide, x + 0.78, y + 0.22, w - 0.95, 0.4, title, size=FONT_BODY, color=WHITE, bold=True)
     text(slide, x + 0.28, y + 0.8, w - 0.55, h - 0.9, body, size=FONT_META, color=MUTED)
 
@@ -373,7 +400,7 @@ def arrow(slide, x, y, w=0.5, h=0.3, color=GREEN):
     return shape(slide, MSO_SHAPE.RIGHT_ARROW, x, y, w, h, color)
 
 
-def chart_frame(slide, x, y, w, h, filename, pad=0.16):
+def chart_frame(slide, x, y, w, h, filename, pad=0.05):
     """White framed panel with the generated chart fitted inside, full size."""
     frame = shape(slide, MSO_SHAPE.ROUNDED_RECTANGLE, x, y, w, h, WHITE, INK)
     frame.line.width = Pt(2.5)
@@ -422,12 +449,29 @@ def vinyl_record(slide, cx, cy, d, label_color):
     set_opacity(hole, 70)
 
 
-# Records are an occasional motif, not wallpaper: a curated set spread across
-# the deck. Sparse bookends get a larger disc; elsewhere it is smaller and
-# sits behind content so it never competes with a chart.
-VINYL_SLIDES = {1, 4, 6, 9, 12, 15, 18, 20}
-VINYL_BOOKENDS = {1, 20}
-VINYL_SPOTS = ((W - 0.9, 1.1), (1.0, H - 0.8), (W - 0.9, H - 0.8), (0.8, 1.2))
+def paper_creases(slide):
+    """Trial-only folded-paper creases laid over the pale background."""
+    for x, y, angle in ((3.4, -6.5, 22), (9.6, -6.5, -19), (6.2, -7.5, 6)):
+        for off, col, op in ((0.0, CREASE_DARK, 12), (0.05, WHITE, 45)):
+            fold = shape(slide, MSO_SHAPE.RECTANGLE, x + off, y, 0.014, 19, col)
+            fold.line.fill.background()
+            fold.rotation = angle
+            set_opacity(fold, op)
+
+
+# Records are an occasional motif, never wallpaper. Each placement is chosen
+# by hand: either in genuinely empty space, or tucked behind an opaque box so
+# only a sliver shows. A disc never sits over text — boxes are drawn after it.
+# (slide -> centre x, centre y, diameter)
+VINYL_SPOTS = {
+    1:  (13.0, 1.4, 2.0),   # top-right corner, clear of the title block
+    4:  (12.4, 5.4, 1.5),   # peeks out beside the method / takeaway boxes
+    6:  (1.1, 5.6, 1.5),    # peeks out below the honest-reading box
+    12: (12.4, 2.4, 1.5),   # behind the POV box, right edge only
+    15: (12.4, 5.9, 1.5),   # behind the feature strip
+    18: (1.1, 2.5, 1.5),    # behind the benefits box, left edge only
+    20: (12.2, 4.8, 2.0),   # empty right of the references list
+}
 
 
 def decorate(slide, index: int) -> RGBColor:
@@ -436,15 +480,16 @@ def decorate(slide, index: int) -> RGBColor:
     # Background fill comes from the chosen palette.
     bg = shape(slide, MSO_SHAPE.RECTANGLE, 0, 0, W, H, BG)
     bg.line.fill.background()
+    if CREASE:
+        paper_creases(slide)
 
     # Bold accent stripe down the left edge.
     shape(slide, MSO_SHAPE.RECTANGLE, 0, 0, 0.20, H, accent)
 
-    # One subtle record on curated slides, at an edge that varies across the
-    # deck. Drawn before content, so charts/boxes always sit above it.
-    if index in VINYL_SLIDES:
-        cx, cy = VINYL_SPOTS[(index - 1) % len(VINYL_SPOTS)]
-        d = 2.0 if index in VINYL_BOOKENDS else 1.5
+    # One subtle record per curated slide, placed by hand so it never covers
+    # text. Drawn before content, so boxes always sit above it.
+    if index in VINYL_SPOTS:
+        cx, cy, d = VINYL_SPOTS[index]
         vinyl_record(slide, cx, cy, d, box_color)
 
     # Small confetti dots in the top-right corner.
@@ -507,17 +552,17 @@ def s3(prs):
     feature_card(s, 0.7, 1.95, 3.8, 2.2, "1", "Control familiarity",
                  "Choose Familiar, Balanced or Exploratory recommendations.", GREEN)
     feature_card(s, 4.75, 1.95, 3.8, 2.2, "2", "Rediscover music",
-                 "A personal library makes saved songs easy to find.", a)
+                 "A personal library makes saved songs easy to find.", GREEN)
     feature_card(s, 8.8, 1.95, 3.8, 2.2, "3", "Prove with data",
-                 "Statistics show which pain points the design addresses.", ORANGE)
+                 "Statistics show which pain points the design addresses.", GREEN)
     text(s, 0.7, 4.5, 6, 0.28, "OUTCOMES", size=FONT_META, color=T_AMBER, bold=True)
-    chips = [("Chrome extension", GREEN), ("Flask + SQLite", CYAN),
-             ("Responsive dashboard", ORANGE), ("Re-runnable analysis", PURPLE)]
+    chips = ["Chrome extension", "Flask + SQLite",
+             "Responsive dashboard", "Re-runnable analysis"]
     x = 0.7
-    for label, c in chips:
+    for label in chips:
         box(s, x, 4.9, 2.85, 1.0, PANEL2)
-        text(s, x + 0.1, 5.12, 2.65, 0.45, label, size=FONT_META,
-             color=WHITE, bold=True, align=PP_ALIGN.CENTER)
+        centered_text(s, x, 4.9, 2.85, 1.0, label, size=FONT_META,
+                      color=WHITE, bold=True)
         x += 3.0
     footer(s, 3, a)
 
@@ -608,8 +653,19 @@ def s10(prs):
 def s11(prs):
     s, a = new(prs, 11)
     header(s, 11, "Evidence 5 · correlations", "Spearman rho · n = 18 · critical |r| ≈ 0.468", a)
-    chart_frame(s, 0.7, 1.95, 11.9, 4.3, "correlation_heatmap.png")
-    takeaway(s, 11, "All correlations are weak and non-significant. No causal claims.")
+    # The heatmap is squarer than the other four charts, so it gets a narrower
+    # frame and a reading panel beside it instead of a sea of white space.
+    chart_frame(s, 0.7, 1.95, 7.0, 4.3, "correlation_heatmap.png")
+    box(s, 8.0, 1.95, 4.6, 4.3, PANEL)
+    text(s, 8.3, 2.2, 4.0, 0.3, "READING", size=FONT_META,
+         color=T_AMBER, bold=True)
+    text(s, 8.3, 2.7, 4.0, 3.2,
+         "Every coefficient is weak.\n\n"
+         "None reaches the critical\n"
+         "|r| ≈ 0.468 at n = 18.\n\n"
+         "No causal claims.",
+         size=FONT_BODY, color=MUTED)
+    footer(s, 11, a)
 
 
 def s12(prs):
@@ -643,23 +699,32 @@ def s12(prs):
 
 def s13(prs):
     s, a = new(prs, 13)
-    header(s, 13, "Ideation", "10 ideas · mind map · SWOT", a)
-    box(s, 5.1, 3.25, 3.1, 0.85, GREEN)
-    text(s, 5.1, 3.48, 3.1, 0.4, "PERSONAL MUSIC", size=FONT_META,
-         color=DARK, bold=True, align=PP_ALIGN.CENTER)
-    for x, y, label, c in [(0.7, 1.95, "Discovery", GREEN), (0.7, 3.25, "Mood", CYAN),
-                           (0.7, 4.55, "Library", ORANGE), (9.6, 1.95, "Understanding", PURPLE),
-                           (9.6, 3.25, "Preferences", RED)]:
-        box(s, x, y, 2.9, 0.8, PANEL)
-        text(s, x + 0.2, y + 0.22, 2.5, 0.4, label, size=FONT_BODY, color=WHITE, bold=True)
-        if x < 5:
-            arrow(s, x + 2.95, y + 0.25, 1.4, 0.28, c)
-        else:
-            shape(s, MSO_SHAPE.LEFT_ARROW, x - 1.45, y + 0.25, 1.35, 0.28, c)
-    box(s, 8.6, 4.55, 3.9, 2.35, PANEL)
-    text(s, 8.9, 4.75, 3.3, 0.28, "10 IDEAS", size=FONT_META, color=T_AMBER, bold=True)
-    text(s, 8.9, 5.05, 3.3, 1.1,
-         "Slider · Vibe tags · Library\nPreferences · Understand\nAI chatbot · Ad blocker",
+    header(s, 13, "Ideation", "10 generated ideas · one mind map", a)
+    # One central topic, five branches in an even row, and a full-width idea
+    # list below — the old scattered layout left most of the slide empty.
+    box(s, 4.85, 1.95, 3.6, 0.85, GREEN)
+    centered_text(s, 4.85, 1.95, 3.6, 0.85, "PERSONAL MUSIC EXPERIENCE",
+                  size=FONT_META, color=DARK, bold=True)
+    branches = ["Discovery", "Mood", "Library", "Understanding", "Preferences"]
+    x = 0.7
+    for label in branches:
+        box(s, x, 3.35, 2.2, 0.8, PANEL)
+        centered_text(s, x, 3.35, 2.2, 0.8, label,
+                      size=FONT_BODY, color=WHITE, bold=True)
+        shape(s, MSO_SHAPE.DOWN_ARROW, x + 1.0, 2.82, 0.2, 0.5, GREEN)
+        x += 2.42
+    box(s, 0.7, 4.65, 11.9, 2.05, PANEL)
+    text(s, 1.0, 4.85, 11.2, 0.3, "10 IDEAS", size=FONT_META,
+         color=T_AMBER, bold=True)
+    text(s, 1.0, 5.25, 5.4, 1.35,
+         "1  Familiar/Balanced/Exploratory slider\n"
+         "2  Vibe-tag browser  ·  3  Save button\n"
+         "4  Library page  ·  5  Track context",
+         size=FONT_META, color=MUTED)
+    text(s, 6.8, 5.25, 5.4, 1.35,
+         "6  Preference panel  ·  7  Usage logging\n"
+         "8  Understand panel  ·  9  AI chatbot\n"
+         "10  In-app ad blocker",
          size=FONT_META, color=MUTED)
     footer(s, 13, a)
 
@@ -716,15 +781,17 @@ def s16(prs):
     s, a = new(prs, 16)
     header(s, 16, "Testing and validation", "Paired design · timed tasks · SUS", a)
     x = 0.7
-    for i, (n, label, c) in enumerate([("1", "Recruit", RED), ("2", "3 tasks", ORANGE),
-                                       ("3", "SUS form", CYAN), ("4", "Analyse", GREEN)]):
-        circle(s, x + 0.42, 2.0, 0.75, c)
-        text(s, x + 0.42, 2.16, 0.75, 0.4, n, size=FONT_BODY, color=DARK,
-             bold=True, align=PP_ALIGN.CENTER)
-        text(s, x, 2.9, 1.6, 0.4, label, size=FONT_META, color=WHITE,
-             bold=True, align=PP_ALIGN.CENTER)
+    # One colour for the numbered steps — four different colours read as
+    # rainbow vomit. Slide 17 keeps its own colouring, which reads fine.
+    for i, (n, label) in enumerate([("1", "Recruit"), ("2", "3 tasks"),
+                                    ("3", "SUS form"), ("4", "Analyse")]):
+        circle(s, x + 0.42, 2.0, 0.75, GREEN)
+        centered_text(s, x + 0.42, 2.0, 0.75, 0.75, n,
+                      size=FONT_BODY, color=DARK, bold=True)
+        centered_text(s, x, 2.9, 1.6, 0.4, label,
+                      size=FONT_META, color=WHITE, bold=True)
         if i < 3:
-            arrow(s, x + 1.72, 2.23, 0.55, 0.28, c)
+            arrow(s, x + 1.72, 2.23, 0.55, 0.28, GREEN)
         x += 2.4
     box(s, 0.7, 3.7, 5.7, 2.8, PANEL)
     text(s, 1.0, 3.95, 5.1, 0.28, "MEASURES", size=FONT_META, color=T_AMBER, bold=True)
@@ -816,10 +883,13 @@ SLIDE_BUILDERS = [s1, s2, s3, s4, s5, s6, s7, s8, s9, s10,
 
 
 def main():
-    global OUT
+    global OUT, CREASE
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default=None, help="output .pptx path")
+    ap.add_argument("--crease", action="store_true",
+                    help="trial: add a folded-paper crease background")
     args = ap.parse_args()
+    CREASE = args.crease
     apply_palette("official")
     if args.out:
         OUT = Path(args.out)

@@ -169,8 +169,9 @@ def make_charts(df: pd.DataFrame, scores: dict[str, pd.Series], outdir: Path) ->
     def save(fig, filename: str):
         p = outdir / filename
         fig.patch.set_facecolor("#FFFFFF")
-        fig.tight_layout(pad=1.4)
-        fig.savefig(p, dpi=150, facecolor=fig.get_facecolor())
+        fig.tight_layout(pad=0.5)
+        fig.savefig(p, dpi=150, facecolor=fig.get_facecolor(),
+                    bbox_inches="tight", pad_inches=0.12)
         plt.close(fig)
         paths.append(str(p))
 
@@ -187,16 +188,16 @@ def make_charts(df: pd.DataFrame, scores: dict[str, pd.Series], outdir: Path) ->
         for spine in ax.spines.values():
             spine.set_color("#C9D4C2")
             spine.set_linewidth(1.0)
-        ax.tick_params(colors=ink_soft, labelsize=11)
+        ax.tick_params(colors=ink_soft, labelsize=16)
         ax.title.set_color(ink)
-        ax.title.set_fontsize(15)
+        ax.title.set_fontsize(21)
         ax.title.set_fontweight("bold")
         if ax.get_ylabel():
             ax.yaxis.label.set_color(ink_soft)
-            ax.yaxis.label.set_fontsize(12)
+            ax.yaxis.label.set_fontsize(15)
         if ax.get_xlabel():
             ax.xaxis.label.set_color(ink_soft)
-            ax.xaxis.label.set_fontsize(12)
+            ax.xaxis.label.set_fontsize(15)
 
     # Platform + frequency
     fig, axes = plt.subplots(1, 2, figsize=(12, 5))
@@ -259,18 +260,18 @@ def make_charts(df: pd.DataFrame, scores: dict[str, pd.Series], outdir: Path) ->
     ax.set_xticks(np.arange(-0.5, len(keys), 1), minor=True)
     ax.set_yticks(np.arange(-0.5, len(keys), 1), minor=True)
     ax.grid(which="minor", color="#D5DFD2", linestyle="-", linewidth=0.9)
-    ax.tick_params(colors=ink_soft, labelsize=12)
+    ax.tick_params(colors=ink_soft, labelsize=15)
     ax.title.set_color(ink)
-    ax.title.set_fontsize(15)
+    ax.title.set_fontsize(21)
     ax.title.set_fontweight("bold")
     for i in range(len(keys)):
         for j in range(len(keys)):
             ax.text(j, i, f"{mat[i, j]:.2f}", ha="center", va="center",
-                    fontsize=12, color=ink, fontweight="bold")
+                    fontsize=15, color=ink, fontweight="bold")
     cbar = fig.colorbar(im, ax=ax, label="Spearman rho")
     cbar.ax.yaxis.label.set_color(ink_soft)
-    cbar.ax.yaxis.label.set_fontsize(12)
-    cbar.ax.tick_params(colors=ink_soft, labelsize=11)
+    cbar.ax.yaxis.label.set_fontsize(15)
+    cbar.ax.tick_params(colors=ink_soft, labelsize=14)
     ax.set_title("Correlation matrix (Spearman)")
     save(fig, "correlation_heatmap.png")
 
