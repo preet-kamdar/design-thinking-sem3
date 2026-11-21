@@ -33,8 +33,8 @@ See `docs/statistical_results.md` for the full tables and tests.
 
 ### Target users
 Students and young adults (survey age range 18–30, median 19) who use music streaming
-at least several times a week (78% of respondents). 78% name Spotify as their primary
-platform; 17% YouTube Music. Apple Music was not represented in the sample.
+at least several times a week (84% of respondents). 64% name Spotify as their primary
+platform; 16% YouTube Music, 12% Other and 8% Apple Music.
 
 ### Empathy map (composite, built from real open-text answers)
 
@@ -42,15 +42,15 @@ platform; 17% YouTube Music. Apple Music was not represented in the sample.
 |---|---|
 | **Says** | "Ads, remove ads" · "Poor recommendations" · "Repetitive recommendations" · "understand my music taste better" · "Organise all my music according to its vibe" · "change different suggestions that differ for mood and not on time" |
 | **Thinks** | "Why is it showing me the same songs again?" · "I liked that track — will I ever find it again?" · "I want music for this mood, not what the algorithm thinks is popular." |
-| **Does** | 78% add a song to a playlist or save/like it. 33% discover new music *outside* the app. 44% sometimes struggle to find songs saved a long time ago. |
-| **Feels** | Annoyed by interruptions (50% mention ads/paywall). Mildly satisfied but not delighted by recommendations: 56% say the app understands their taste only "somewhat", 6% "poorly". |
+| **Does** | 84% add a song to a playlist or save/like it. 32% discover new music *outside* the app. 44% sometimes struggle to find songs saved a long time ago. |
+| **Feels** | Annoyed by interruptions (48% mention ads/paywall). Mildly satisfied but not delighted by recommendations: 44% say the app understands their taste only "somewhat", 8% "poorly". |
 
 ### Key pain points, ranked by evidence
-1. **Ads / paywall — 9/18 (50%)** — highest frequency, but **out of scope** for a client-side utility; recorded as a limitation.
-2. **Recommendations / taste — 8/18 (44%)** — in scope: repetitive, not matching taste, not mood-sensitive.
-3. **Saved-song retrieval — 8/18 (44%) report difficulty** — in scope: the data layer already exists.
-4. **Vibe-finding friction — 8/18 (44%) rate Average or Difficult** — in scope but weaker evidence.
-5. UI/customisation — 3/18 (17%) — future scope.
+1. **Ads / paywall — 12/25 (48%)** — highest frequency, but **out of scope** for a client-side utility; recorded as a limitation.
+2. **Recommendations / taste — 9/25 (36%)** — in scope: repetitive, not matching taste, not mood-sensitive.
+3. **Saved-song retrieval — 11/25 (44%) report difficulty** — in scope: the data layer already exists.
+4. **Vibe-finding friction — 11/25 (44%) rate Average or Difficult** — in scope but weaker evidence.
+5. UI/customisation — 5/25 (20%) — future scope.
 
 ---
 
@@ -60,7 +60,7 @@ platform; 17% YouTube Music. Apple Music was not represented in the sample.
 
 > **Aarav, 19 — B.Tech student, daily Spotify listener**
 > - Listens several hours a day, mostly on mobile/web between classes.
-> - Finds new music through friends and social media rather than inside the app (matches the 33% "outside the app" finding).
+> - Finds new music through friends and social media rather than inside the app (matches the 32% "outside the app" finding).
 > - Saves tracks to playlists but rarely revisits them because search is tedious.
 > - Wants recommendations that match his current mood and feels the app only "somewhat" understands his taste.
 > - Frustrated by ads but knows a free user cannot remove them; wants more control instead.
@@ -89,9 +89,9 @@ One-sample t-tests against neutral (2/3):
 
 | Measure | Mean | t | p | 95% CI | Reading |
 |---|---:|---:|---:|---|---|
-| Vibe-finding ease | 2.50 | 3.43 | 0.003 | [2.19, 2.81] | significantly above neutral |
-| Taste understanding | 2.33 | 2.38 | 0.029 | [2.04, 2.63] | above neutral, but 61% only "somewhat"/"poorly" |
-| Saved retrieval | 2.11 | 0.46 | 0.651 | [1.60, 2.62] | not significantly different |
+| Vibe-finding ease | 2.48 | 3.67 | 0.0012 | [2.21, 2.75] | significantly above neutral |
+| Taste understanding | 2.40 | 3.10 | 0.0049 | [2.13, 2.67] | above neutral, but 52% only "somewhat"/"poorly" |
+| Saved retrieval | 2.12 | 0.59 | 0.5593 | [1.70, 2.54] | not significantly different |
 
 **Honest framing:** the closed questions show a *good-but-not-great* baseline, not a
 broken one. The opportunity is refinement of recommendations and retrieval, backed by
@@ -178,8 +178,8 @@ usage measurement, and a stated limitation on ads.
 - **H₀a:** There is no difference in median retrieval time.
 - **H₁b (taste satisfaction):** Mean rating of "the app understands my taste" is
   higher after using Familiar/Balanced/Exploratory discovery than the survey baseline
-  of 2.33.
-- **H₀b:** Mean rating is unchanged from 2.33.
+  of 2.40.
+- **H₀b:** Mean rating is unchanged from 2.40.
 - **H₁c (usability):** Mean SUS score of the prototype exceeds 68 (above-average benchmark).
 - **H₀c:** Mean SUS score is 68 or lower.
 - Significance level α = 0.05. Paired design (same users try both), Wilcoxon signed-rank

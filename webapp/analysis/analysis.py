@@ -286,6 +286,8 @@ def write_report(df: pd.DataFrame, tests: pd.DataFrame, corrs: pd.DataFrame,
                  chart_paths: list[str], outpath: Path, csv_name: str) -> None:
     n = len(df)
     ages = pd.to_numeric(df[C_AGE], errors="coerce").dropna()
+    age_note = (f" {n - len(ages)} non-numeric age response(s) treated as "
+                "categorical and excluded." if len(ages) < n else "")
     lines = [
         "# Statistical Analysis — Reimagining the Personal Music Experience",
         "",
@@ -297,8 +299,7 @@ def write_report(df: pd.DataFrame, tests: pd.DataFrame, corrs: pd.DataFrame,
         "",
         f"- {n} responses received; all rows retained in the descriptive analysis.",
         f"- Numeric ages: n={len(ages)}, mean={fmt(ages.mean())}, median={fmt(ages.median(), 0)}, "
-        f"SD={fmt(ages.std(ddof=1))}, range={int(ages.min())}-{int(ages.max())}. "
-        "One `18+` response treated as categorical and excluded from numeric age statistics.",
+        f"SD={fmt(ages.std(ddof=1))}, range={int(ages.min())}-{int(ages.max())}." + age_note,
         "- Ordinal coding: Easy / Very well / Daily = 3; Average / Somewhat / Several times a week = 2; "
         "Difficult / Poorly / Occasionally / Sometimes difficult = 1.",
         "- Neutral comparison value = 2 (the middle category).",
@@ -335,7 +336,9 @@ def write_report(df: pd.DataFrame, tests: pd.DataFrame, corrs: pd.DataFrame,
     for _, r in corrs.iterrows():
         lines.append(f"| {r.A} vs {r.B} | {int(r.n)} | {r.Pearson:+.3f} | {r.p_pearson:.4f} | "
                      f"{r.Spearman:+.3f} | {r.p_spearman:.4f} |")
-    crit = 0.468 if n >= 18 else float("nan")
+    df_r = n - 2
+    t_crit = stats.t.ppf(0.975, df_r)
+    crit = t_crit / math.sqrt(t_crit ** 2 + df_r)
     lines += ["", f"Critical |r| at n≈{n}, alpha=0.05 (two-tailed) ≈ {crit:.3f}. "
                "Associations below this are weak and statistically non-significant — describe them as "
                "directional only.", ""]

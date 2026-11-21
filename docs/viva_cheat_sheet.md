@@ -17,8 +17,8 @@ was driven by an **18-response** survey and validated with usage logging and a S
 ## Research & statistics
 
 **Q: What was your sample and sampling method?**
-Convenience sample of students; **n = 18**, ages 18–30 (median **19**). **78% Spotify**,
-17% YouTube Music, one "Other". Below the brief's target of 30 — declared as a limitation.
+Convenience sample of students; **n = 25**, ages 18–30 (median **19**). **64% Spotify**,
+16% YouTube Music, 12% Other, 8% Apple Music. Below the brief's target of 30 — declared as a limitation.
 
 **Q: What question types did you use?**
 Multiple choice (platform, frequency, discovery source, save behaviour), ordinal 1–3 ease
@@ -34,18 +34,18 @@ Pearson **and** Spearman correlations between ordinal variables; 95% confidence 
 Spearman is safer because the data are ordinal and n is small.
 
 **Q: Give me the key results.**
-Taste understanding **mean 2.33, t = 2.38, p = 0.029, CI [2.04, 2.63]** — above neutral.
-Vibe ease **2.50, t = 3.43, p = 0.003**. Saved retrieval **2.11, t = 0.46, p = 0.651** —
-not significant. Correlations weak (ρ ≈ 0.31–0.36), none significant.
+Taste understanding **mean 2.40, t = 3.10, p = 0.0049, CI [2.13, 2.67]** — above neutral.
+Vibe ease **2.48, t = 3.67, p = 0.0012**. Saved retrieval **2.12, t = 0.59, p = 0.559** —
+not significant. One correlation clears the critical 0.396: retrieval ↔ taste ρ = +0.42 (p = 0.038).
 
 **Q: What do those results actually mean?**
 Users are *satisfied but not delighted*. We deliberately do **not** claim a broken
-experience. The gap is that only **39%** say the app understands taste "very well", and
+experience. The gap is that only **48%** say the app understands taste "very well", and
 **44%** sometimes struggle to find old saved songs.
 
 **Q: What is a p-value / confidence interval?**
 p-value: probability of data this extreme if the null were true. CI: range of plausible
-population values. Our taste CI [2.04, 2.63] excludes 2, which matches p < 0.05.
+population values. Our taste CI [2.13, 2.67] excludes 2, which matches p < 0.05.
 
 **Q: What is an effect size / why report it?**
 It quantifies *how big* the improvement is, not just whether it is statistically
@@ -53,7 +53,7 @@ detectable. The brief requires it; report mean difference and SUS change, not on
 
 **Q: Why didn't you reach 30 responses?**
 Time constraint — presentation was scheduled two days after the analysis. We report the
-**18 real responses** honestly and list small-sample bias as a limitation. No data was
+**25 real responses** honestly and list small-sample bias as a limitation. No data was
 fabricated.
 
 ---
@@ -85,7 +85,7 @@ and was rejected as infeasible without API access.
 chosen concept against site-selector fragility and the small sample.
 
 **Q: What were your hypotheses?** H₀: no improvement in retrieval time / taste rating / SUS.
-H₁: retrieval faster, taste rating above **2.33**, SUS above **68**. α = **0.05**.
+H₁: retrieval faster, taste rating above **2.40**, SUS above **68**. α = **0.05**.
 
 ---
 
@@ -141,16 +141,16 @@ instead), individual rather than team brainstorming, mentor review instead of pe
 No data was fabricated.
 
 **Q: What is the biggest complaint and why didn't you fix it?**
-Ads — **50%** of respondents. Removing ads needs control of the streaming service's
+Ads — **48%** of respondents. Removing ads needs control of the streaming service's
 playback, which a client-side utility does not have. We put it in Won't and listed it as a
 limitation rather than pretending to solve it.
 
 **Q: How did you protect participant data?**
-Anonymised names to R01–R18 in `data/survey_responses_anonymised.csv`; no contact details
+Anonymised names to R01–R25 in `data/survey_responses_anonymised.csv`; no contact details
 collected; consent and data use explained in the form; AI tool use disclosed.
 
 **Q: What is the single strongest justification for your solution?**
-**44%** sometimes struggle to find songs saved long ago, while **78%** actively save —
+**44%** sometimes struggle to find songs saved long ago, while **84%** actively save —
 so the save-and-retrieve loop is a real gap, and the data layer for it already existed.
 
 **Q: What would you do next with more time?**
