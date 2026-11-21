@@ -20,6 +20,7 @@
     <a class="btn small" href="{{ url_for('discover') }}">Find more music</a>
   </div>
 
+  <!-- Jinja "if" hides this list when there are no saved songs yet. -->
   {% if saved %}
     <ul class="song-list" id="saved-list">
       {% for s in saved %}
@@ -31,6 +32,7 @@
         </div>
         {% if s.reason %}<p class="reason">{{ s.reason }}</p>{% endif %}
         <div class="song-meta">{{ s.source }} &middot; {{ s.created_at }}</div>
+        <!-- data-id is the SQLite row id; app.js sends it to /api/unsave. -->
         <button class="btn danger small unsave" data-id="{{ s.id }}">Remove</button>
       </li>
       {% endfor %}

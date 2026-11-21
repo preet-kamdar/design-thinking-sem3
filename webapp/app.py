@@ -1,6 +1,13 @@
 #!/usr/bin/env python3
 """Flask backend + SQLite for the Personal Music Experience web dashboard.
 
+HOW THE WEBSITE WORKS (the whole story in five lines):
+  1. You type a URL, e.g. /discover.
+  2. Flask matches it to a function below with the same @app.route(...) label.
+  3. That function reads or writes the SQLite database (pme.db).
+  4. It hands the results to a template in templates/, which becomes HTML.
+  5. The browser displays that HTML; static/app.js adds the clickable behaviour.
+
 The companion dashboard gives the Chrome extension's saved songs and preferences
 a responsive web home, and records usage data for Stage 5 testing.
 
@@ -35,6 +42,7 @@ app.config["SECRET_KEY"] = "design-thinking-prototype-only"
 # --------------------------------------------------------------------------- #
 # Database
 # --------------------------------------------------------------------------- #
+# One database connection per request. Flask's "g" is a safe place to keep it.
 def get_db() -> sqlite3.Connection:
     if "db" not in g:
         g.db = sqlite3.connect(DB_PATH)
@@ -43,6 +51,7 @@ def get_db() -> sqlite3.Connection:
     return g.db
 
 
+# Close that connection when the request is finished.
 @app.teardown_appcontext
 def close_db(_exc=None) -> None:
     db = g.pop("db", None)
@@ -50,6 +59,7 @@ def close_db(_exc=None) -> None:
         db.close()
 
 
+# Run once at startup: create the five tables if they do not exist yet.
 def init_db() -> None:
     with sqlite3.connect(DB_PATH) as db:
         db.executescript(
@@ -107,6 +117,7 @@ def init_db() -> None:
         )
 
 
+# Identify the browser with a cookie, creating a user row on the first visit.
 def current_user() -> sqlite3.Row:
     """Identify the browser via a cookie, creating a user row on first visit."""
     db = get_db()
@@ -122,6 +133,7 @@ def current_user() -> sqlite3.Row:
     return db.execute("SELECT * FROM users WHERE session_id = ?", (sid,)).fetchone()
 
 
+# Give the browser its cookie back with the very first response.
 @app.after_request
 def set_session_cookie(response):
     sid = getattr(g, "new_session", None)
@@ -131,6 +143,7 @@ def set_session_cookie(response):
     return response
 
 
+# Write one row into usage_events — this is the built-in measurement.
 def log_event(event_type: str, detail: str = "", duration_ms: int | None = None) -> None:
     user = current_user()
     get_db().execute(
@@ -140,6 +153,7 @@ def log_event(event_type: str, detail: str = "", duration_ms: int | None = None)
     get_db().commit()
 
 
+# Every new user gets a preferences row, with defaults, on first use.
 def get_preferences(user_id: int) -> dict:
     db = get_db()
     row = db.execute("SELECT * FROM preferences WHERE user_id = ?", (user_id,)).fetchone()
@@ -153,14 +167,69 @@ def get_preferences(user_id: int) -> dict:
 # --------------------------------------------------------------------------- #
 # Context helpers
 # --------------------------------------------------------------------------- #
+# Make these values available in every template, so we never repeat them.
 @app.context_processor
 def inject_common():
     return {"levels": LEVELS, "vibe_tags": VIBE_TAGS, "current_year": 2026}
 
 
 # --------------------------------------------------------------------------- #
+# Findings page helper
+# --------------------------------------------------------------------------- #
+def survey_summary(rows: list[dict]) -> dict:
+    """Count a few headline percentages from the anonymised CSV.
+
+    It is ordinary arithmetic: (rows that match / all rows) x 100. The full
+    statistical work lives in analysis.py; this only powers the top of the
+    Findings page, so the numbers can never drift away from the survey.
+    """
+    total = len(rows)
+    if total == 0:
+        return {"total": 0, "spotify": 0, "save": 0, "difficulty": 0, "taste": 0, "ads": 0}
+
+    def percent(count: int) -> int:
+        return round(100 * count / total)
+
+    platform_col = "Which music-streaming platform do you use most often?"
+    saving_col = "When you find a song you like, what do you usually do with it?"
+    retrieval_col = "How easy is it to find songs you saved a long time ago?"
+    taste_col = "How well does your music app understand your taste?"
+    open_cols = [
+        "What is the biggest problem you face while using your music-streaming app?",
+        "What do you wish your music app could do better?",
+        "If you could change one thing about your music-streaming experience, what would it be?",
+    ]
+    # Same keywords as THEMES["Ads / paywall"] in analysis.py, so both agree.
+    ad_words = ("ad", "premium", "subscribe", "free music", "ad free", "advertisement")
+
+    spotify = save = difficulty = unclear_taste = ads = 0
+    for row in rows:
+        if row[platform_col] == "Spotify":
+            spotify += 1
+        if row[saving_col] in ("Add it to a playlist", "Save/Like it"):
+            save += 1
+        if row[retrieval_col] == "Sometimes difficult":
+            difficulty += 1
+        if row[taste_col] in ("Somewhat", "Poorly"):
+            unclear_taste += 1
+        written = " ".join(row[col].lower() for col in open_cols)
+        if any(word in written for word in ad_words):
+            ads += 1
+
+    return {
+        "total": total,
+        "spotify": percent(spotify),
+        "save": percent(save),
+        "difficulty": percent(difficulty),
+        "taste": percent(unclear_taste),
+        "ads": percent(ads),
+    }
+
+
+# --------------------------------------------------------------------------- #
 # Pages
 # --------------------------------------------------------------------------- #
+# Page 1 — My Music: list saved songs and show three counts.
 @app.route("/")
 def index():
     user = current_user()
@@ -177,6 +246,7 @@ def index():
     return render_template("index.html", saved=saved, prefs=prefs, stats=stats, active="home")
 
 
+# Page 2 — Discover: picks chosen by platform + familiarity level.
 @app.route("/discover")
 def discover():
     user = current_user()
@@ -192,6 +262,7 @@ def discover():
                            artist=artist, saved_titles=saved_ids, active="discover")
 
 
+# Page 3 — Find by Vibe: picks chosen by mood.
 @app.route("/vibe")
 def vibe():
     user = current_user()
@@ -207,6 +278,7 @@ def vibe():
                            saved_titles=saved_ids, active="vibe")
 
 
+# Page 4 — Preferences: GET shows the form, POST saves it.
 @app.route("/preferences", methods=["GET", "POST"])
 def preferences():
     user = current_user()
@@ -219,16 +291,22 @@ def preferences():
             level = "balanced"
         if vibe not in VIBE_TAGS:
             vibe = "chill"
-        db.execute(
-            """INSERT INTO preferences (user_id, discovery_level, preferred_vibe, tracking_enabled, updated_at)
-               VALUES (?,?,?,?,CURRENT_TIMESTAMP)
-               ON CONFLICT(user_id) DO UPDATE SET
-                 discovery_level=excluded.discovery_level,
-                 preferred_vibe=excluded.preferred_vibe,
-                 tracking_enabled=excluded.tracking_enabled,
-                 updated_at=CURRENT_TIMESTAMP""",
-            (user["id"], level, vibe, tracking),
-        )
+        # Save in two plain steps: first try to UPDATE the existing row.
+        # If that changed nothing, INSERT a new one. This is called an "upsert".
+        changed = db.execute(
+            """UPDATE preferences
+               SET discovery_level=?, preferred_vibe=?, tracking_enabled=?,
+                   updated_at=CURRENT_TIMESTAMP
+               WHERE user_id=?""",
+            (level, vibe, tracking, user["id"]),
+        ).rowcount
+        if changed == 0:
+            db.execute(
+                """INSERT INTO preferences
+                   (user_id, discovery_level, preferred_vibe, tracking_enabled)
+                   VALUES (?,?,?,?)""",
+                (user["id"], level, vibe, tracking),
+            )
         db.commit()
         log_event("preferences_saved", f"level={level}; vibe={vibe}; tracking={tracking}")
         return redirect(url_for("preferences", saved=1))
@@ -237,6 +315,7 @@ def preferences():
                            saved=request.args.get("saved"))
 
 
+# Page 5 — Study: past tasks and the 10-item SUS form.
 @app.route("/study")
 def study():
     """Stage 5: short timed tasks that log clicks, errors, completion and duration."""
@@ -247,6 +326,7 @@ def study():
     return render_template("study.html", tasks=tasks, active="study")
 
 
+# Page 6 — Findings: read the anonymised CSV and show the charts.
 @app.route("/results")
 def results():
     """Survey findings and charts for the presentation."""
@@ -255,12 +335,14 @@ def results():
     if SURVEY_CSV.exists():
         with SURVEY_CSV.open(encoding="utf-8-sig", newline="") as f:
             rows = list(csv.DictReader(f))
-    return render_template("results.html", rows=rows, active="results")
+    summary = survey_summary(rows)
+    return render_template("results.html", rows=rows, summary=summary, active="results")
 
 
 # --------------------------------------------------------------------------- #
 # API
 # --------------------------------------------------------------------------- #
+# API — the Save buttons call this; it adds a row to saved_songs.
 @app.route("/api/save", methods=["POST"])
 def api_save():
     user = current_user()
@@ -285,6 +367,7 @@ def api_save():
     return jsonify({"ok": True})
 
 
+# API — the Remove buttons call this; it deletes one row.
 @app.route("/api/unsave/<int:song_id>", methods=["POST"])
 def api_unsave(song_id: int):
     user = current_user()
@@ -295,6 +378,7 @@ def api_unsave(song_id: int):
     return jsonify({"ok": cur.rowcount > 0})
 
 
+# API — JavaScript calls this to log a click, a task start or a SUS score.
 @app.route("/api/event", methods=["POST"])
 def api_event():
     data = request.get_json(force=True) or {}
@@ -303,6 +387,7 @@ def api_event():
     return jsonify({"ok": True})
 
 
+# API — called when a timed study task is stopped.
 @app.route("/api/task", methods=["POST"])
 def api_task():
     """Record a completed Stage 5 task."""
@@ -322,6 +407,7 @@ def api_task():
     return jsonify({"ok": True})
 
 
+# API — raw counts from the database, handy for a quick check.
 @app.route("/api/summary")
 def api_summary():
     db = get_db()
@@ -334,12 +420,14 @@ def api_summary():
     })
 
 
+# Serve the PNG charts that analysis.py generated.
 @app.route("/charts/<path:filename>")
 def charts(filename: str):
     """Serve analysis PNGs from data/charts."""
     return send_from_directory(ROOT / "data" / "charts", filename)
 
 
+# Simple check: is the server alive, and is the survey CSV present?
 @app.route("/health")
 def health():
     return jsonify({

@@ -33,6 +33,7 @@
 <section class="card">
   <h2>Run a task</h2>
   <p class="muted">Start a task, complete it in another tab, then stop it. Clicks are counted automatically.</p>
+  <!-- app.js finds #task-panel and times whichever button is clicked. -->
   <div class="task-grid" id="task-panel" data-active="">
     <button class="btn task-start" data-task="Discover a new song">
       <strong>1. Discover a new song</strong><span>Start timer</span>
@@ -50,6 +51,7 @@
 <section class="card">
   <h2>System Usability Scale (SUS)</h2>
   <p class="muted">Answer after trying the prototype. Odd items are positive, even items are negative — scored 0–100.</p>
+  <!-- name="q1" groups the five radios for question 1; only one can be picked. -->
   <form id="sus-form">
     <ol class="sus-list">
       <li>I think I would like to use this system frequently.

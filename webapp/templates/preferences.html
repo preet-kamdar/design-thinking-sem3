@@ -12,6 +12,7 @@
 {% if saved %}<div class="notice" role="status">Preferences saved.</div>{% endif %}
 
 <section class="card narrow">
+  <!-- POST means the form values go in the request body, not the URL. -->
   <form method="post" action="{{ url_for('preferences') }}">
     <label>Default discovery level
       <select name="level">
@@ -28,6 +29,7 @@
       </select>
     </label>
     <label class="check">
+      <!-- Unchecked boxes send nothing, so Flask treats that as tracking = 0. -->
       <input type="checkbox" name="tracking" value="1" {{ 'checked' if prefs.tracking_enabled }}>
       <span>Allow anonymous usage measurement (time, clicks, errors) for testing</span>
     </label>

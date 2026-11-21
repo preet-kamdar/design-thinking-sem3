@@ -10,7 +10,7 @@ Memorise the **bold** values. Full detail: `docs/design_thinking_artefacts.md`,
 "A Chrome extension that adds a personalisation side panel to Spotify, YouTube Music and
 Apple Music, plus a responsive Flask dashboard backed by SQLite. Its core features are
 Discover with three familiarity levels, Find by Vibe, and a saved-song library. Its design
-was driven by an **18-response** survey and validated with usage logging and a SUS study."
+was driven by a **25-response** survey and validated with usage logging and a SUS study."
 
 ---
 

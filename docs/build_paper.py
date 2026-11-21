@@ -11,7 +11,7 @@ OUT = Path(__file__).with_name("Research_Paper.docx")
 ROOT = Path(__file__).resolve().parents[1]
 CHARTS = ROOT / "data" / "charts"
 
-GREEN = RGBColor(29, 185, 84)
+TITLE_COLOR = RGBColor(31, 55, 78)  # dark navy — professional, print-friendly
 
 
 def h(doc, text, level=1):
@@ -75,7 +75,7 @@ def main():
     run = title.add_run("Reimagining the Personal Music Experience")
     run.bold = True
     run.font.size = Pt(26)
-    run.font.color.rgb = GREEN
+    run.font.color.rgb = TITLE_COLOR
     sub = doc.add_paragraph()
     sub.alignment = WD_ALIGN_PARAGRAPH.CENTER
     sub.add_run("A Design Thinking study with statistical validation of a cross-platform\n"

@@ -10,6 +10,7 @@
 </section>
 
 <section class="card">
+  <!-- method="get" puts choices in the URL (e.g. ?level=familiar); Flask reads them with request.args. -->
   <form class="controls" method="get" action="{{ url_for('discover') }}">
     <label>Platform
       <select name="platform">
@@ -42,6 +43,7 @@
       <p class="artist">{{ item.artist }}</p>
       <span class="tag">{{ item.genre }}</span>
       <p class="reason">{{ item.reason }}</p>
+      <!-- data-* values travel with the click and become app.js button.dataset.* -->
       <button class="btn small save" data-title="{{ item.title }}" data-artist="{{ item.artist }}"
               data-genre="{{ item.genre }}" data-reason="{{ item.reason }}" data-source="Discover">
         {% if item.title in saved_titles %}Saved &check;{% else %}Save{% endif %}

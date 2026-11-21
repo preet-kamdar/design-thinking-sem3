@@ -16,7 +16,7 @@ See `docs/statistical_results.md` for the full tables and tests.
 >
 > | Brief role | How it was covered here |
 > |---|---|
-> | Research Lead | Questionnaire design, 18 responses, qualitative open-text coding, empathy map, persona |
+> | Research Lead | Questionnaire design, 25 responses, qualitative open-text coding, empathy map, persona |
 > | Statistics Lead | Descriptive analysis, ordinal coding, correlation, baseline t-tests, confidence intervals, SUS instrument |
 > | Frontend Lead | Chrome extension UI (HTML/CSS/JS) plus responsive companion dashboard |
 > | Backend Lead | Flask server, routes, SQLite schema, usage-event logging |
@@ -149,7 +149,7 @@ Personal Music Experience
 
 | Opportunities | Threats |
 |---|---|
-| Companion web dashboard adds backend + measurement | 18 responses is below the brief's target of 30 |
+| Companion web dashboard adds backend + measurement | 25 responses is below the brief's target of 30 |
 | Saved-song gap directly supported by data | Ads complaint is out of scope |
 | SUS + timed tasks give quantitative validation | Single-contributor scope reduces teamwork marks |
 

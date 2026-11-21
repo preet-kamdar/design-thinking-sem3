@@ -21,6 +21,7 @@
   </form>
   <div class="vibe-tags" role="group" aria-label="Choose a vibe">
     {% for v in vibe_tags %}
+    <!-- Each tag is just a link with ?vibe=... in the URL; no JavaScript needed. -->
     <a class="vibe-tag {{ 'active' if selected == v }}" href="{{ url_for('vibe', vibe=v, platform=platform) }}">{{ v|title }}</a>
     {% endfor %}
   </div>

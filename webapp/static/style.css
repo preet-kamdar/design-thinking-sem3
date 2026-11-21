@@ -9,6 +9,12 @@
   --red: #f15e6c;
 }
 
+/* Beginner notes:
+   - :root below holds reusable colours. var(--green) means "use that colour".
+   - A rule like ".card { ... }" styles every element with class="card".
+   - display:flex / grid arrange boxes; @media at the bottom is the mobile layout.
+   - In Inspect Element, changing a value here updates the page instantly.
+*/
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body {
@@ -31,6 +37,7 @@ body {
 .nav a { color: var(--muted); text-decoration: none; font-size: 13px;
   padding: 7px 11px; border-radius: 16px; }
 .nav a:hover { color: var(--text); background: #262626; }
+/* The "active" class is added by Flask templates to show the current page. */
 .nav a.active { color: #fff; background: var(--green); }
 .nav-toggle { display: none; background: none; border: 1px solid var(--line);
   color: var(--text); border-radius: 6px; padding: 6px 10px; font-size: 18px; }
@@ -135,6 +142,7 @@ th { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spa
 .footer { border-top: 1px solid var(--line); padding: 20px;
   text-align: center; color: #666; font-size: 12px; }
 
+/* Media query: apply these extra rules only on screens 720px wide or less. */
 @media (max-width: 720px) {
   .nav { display: none; width: 100%; flex-direction: column; }
   .nav.open { display: flex; }
