@@ -30,17 +30,17 @@ Two tricks that replace writing completely:
 
 Say each one with its label, five times per session:
 
-1. **27** responses, target 30
-2. **85%** save or playlist a liked track
-3. **44%** sometimes struggle to find old saves
-4. **48%** mention ads — out of scope
-5. **67%** Spotify — platform imbalance
+1. **29** responses, target 30
+2. **86%** save or playlist a liked track
+3. **45%** sometimes struggle to find old saves
+4. **52%** mention ads — out of scope
+5. **69%** Spotify — platform imbalance
 6. **52%** say taste is only somewhat or poorly understood
-7. **2.41, p 0.003** — taste above neutral, significant
-8. **2.44, p 0.003** — vibe ease above neutral, significant
-9. **2.04, p 0.852** — retrieval, **not** significant
-10. **0.381** — critical |r| at n=27
-11. **+0.385, p 0.047** — vibe ease ↔ saved retrieval, the only significant pair
+7. **2.38, p 0.005** — taste above neutral, significant
+8. **2.38, p 0.009** — vibe ease above neutral, significant
+9. **2.03, p 0.856** — retrieval, **not** significant
+10. **0.367** — critical |r| at n=29
+11. **+0.324, p 0.087** — vibe ease ↔ saved retrieval, strongest but **not** significant
 12. **68** — SUS benchmark
 13. **0.05** — alpha
 14. **5** stages, and 40/35/25 weights
@@ -63,10 +63,10 @@ Total **4 hours 15 minutes**. Everything else is backup — read it only if a qu
 ## The three killer answers (say these perfectly)
 
 **"Are your results significant?"**
-> "Taste and vibe ease are significantly above neutral — p = 0.0026 and p = 0.0027. Saved retrieval is not, at p = 0.852. So my claim is *good but not great* — refinement, not rescue."
+> "Taste and vibe ease are significantly above neutral — p = 0.0054 and p = 0.0090. Saved retrieval is not, at p = 0.856. So my claim is *good but not great* — refinement, not rescue."
 
-**"Isn't n=27 too small for that correlation?"**
-> "It's n=27 now. Critical value is 0.381; vibe ease with saved retrieval reaches 0.385 at p = 0.047. Small sample, several comparisons — I treat it as directional and never claim causation."
+**"Are any correlations significant at n=29?"**
+> "No. At n=29 the critical value is 0.367; the strongest is vibe ease with saved retrieval at 0.324, p = 0.087. Small sample, several comparisons — all pairs are directional only, never causal."
 
 **"Where's your actual usability result?"**
 > "I built and instrumented the study page, but participant runs were still being collected. I don't claim a SUS score or task-time result; Section 10.3 says so."
@@ -96,7 +96,7 @@ Reading alone creates the feeling of knowing. Speaking and listening create actu
 
 Someone listens to music daily, saves the tracks they like, and then can't find them again. Recommendations feel "okay" but not great. The biggest complaint — ads — can't be fixed by a student project, because removing ads needs control over the streaming company's playback. So, kya karte hain? Three things:
 
-1. **Check if the problem is real.** A questionnaire with **27 real student responses**, analysed with statistics.
+1. **Check if the problem is real.** A questionnaire with **29 real student responses**, analysed with statistics.
 2. **Build a small fix.** A Chrome extension that adds a side panel on Spotify, YouTube Music and Apple Music — with **Discover** (Familiar / Balanced / Exploratory), **Find by Vibe** (mood tags), and a **saved-song library**.
 3. **Build a dashboard.** Flask + SQLite website for saved songs, preferences, and a usability study.
 
@@ -111,7 +111,7 @@ Someone listens to music daily, saves the tracks they like, and then can't find 
 
 ## The one paragraph you must be able to say
 
-> "I built a Chrome extension that adds a privacy-first personalisation panel to Spotify, YouTube Music and Apple Music, plus a Flask and SQLite dashboard. Core features: Discover with three familiarity levels, Find by Vibe, and a saved-music library. The design was driven by a 27-response survey and measured with built-in usage logging and a SUS study."
+> "I built a Chrome extension that adds a privacy-first personalisation panel to Spotify, YouTube Music and Apple Music, plus a Flask and SQLite dashboard. Core features: Discover with three familiarity levels, Find by Vibe, and a saved-music library. The design was driven by a 29-response survey and measured with built-in usage logging and a SUS study."
 
 ---
 
@@ -123,7 +123,7 @@ Someone listens to music daily, saves the tracks they like, and then can't find 
 
 | Stage | What it means | What we actually did |
 |---|---|---|
-| **1. Empathise** | Understand the user's life and feelings | 25→27 responses questionnaire, coded open answers, empathy map and persona |
+| **1. Empathise** | Understand the user's life and feelings | 27→29 responses questionnaire, coded open answers, empathy map and persona |
 | **2. Define** | Turn the mess into one clear problem | POV, HMW, MoSCoW, descriptive statistics |
 | **3. Ideate** | Generate lots of solutions | 10 ideas, mind map, SWOT, weighted matrix |
 | **4. Prototype** | Build a rough, cheap version | Chrome extension + responsive Flask dashboard + SQLite |
@@ -164,7 +164,7 @@ Someone listens to music daily, saves the tracks they like, and then can't find 
 
 **Convenience sampling**
 - *English: Using whoever was easy to reach rather than a random sample.*
-- **Hinglish:** Jo aasani se mil gaya — yahan students. Random nahi, isliye sab listeners par daava nahi kar sakte. **27 responses**, brief ka target **30** tha.
+- **Hinglish:** Jo aasani se mil gaya — yahan students. Random nahi, isliye sab listeners par daava nahi kar sakte. **29 responses**, brief ka target **30** tha.
 
 ## Questionnaire types
 
@@ -191,7 +191,7 @@ Someone listens to music daily, saves the tracks they like, and then can't find 
 
 **Ethics**
 - *English: Informed consent, anonymisation, no fabrication, and disclosure of AI use.*
-- **Hinglish:** Participants ko purpose bataya, voluntary tha, naam **R01–R27** se replace kiye, contact details nahi li, AI tool use disclose kiya. Do low-quality rows **flag kiye, delete nahi**. Koi data nahi ghadha.
+- **Hinglish:** Participants ko purpose bataya, voluntary tha, naam **R01–R29** se replace kiye, contact details nahi li, AI tool use disclose kiya. Do low-quality rows **flag kiye, delete nahi**. Koi data nahi ghadha.
 
 ---
 
@@ -211,7 +211,7 @@ Professors yahin sabse zyada ghot te hain. Pehle concepts, phir numbers.
   - *English: The typical distance of values from the mean; small SD = similar answers, large SD = spread-out answers.*
   - **Hinglish:** Mean se doori ka andaza. Kam SD = sabne similar jawab diya; zyada SD = jawab phaile hue.
 
-Ages: range **18–30**, median **19**, mean **19.74**, SD **2.35**.
+Ages: range **18–30**, median **19**, mean **19.79**, SD **2.27**.
 
 ## 4.2 One-sample t-test
 
@@ -234,18 +234,18 @@ Ages: range **18–30**, median **19**, mean **19.74**, SD **2.35**.
 - **95% confidence interval (CI)**
   - *English: A range of plausible values for the true mean; if it excludes 2, that agrees with p < 0.05.*
   - **Hinglish:** Asli mean ke liye possible range. Agar 2 andar nahi hai, to p < 0.05 se match.
-- **df = 26**
-  - *English: Degrees of freedom = n − 1 = 27 − 1.*
-  - **Hinglish:** Degrees of freedom = n − 1 = 27 − 1 = 26.
+- **df = 28**
+  - *English: Degrees of freedom = n − 1 = 29 − 1.*
+  - **Hinglish:** Degrees of freedom = n − 1 = 29 − 1 = 28.
 
 ### The four results — learn as pairs
 
 | Measure | Mean | SD | t | p | 95% CI | Reading |
 |---|---|---|---|---|---|---|
-| Usage frequency | **2.52** | 0.75 | 3.578 | **0.0014** | [2.22, 2.82] | above neutral |
-| Vibe-finding ease | **2.44** | 0.70 | 3.309 | **0.0027** | [2.17, 2.72] | above neutral |
-| Saved retrieval | **2.04** | 1.02 | 0.189 | **0.8516** | [1.63, 2.44] | **not** significant |
-| Taste understanding | **2.41** | 0.64 | 3.328 | **0.0026** | [2.16, 2.66] | above neutral |
+| Usage frequency | **2.48** | 0.74 | 3.524 | **0.0015** | [2.20, 2.76] | above neutral |
+| Vibe-finding ease | **2.38** | 0.73 | 2.807 | **0.0090** | [2.10, 2.66] | above neutral |
+| Saved retrieval | **2.03** | 1.02 | 0.183 | **0.8564** | [1.65, 2.42] | **not** significant |
+| Taste understanding | **2.38** | 0.68 | 3.018 | **0.0054** | [2.12, 2.64] | above neutral |
 
 **Interpretation — word for word:**
 > "Vibe-finding ease and taste understanding were significantly above neutral, while saved retrieval was not. These results do not support a claim that users are deeply dissatisfied. They support a narrower claim: personalisation is good but not great, and retrieval friction is common enough to address."
@@ -267,23 +267,23 @@ Ages: range **18–30**, median **19**, mean **19.74**, SD **2.35**.
 - **Spearman**
   - *English: Correlation on ranks rather than raw values — safer for ordinal data and small samples.*
   - **Hinglish:** Values ki jagah ranks par — ordinal aur chhote sample ke liye safer. Hum dono batate hain, bharosa Spearman par.
-- **Critical |r| at n=27 ≈ 0.381**
-  - *English: The minimum coefficient needed for significance at alpha 0.05 with n=27.*
-  - **Hinglish:** n=27 par significant hone ke liye coefficient kam se kam 0.381 hona chahiye.
+- **Critical |r| at n=29 ≈ 0.367**
+  - *English: The minimum coefficient needed for significance at alpha 0.05 with n=29.*
+  - **Hinglish:** n=29 par significant hone ke liye coefficient kam se kam 0.367 hona chahiye.
 
 ### Our correlations
 
 | Pair | Pearson | Spearman | p | Reading |
 |---|---|---|---|---|
-| Usage ↔ Vibe | −0.309 | −0.316 | 0.1082 | weak |
-| Usage ↔ Retrieval | −0.126 | −0.091 | 0.6505 | weak |
-| Usage ↔ Taste | +0.104 | +0.168 | 0.4031 | weak |
-| **Vibe ↔ Retrieval** | +0.409 | **+0.385** | **0.0473** | **only significant pair** |
-| Vibe ↔ Taste | +0.270 | +0.212 | 0.2893 | weak |
-| Retrieval ↔ Taste | +0.391 | +0.377 | 0.0523 | just misses |
+| Usage ↔ Vibe | −0.220 | −0.200 | 0.2992 | weak |
+| Usage ↔ Retrieval | −0.118 | −0.086 | 0.6574 | weak |
+| Usage ↔ Taste | +0.121 | +0.172 | 0.3733 | weak |
+| **Vibe ↔ Retrieval** | +0.319 | **+0.324** | **0.0869** | **strongest, not significant** |
+| Vibe ↔ Taste | +0.350 | +0.263 | 0.1679 | weak |
+| Retrieval ↔ Taste | +0.240 | +0.246 | 0.1975 | weak |
 
 **Cautious answer:**
-> "At n=27 the critical value is 0.381. Only vibe ease with saved retrieval clears it — 0.385, p = 0.047. Retrieval with taste comes close at 0.377, p = 0.052. Small sample aur kai comparisons ki wajah se main isse directional maanta hoon, causation kabhi nahi."
+> "At n=29 the critical value is 0.367. Koi bhi pair nahi clear karta — sabse strong hai vibe ease aur saved retrieval, 0.324, p = 0.087. Small sample aur kai comparisons ki wajah se main in sabko directional maanta hoon, causation kabhi nahi."
 
 **Correlation is not causation** — hamesha bolo agar poocha jaye.
 
@@ -293,8 +293,8 @@ Ages: range **18–30**, median **19**, mean **19.74**, SD **2.35**.
 |---|---|
 | **H1a** | Median time to find a saved song is **lower** with the prototype |
 | **H0a** | No difference in retrieval time |
-| **H1b** | Mean taste rating after discovery **exceeds 2.41** |
-| **H0b** | Unchanged from 2.41 |
+| **H1b** | Mean taste rating after discovery **exceeds 2.38** |
+| **H0b** | Unchanged from 2.38 |
 | **H1c** | Mean SUS score **exceeds 68** |
 | **H0c** | SUS is 68 or lower |
 
@@ -327,21 +327,21 @@ Study page banaya aur instrument kiya — timed tasks, clicks, errors, SUS form.
 
 | Number | Meaning |
 |---|---|
-| **27** | survey responses (target 30) |
-| **25** | substantive responses; 2 flagged, none deleted |
-| **19** | median age (range 18–30, mean 19.74, SD 2.35) |
-| **67%** | Spotify (18 people) — platform imbalance |
-| **15% / 11% / 7%** | YouTube Music / Other / Apple Music |
-| **85%** | daily or several times a week **and** save/playlist a liked track |
-| **44%** | sometimes struggle to find old saves (12 people) — the design target |
-| **48%** | ads/paywall complaint (13 people) — biggest, out of scope |
-| **37% / 19% / 11% / 4%** | recommendations / UI / vibe / saving themes |
+| **29** | survey responses (target 30) |
+| **27** | substantive responses; 2 flagged, none deleted |
+| **19** | median age (range 18–30, mean 19.79, SD 2.27) |
+| **69%** | Spotify (20 people) — platform imbalance |
+| **14% / 10% / 7%** | YouTube Music / Other / Apple Music |
+| **86%** | daily or several times a week **and** save/playlist a liked track |
+| **45%** | sometimes struggle to find old saves (13 people) — the design target |
+| **52%** | ads/paywall complaint (15 people) — biggest, out of scope |
+| **38% / 21% / 10% / 3%** | recommendations / UI / vibe / saving themes |
 | **52%** | taste only somewhat or poorly understood (12 + 2) |
-| **2.41, p .0026** | taste above neutral |
-| **2.44, p .0027** | vibe ease above neutral |
-| **2.04, p .8516** | retrieval **not** significant |
-| **0.381** | critical correlation at n=27 |
-| **+0.385, p .047** | vibe ↔ retrieval — the only significant correlation |
+| **2.38, p .0054** | taste above neutral |
+| **2.38, p .0090** | vibe ease above neutral |
+| **2.03, p .8564** | retrieval **not** significant |
+| **0.367** | critical correlation at n=29 |
+| **+0.324, p .087** | vibe ↔ retrieval — strongest, **not** significant |
 | **68** | SUS benchmark |
 | **0.05** | alpha |
 | **5** | Design Thinking stages; matrix score 5.00; DB tables; website pages |
@@ -519,7 +519,7 @@ SQL words: `SELECT` (read), `INSERT` (add), `UPDATE` (change), `DELETE` (remove)
 python3 webapp/analysis/analysis.py --csv "Music Streaming Platform Experience (Responses) - Form responses 1.csv"
 ```
 
-It reads the raw CSV → writes `data/survey_responses_anonymised.csv` (R01–R27) → computes counts, t-tests, Pearson/Spearman, CIs and themes → writes `docs/statistical_results.md` → draws 5 charts in `data/charts/`. Re-runnable.
+It reads the raw CSV → writes `data/survey_responses_anonymised.csv` (R01–R29) → computes counts, t-tests, Pearson/Spearman, CIs and themes → writes `docs/statistical_results.md` → draws 5 charts in `data/charts/`. Re-runnable.
 
 **Canonical source of truth**
 - *English: The single official source that every other number must agree with.*
@@ -566,7 +566,7 @@ Four-part structure — ye tumhe calm aur authoritative banata hai:
 3. **Why** — the reasoning.
 4. **Limitation** — one honest caveat.
 
-Example: *"Yes, one correlation is significant (1). Vibe ease with saved retrieval is 0.385, p = 0.047 (2). I used Spearman because the data are ordinal and n is small (3). But 27 responses and several comparisons — I treat it as directional, not causal (4)."*
+Example: *"No correlation is significant (1). The strongest is vibe ease with saved retrieval at 0.324, p = 0.087 (2). I used Spearman because the data are ordinal and n is small (3). With 29 responses and several comparisons — I treat all pairs as directional, not causal (4)."*
 
 **If you genuinely don't know:** *"I'm not certain about that detail — the place to check would be ___."* Never invent a number. Honest "I don't know" se kam nuksaan hota hai galat number se.
 
@@ -579,7 +579,7 @@ Example: *"Yes, one correlation is significant (1). Vibe ease with saved retriev
 ## Overview
 1. **Tell me about your project.** → §1 paragraph.
 2. **Why is it an integrated project?** → §1 four-subjects table.
-3. **Main problem?** → save-and-retrieve gap: 85% save, 44% struggle.
+3. **Main problem?** → save-and-retrieve gap: 86% save, 45% struggle.
 4. **Strongest evidence?** → same numbers.
 5. **What did you cut?** → ad blocker (needs playback control), offline downloads, Understand section.
 
@@ -597,8 +597,8 @@ Example: *"Yes, one correlation is significant (1). Vibe ease with saved retriev
 16. **Why no ad blocker?** → client-side utility can't control ads; in Won't, disclosed.
 
 ## Research and statistics
-17. **Sampling?** → convenience, students, n=27.
-18. **Why not 30?** → time constraint; real 27 reported honestly, no fabrication.
+17. **Sampling?** → convenience, students, n=29.
+18. **Why not 30?** → time constraint; real 29 reported honestly, no fabrication.
 19. **Question types?** → MCQ, ordinal, numeric, open-ended.
 20. **Ordinal data?** → ordered categories, unequal gaps; use Spearman.
 21. **Coding?** → 3/2/1, neutral = 2.
@@ -612,17 +612,17 @@ Example: *"Yes, one correlation is significant (1). Vibe ease with saved retriev
 29. **Correlation vs causation?** → association doesn't prove one caused the other.
 30. **Key results.** → §4.2 four t-tests.
 31. **Which are significant?** → vibe and taste; retrieval is not.
-32. **Significant correlation?** → vibe ↔ retrieval, +0.385, p 0.047, critical 0.381; cautious tone.
+32. **Any significant correlation?** → none; strongest is vibe ↔ retrieval, +0.324, p 0.087, critical 0.367; directional only.
 33. **Effect size?** → how big the change is, not just detectable.
 34. **SUS?** → 10 items, 0–100, 68 benchmark, formula in §6.8.
 35. **Hypotheses?** → H1a/b/c in §4.4.
 36. **Paired design?** → same users try both methods.
 37. **Wilcoxon vs paired t-test?** → Wilcoxon if non-normal, else paired t-test.
 38. **What do results mean?** → "good but not great" in §4.2.
-39. **Participant data protection?** → R01–R27, no contact details, consent, AI disclosure.
+39. **Participant data protection?** → R01–R29, no contact details, consent, AI disclosure.
 40. **Flagged data?** → two rows flagged, not deleted; possible duplicate names; all rows retained.
-41. **Why is 67% Spotify a limitation?** → platform imbalance limits generalisation.
-42. **Open-text themes?** → ads 48%, recommendations 37%, UI 19%, vibe 11%, saving 4%.
+41. **Why is 69% Spotify a limitation?** → platform imbalance limits generalisation.
+42. **Open-text themes?** → ads 52%, recommendations 38%, UI 21%, vibe 10%, saving 3%.
 
 ## Technical / website
 43. **Frontend?** → extension panel + `webapp/templates/`, `static/style.css`, `static/app.js`.

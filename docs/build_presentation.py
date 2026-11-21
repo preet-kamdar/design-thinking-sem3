@@ -564,7 +564,7 @@ def s1(prs):
 def s2(prs):
     s, a = new(prs, 2)
     header(s, 2, "Introduction", "Everyday routine, uneven personalisation", a)
-    stat_card(s, 0.7, 2.0, 3.7, 2.2, "85%", "use their app daily or\nseveral times a week", a)
+    stat_card(s, 0.7, 2.0, 3.7, 2.2, "86%", "use their app daily or\nseveral times a week", a)
     stat_card(s, 4.8, 2.0, 3.7, 2.2, "52%", "say taste is only 'somewhat'\nor 'poorly' understood", ORANGE)
     stat_card(s, 8.9, 2.0, 3.7, 2.2, "48%", "say taste is understood\n'very well'", GREEN)
     box(s, 0.7, 4.35, 11.9, 1.9, PANEL)
@@ -598,11 +598,11 @@ def s3(prs):
 
 def s4(prs):
     s, a = new(prs, 4)
-    header(s, 4, "User research", "Convenience sample · n = 27 · ages 18–30 (median 19)", a)
+    header(s, 4, "User research", "Convenience sample · n = 29 · ages 18–30 (median 19)", a)
     text(s, 0.7, 1.98, 5.5, 0.28, "PRIMARY PLATFORM", size=FONT_META, color=T_AMBER, bold=True)
     y = 2.4
-    for label, pct, c in [("Spotify", 67, GREEN), ("YouTube Music", 15, CYAN),
-                          ("Apple Music", 7, AQUA), ("Other", 11, ORANGE)]:
+    for label, pct, c in [("Spotify", 69, GREEN), ("YouTube Music", 14, CYAN),
+                          ("Apple Music", 7, AQUA), ("Other", 10, ORANGE)]:
         text(s, 0.7, y, 2.1, 0.3, label, size=FONT_META, color=WHITE)
         shape(s, MSO_SHAPE.RECTANGLE, 2.8, y + 0.05, 3.9, 0.24, PANEL2)
         shape(s, MSO_SHAPE.RECTANGLE, 2.8, y + 0.05, 3.9 * pct / 100, 0.24, c)
@@ -611,11 +611,11 @@ def s4(prs):
     box(s, 8.1, 1.98, 4.5, 3.3, PANEL)
     text(s, 8.4, 2.2, 4.0, 0.28, "METHOD", size=FONT_META, color=T_AMBER, bold=True)
     bullets(s, 8.4, 2.6, 3.9, 2.3,
-            ["MCQ + ordinal + numeric + open", "67% Spotify — platform imbalance",
+            ["MCQ + ordinal + numeric + open", "69% Spotify — platform imbalance",
              "Below target of 30 — declared"], accent=T_AMBER, gap=8)
     box(s, 0.7, 5.4, 11.9, 1.1, PANEL)
     text(s, 1.0, 5.62, 11.2, 0.6,
-         "30% discover OUTSIDE the app  ·  85% save or like tracks  ·  44% struggle to find old saves",
+         "31% discover OUTSIDE the app  ·  86% save or like tracks  ·  45% struggle to find old saves",
          size=FONT_BODY, color=WHITE, bold=True)
     footer(s, 4, a)
 
@@ -626,8 +626,8 @@ def s5(prs):
     quads = [
         (0.7, 1.95, "SAYS", GREEN, ["'Remove ads'", "'Better recommendations'", "'Organise music by vibe'"]),
         (6.8, 1.95, "THINKS", CYAN, ["'Why the same songs?'", "'Will I find that saved track?'"]),
-        (0.7, 4.2, "DOES", ORANGE, ["85% save or like tracks", "30% discover outside apps"]),
-        (6.8, 4.2, "FEELS", RED, ["Annoyed by ads (48%)", "Mildly satisfied, not delighted"]),
+        (0.7, 4.2, "DOES", ORANGE, ["86% save or like tracks", "31% discover outside apps"]),
+        (6.8, 4.2, "FEELS", RED, ["Annoyed by ads (52%)", "Mildly satisfied, not delighted"]),
     ]
     for x, y, label, c, items in quads:
         box(s, x, y, 5.8, 2.0, PANEL)
@@ -639,9 +639,9 @@ def s5(prs):
 def s6(prs):
     s, a = new(prs, 6)
     header(s, 6, "Statistical findings", "Ordinal 1–3 · neutral = 2 · one-sample t-tests", a)
-    stat_card(s, 0.7, 2.0, 3.7, 1.8, "2.44", "Vibe ease · p = 0.003", GREEN)
-    stat_card(s, 4.8, 2.0, 3.7, 1.8, "2.41", "Taste · p = 0.003", a)
-    stat_card(s, 8.9, 2.0, 3.7, 1.8, "2.04", "Retrieval · p = 0.852", ORANGE)
+    stat_card(s, 0.7, 2.0, 3.7, 1.8, "2.38", "Vibe ease · p = 0.009", GREEN)
+    stat_card(s, 4.8, 2.0, 3.7, 1.8, "2.38", "Taste · p = 0.005", a)
+    stat_card(s, 8.9, 2.0, 3.7, 1.8, "2.03", "Retrieval · p = 0.856", ORANGE)
     box(s, 0.7, 4.0, 11.9, 2.25, PANEL)
     text(s, 1.0, 4.25, 11.2, 0.3, "HONEST READING", size=FONT_META, color=T_AMBER, bold=True)
     text(s, 1.0, 4.72, 11.2, 1.3,
@@ -656,33 +656,33 @@ def s7(prs):
     s, a = new(prs, 7)
     header(s, 7, "Evidence 1 · platform and usage", "Who answered, and how often they listen", a)
     chart_frame(s, 0.7, 1.95, 11.9, 4.3, "platform_and_frequency.png")
-    takeaway(s, 7, "Spotify 67%; 18 listen daily. The platform imbalance is a stated limitation.")
+    takeaway(s, 7, "Spotify 69%; 18 listen daily. The platform imbalance is a stated limitation.")
 
 
 def s8(prs):
     s, a = new(prs, 8)
     header(s, 8, "Evidence 2 · discovery and saving", "How tracks are found and kept", a)
     chart_frame(s, 0.7, 1.95, 11.9, 4.3, "discovery_and_saving.png")
-    takeaway(s, 8, "30% discover outside apps; 85% save tracks. That gap is our design target.")
+    takeaway(s, 8, "31% discover outside apps; 86% save tracks. That gap is our design target.")
 
 
 def s9(prs):
     s, a = new(prs, 9)
     header(s, 9, "Evidence 3 · ordinal distributions", "Counts behind the three baseline tests", a)
     chart_frame(s, 0.7, 1.95, 11.9, 4.3, "ordinal_distributions.png")
-    takeaway(s, 9, "Vibe 2.44 (p .003) and taste 2.41 (p .003) beat neutral; retrieval does not.")
+    takeaway(s, 9, "Vibe 2.38 (p .009) and taste 2.38 (p .005) beat neutral; retrieval does not.")
 
 
 def s10(prs):
     s, a = new(prs, 10)
     header(s, 10, "Evidence 4 · age and score spread", "Sample profile and ordinal spread", a)
     chart_frame(s, 0.7, 1.95, 11.9, 4.3, "age_and_boxplots.png")
-    takeaway(s, 10, "27 numeric ages, mean 19.7. Retrieval spread is widest — directional only.")
+    takeaway(s, 10, "29 numeric ages, mean 19.8. Retrieval spread is widest — directional only.")
 
 
 def s11(prs):
     s, a = new(prs, 11)
-    header(s, 11, "Evidence 5 · correlations", "Spearman rho · n = 27 · critical |r| ≈ 0.381", a)
+    header(s, 11, "Evidence 5 · correlations", "Spearman rho · n = 29 · critical |r| ≈ 0.367", a)
     # A wide heatmap plus a compact reading panel with the three key pairs,
     # so the slide carries real detail instead of a sea of empty space.
     chart_frame(s, 0.7, 1.95, 8.1, 4.15, "correlation_heatmap.png")
@@ -690,16 +690,16 @@ def s11(prs):
     text(s, 9.25, 2.15, 3.1, 0.3, "KEY PAIRS (rho)", size=FONT_META,
          color=T_AMBER, bold=True)
     text(s, 9.25, 2.85, 3.1, 2.1,
-         "Usage–Vibe   −0.32\n"
-         "Vibe–Save    +0.39\n"
-         "Save–Taste   +0.38",
+         "Usage–Vibe   −0.20\n"
+         "Vibe–Save    +0.32\n"
+         "Save–Taste   +0.25",
          size=FONT_META, color=MUTED)
     text(s, 9.25, 5.15, 3.1, 0.8,
-         "One clears critical.\nRest weak.",
+         "None clears critical.\nAll weak.",
          size=FONT_META, color=T_AMBER, bold=True)
     box(s, 0.7, 6.25, 11.9, 0.5, PANEL2)
     text(s, 0.95, 6.35, 11.4, 0.3,
-         "Vibe ↔ saved retrieval clears the threshold; the rest are directional, never causal.",
+         "No correlation clears the threshold here; all pairs are weak and directional, never causal.",
          size=FONT_META, color=MUTED)
     footer(s, 11, a)
 
@@ -784,7 +784,7 @@ def s14(prs):
     tinted_box(s, 7.9, 1.95, 4.7, 3.25, LIMIT_BOX)
     text(s, 8.2, 2.18, 4.1, 0.28, "HYPOTHESES (FIXED EARLY)", size=FONT_META, color=T_AMBER, bold=True)
     bullets(s, 8.2, 2.55, 4.0, 2.35,
-            ["Retrieval time lower", "Taste rating above 2.41", "SUS above 68",
+            ["Retrieval time lower", "Taste rating above 2.38", "SUS above 68",
              "α = 0.05 · paired design", "Ad blocker rejected"], accent=T_AMBER, gap=11)
     footer(s, 14, a)
 
@@ -884,10 +884,10 @@ def s18(prs):
     box(s, 6.8, 1.95, 5.8, 4.6, PANEL)
     text(s, 7.1, 2.2, 5.2, 0.28, "LIMITATIONS", size=FONT_META, color=RED, bold=True)
     bullets(s, 7.1, 2.65, 5.1, 3.6,
-            ["n = 27, below target of 30", "67% Spotify; Apple Music only 7%",
-             "Ads (48%) out of scope", "Demo recommendation database",
+            ["n = 29, below target of 30", "69% Spotify; Apple Music only 7%",
+             "Ads (52%) out of scope", "Demo recommendation database",
              "Single-contributor scope", "Junk / joke rows flagged",
-             "Underpowered at n = 27"], accent=RED, gap=12)
+             "Underpowered at n = 29"], accent=RED, gap=12)
     footer(s, 18, a)
 
 
@@ -896,7 +896,7 @@ def s19(prs):
     header(s, 19, "Conclusion and future scope", "A small utility addressing a measured gap", a)
     box(s, 0.7, 1.95, 11.9, 1.65, PANEL)
     text(s, 1.0, 2.25, 11.2, 1.1,
-         "85% save music. 44% struggle to find old saves.\nA private utility closes that loop — without claiming to fix ads.",
+         "86% save music. 45% struggle to find old saves.\nA private utility closes that loop — without claiming to fix ads.",
          size=FONT_BODY, color=WHITE, bold=True)
     text(s, 0.7, 3.95, 6, 0.28, "FUTURE WORK", size=FONT_META, color=T_AMBER, bold=True)
     x = 0.7
@@ -917,7 +917,7 @@ def s20(prs):
     text(s, 0.9, 1.85, 11, 1.1, "Thank you.", size=FONT_HERO, color=WHITE, bold=True)
     text(s, 0.95, 3.0, 8, 0.6, "Questions?", size=FONT_BODY, color=GREEN, bold=True)
     bullets(s, 0.95, 4.1, 8.5, 2.0,
-            ["Anonymised survey dataset (R01–R27)", "Integrated assignment brief",
+            ["Anonymised survey dataset (R01–R29)", "Integrated assignment brief",
              "Libraries: Flask, pandas, SciPy, matplotlib", "AI tooling disclosed per brief"],
             accent=GREEN, gap=9)
     footer(s, 20, a)

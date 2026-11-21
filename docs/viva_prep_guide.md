@@ -56,19 +56,19 @@ Everything in the paper comes back to these. Learn them as **pairs** (number + m
 
 | Anchor | Meaning |
 |---|---|
-| **27** | survey responses (target was 30) |
-| **25** | responses judged substantive; 2 flagged, none deleted |
-| **19** | median age (range 18–30, numeric mean 19.74) |
-| **67%** | Spotify — biggest platform, so platform imbalance is a limitation |
-| **85%** | use daily/several times **and** save or playlist a liked track |
-| **44%** | sometimes struggle to find old saves (the design target) |
-| **48%** | mention ads — biggest complaint, out of scope |
+| **29** | survey responses (target was 30) |
+| **27** | responses judged substantive; 2 flagged, none deleted |
+| **19** | median age (range 18–30, numeric mean 19.79) |
+| **69%** | Spotify — biggest platform, so platform imbalance is a limitation |
+| **86%** | use daily/several times **and** save or playlist a liked track |
+| **45%** | sometimes struggle to find old saves (the design target) |
+| **52%** | mention ads — biggest complaint, out of scope |
 | **52%** | say taste is only somewhat/poorly understood |
-| **2.41 / p .003** | taste rating, significantly above neutral 2 |
-| **2.44 / p .003** | vibe-finding ease, significantly above neutral |
-| **2.04 / p .852** | saved retrieval, **not** significant — honest framing |
-| **0.381** | critical |r| at n=27 |
-| **+0.385 / p .047** | vibe ease ↔ saved retrieval — the only significant correlation |
+| **2.38 / p .005** | taste rating, significantly above neutral 2 |
+| **2.38 / p .009** | vibe-finding ease, significantly above neutral |
+| **2.03 / p .856** | saved retrieval, **not** significant — honest framing |
+| **0.367** | critical |r| at n=29 |
+| **+0.324 / p .087** | vibe ease ↔ saved retrieval — strongest pair, still not significant |
 | **68** | SUS benchmark score |
 | **0.05** | alpha (significance level) |
 | **5** | Design Thinking stages, and the winning matrix score (5.00) |
@@ -77,7 +77,7 @@ Everything in the paper comes back to these. Learn them as **pairs** (number + m
 | **5** | database tables, and website pages |
 
 **Sentence that ties it together (learn this verbatim):**
-> "The baseline was good but not great: 85% save music yet 44% struggle to find
+> "The baseline was good but not great: 86% save music yet 45% struggle to find
 > old saves, and only 48% feel their taste is understood very well. So my project
 > claims refinement, not rescue."
 
@@ -90,12 +90,12 @@ Learn one "hook sentence" per section. If asked about any section, start with it
 | § | Section | Hook sentence / what they may ask |
 |---|---|---|
 | — | Title page | Preet Kamdar · 256019 · B.Tech CSE (AI & ML) · JG University; 4 mentors listed. |
-| 1 | Abstract | One paragraph: problem → prototype → 27-response finding → limits. "Why is the abstract long?" Brief recommends ~50 words; mine includes the required statistic. |
+| 1 | Abstract | One paragraph: problem → prototype → 29-response finding → limits. "Why is the abstract long?" Brief recommends ~50 words; mine includes the required statistic. |
 | 2 | Keywords | 9 terms. Rarely asked, but know that SUS, hypothesis testing and Flask/SQLite are there. |
-| 3 | Introduction | 85% routine use, 85% save, 44% retrieval trouble, 48% ads. Honest limits stated up front. |
+| 3 | Introduction | 86% routine use, 86% save, 45% retrieval trouble, 52% ads. Honest limits stated up front. |
 | 4 | Literature review | Brown (2008) Design Thinking; Brooke (1996) SUS; collaborative filtering vs my rule-based demo DB; Spearman for ordinal data. |
 | 5 | Objectives & problem | 5 objectives; POV and HMW statements. Know the HMW by heart: "How might we give listeners control over the familiarity of recommendations and let them rediscover saved music by mood, without requiring a paid subscription or a new account?" |
-| 6 | Methodology | Convenience sample, 27 students, questionnaire types, 3→2→1 coding, neutral = 2, 5-stage table, stack, ethics. |
+| 6 | Methodology | Convenience sample, 29 students, questionnaire types, 3→2→1 coding, neutral = 2, 5-stage table, stack, ethics. |
 | 7 | Findings | Descriptive table, 5 charts, empathy map, persona Aarav (19), 4 t-tests, 4 correlations, 5 open-text themes. **Most likely section to be questioned.** |
 | 8 | Ideation | 10 ideas, 40/35/25 weights, top 5.00 (slider, vibe tags, library), ad blocker 2.80 rejected as infeasible. |
 | 9 | Prototype | Extension + dashboard, hostname adapters, 2-second polling, 5 DB tables, 6 features. |
@@ -108,14 +108,14 @@ Learn one "hook sentence" per section. If asked about any section, start with it
 
 **"Are your results significant?"**
 > "Taste understanding and vibe-finding ease are significantly above neutral —
-> p = 0.0026 and p = 0.0027. Saved retrieval is not, at p = 0.852. So I do not
+> p = 0.0054 and p = 0.0090. Saved retrieval is not, at p = 0.856. So I do not
 > claim users are deeply dissatisfied; I claim personalisation is good but not
 > great, and retrieval friction is common enough to address."
 
-**"You say one correlation is significant — isn't n=27 too small?"**
-> "Yes. The critical value at n=27 is about 0.381; vibe ease with saved retrieval reaches
-> +0.385 at p = 0.047. I describe it cautiously because the sample is small and
-> I ran several comparisons, so I never claim causation."
+**"Are any of your correlations significant?"**
+> "No. At n=29 the critical value is about 0.367; the strongest pair is vibe ease with saved
+> retrieval at +0.324 (p = 0.087). With a small sample and several comparisons I describe all
+> six as weak and directional only — no claim of significance or causation."
 
 **"Where is your actual usability result?"**
 > "I built and instrumented the study page — timed tasks, clicks, errors and the
@@ -187,7 +187,7 @@ that and what does it do?" Here is the answer for each common target.
 |---|---|
 | **Top bar with 6 links** | "That's `base.html`. It is shared by every page using Jinja's `{% extends %}`. The links are Flask `url_for()` calls, so the URLs stay correct if routes change." |
 | **The green highlighted link** | "The template adds `class="active"` to the current page based on the `active` value app.py passes. CSS paints `.nav a.active` green." |
-| **Big number cards (27, 67%, 85%…)** | "Those are counted from the anonymised CSV by `survey_summary()` in app.py, so they can never drift from the survey data." |
+| **Big number cards (29, 69%, 86%…)** | "Those are counted from the anonymised CSV by `survey_summary()` in app.py, so they can never drift from the survey data." |
 | **A song card with Save** | "That card is one item from `recommendations.py`. The Save button carries `data-title`, `data-artist`… — those become `button.dataset.title` in app.js and get POSTed to `/api/save`." |
 | **"Saved ✓" after clicking** | "app.js adds the CSS class `saved` and changes the label. The row is inserted into `saved_songs` by Flask." |
 | **Remove button** | "Its `data-id` is the SQLite row id. app.js POSTs to `/api/unsave/<id>`, Flask deletes the row, and JS removes the list item from the page." |
