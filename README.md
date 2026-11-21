@@ -36,6 +36,7 @@ companion web dashboard with a Python (Flask) backend and SQLite database.
     ├── viva_cheat_sheet.md                    # likely questions and answers
     ├── viva_prep_guide.md                     # study method + inspect-element answers
     ├── VIVA_ONE_PAGER.md                      # project facts, numbers and direct answers only
+    ├── VIVA_MAP.md                            # question → paper section glance sheet
     ├── build_presentation.py                 # regenerates Presentation.pptx
     └── build_paper.py                        # regenerates Research_Paper.docx
 ```
