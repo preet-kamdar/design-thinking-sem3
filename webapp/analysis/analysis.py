@@ -50,7 +50,7 @@ OPEN_COLS = [C_PROBLEM, C_WISH, C_CHANGE]
 ORDINAL_MAPS = {
     "Usage frequency": (C_FREQ, {"Daily": 3, "Several times a week": 2, "Occasionally": 1}),
     "Vibe-finding ease": (C_VIBE, {"Easy": 3, "Average": 2, "Difficult": 1}),
-    "Saved-song retrieval": (C_RETRIEVE, {"Easy": 3, "Sometimes difficult": 1}),
+    "Saved-song retrieval": (C_RETRIEVE, {"Easy": 3, "Sometimes difficult": 1, "Difficult": 1}),
     "Taste understanding": (C_TASTE, {"Very well": 3, "Somewhat": 2, "Poorly": 1}),
 }
 

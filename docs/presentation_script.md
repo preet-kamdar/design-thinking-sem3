@@ -14,7 +14,7 @@ survey data and a working Python backend."
 
 ### Slide 2 — Introduction
 **On slide:** Music streaming is routine; personalisation is a top expectation; ads dominate complaints.
-**Say:** "Music streaming is part of daily life for our respondents — **84% use their app
+**Say:** "Music streaming is part of daily life for our respondents — **85% use their app
 daily or several times a week**. But personalisation is uneven: **52% say their app only
 'somewhat' or 'poorly' understands their taste**. This project asks whether a lightweight
 utility can improve discovery and rediscovery without needing account APIs."
@@ -31,10 +31,10 @@ an analysis pipeline that reruns on updated data."
 ---
 
 ### Slide 4 — User research
-**On slide:** Target users: students 18–30. Convenience sampling. Questionnaire: MCQ + ordinal + numeric + open-ended. n = 25.
+**On slide:** Target users: students 18–30. Convenience sampling. Questionnaire: MCQ + ordinal + numeric + open-ended. n = 27.
 **Say:** "We used convenience sampling of students. The questionnaire mixes multiple-choice,
-ordinal ease ratings, numeric age, and three open-ended questions. **25 responses** — below
-the brief's target of 30, which we state openly as a limitation. The sample is **64% Spotify**,
+ordinal ease ratings, numeric age, and three open-ended questions. **27 responses** — below
+the brief's target of 30, which we state openly as a limitation. The sample is **67% Spotify**,
 so platform conclusions are strongest for Spotify."
 
 ---
@@ -42,17 +42,17 @@ so platform conclusions are strongest for Spotify."
 ### Slide 5 — Empathise
 **On slide:** Empathy map (Says / Thinks / Does / Feels) + top 3 pain points.
 **Say:** "Users *say* 'remove ads' and 'better recommendations'. They *do* save songs —
-**84% add to playlist or like** — but **44% sometimes struggle to find old saves**. They
+**85% add to playlist or like** — but **44% sometimes struggle to find old saves**. They
 *feel* mildly satisfied, not delighted. Ranked pain points: ads **48%** — out of scope;
-recommendations/taste **36%**; UI **20%**."
+recommendations/taste **37%**; UI **19%**."
 
 ---
 
 ### Slide 6 — Statistical findings
 **On slide:** Three summary cards + honest reading. The five full-size charts are on slides 7–11.
 **Say:** "Ordinal coding was 1–3 with neutral 2. One-sample t-tests show responses were
-significantly *above* neutral for vibe-finding ease, **mean 2.48, p = 0.0012**, and taste
-understanding, **mean 2.40, p = 0.0049**. Saved retrieval was **mean 2.12, p = 0.559** —
+significantly *above* neutral for vibe-finding ease, **mean 2.44, p = 0.0027**, and taste
+understanding, **mean 2.41, p = 0.0026**. Saved retrieval was **mean 2.04, p = 0.852** —
 not significant. Correlations were weak, with one significant pair. So we do not overclaim: the
 baseline is good-but-not-great, and the opportunity is refinement."
 
@@ -60,39 +60,39 @@ baseline is good-but-not-great, and the opportunity is refinement."
 
 ### Slide 7 — Evidence 1: platform and usage
 **On slide:** Primary-platform and usage-frequency bar charts, full width.
-**Say:** "This is our platform mix: **16 of 25 use Spotify — 64%**, four use YouTube Music,
-two Apple Music and three other. **Sixteen listen daily** and five several times a week.
+**Say:** "This is our platform mix: **18 of 27 use Spotify — 67%**, four use YouTube Music,
+two Apple Music and three other. **Eighteen listen daily** and five several times a week.
 The imbalance is a limitation we state rather than hide."
 
 ---
 
 ### Slide 8 — Evidence 2: discovery and saving
 **On slide:** Discovery-source and post-like action charts, full width.
-**Say:** "Discovery is split: **eight find music outside the app**, seven through recommendations,
-six by search and four via playlists. Yet **21 of 25 save or like tracks**. That gap between
+**Say:** "Discovery is split: **eight find music outside the app**, seven by search, seven through recommendations
+and five via playlists. Yet **23 of 27 save or like tracks**. That gap between
 saving and finding them again is exactly what our library feature addresses."
 
 ---
 
 ### Slide 9 — Evidence 3: ordinal distributions
 **On slide:** Four bar charts showing the raw 1–3 counts behind the baseline tests.
-**Say:** "These are the raw counts behind the tests. Vibe-finding ease averages **2.48, p = 0.0012**,
-taste understanding **2.40, p = 0.0049**, but saved-song retrieval is **2.12, p = 0.559**. Above
+**Say:** "These are the raw counts behind the tests. Vibe-finding ease averages **2.44, p = 0.0027**,
+taste understanding **2.41, p = 0.0026**, but saved-song retrieval is **2.04, p = 0.852**. Above
 neutral is not dissatisfaction — it is room to refine."
 
 ---
 
 ### Slide 10 — Evidence 4: age and score spread
 **On slide:** Age histogram and box plots of the three ordinal scores.
-**Say:** "We have **25 numeric ages, mean 19.8, median 19**. The box
-plots show the spread — retrieval is the widest. With n = 25 we treat this as directional
+**Say:** "We have **27 numeric ages, mean 19.7, median 19**. The box
+plots show the spread — retrieval is the widest. With n = 27 we treat this as directional
 evidence only, not proof."
 
 ---
 
 ### Slide 11 — Evidence 5: correlations
 **On slide:** Spearman correlation heatmap with grids and readable labels.
-**Say:** "Only one correlation clears the bar. At n = 25 a coefficient needs about **0.396**; retrieval with taste reaches **0.417 (p = 0.038)**. So we do not claim that one habit
+**Say:** "Only one correlation clears the bar. At n = 27 a coefficient needs about **0.381**; vibe ease with saved retrieval reaches **0.385 (p = 0.047)**. So we do not claim that one habit
 causes another — we only describe what we observed."
 
 ---
@@ -121,7 +121,7 @@ then scored each on desirability, feasibility and viability."
 **Say:** "Weighted scoring put the discovery slider, vibe tags, and save-plus-library at
 **5.00**, highest. AI chatbot scored **2.45** and ad blocker **2.80** — rejected on
 feasibility, since we have no API access. Before testing we fixed three hypotheses:
-retrieval time, taste satisfaction above baseline 2.40, and SUS above 68, at alpha 0.05."
+retrieval time, taste satisfaction above baseline 2.41, and SUS above 68, at alpha 0.05."
 
 ---
 
@@ -158,7 +158,7 @@ on measurement. **[Add SUS and task-time changes from real testing here.]**"
 ### Slide 18 — Impact and limitations
 **On slide:** Benefits · feasibility · threats to validity.
 **Say:** "Benefits: no account required, data never leaves the browser, works across three
-platforms. Limitations: **n = 25 not 30**; **64% Spotify, only 8% Apple Music**; ads —
+platforms. Limitations: **n = 27 not 30**; **67% Spotify, only 7% Apple Music**; ads —
 the biggest complaint — are out of scope; recommendation data is a demo database; and this
 was a single-contributor project, so team-role breadth was consolidated. We disclose all of
 these rather than hide them."

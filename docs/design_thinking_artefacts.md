@@ -16,7 +16,7 @@ See `docs/statistical_results.md` for the full tables and tests.
 >
 > | Brief role | How it was covered here |
 > |---|---|
-> | Research Lead | Questionnaire design, 25 responses, qualitative open-text coding, empathy map, persona |
+> | Research Lead | Questionnaire design, 27 responses, qualitative open-text coding, empathy map, persona |
 > | Statistics Lead | Descriptive analysis, ordinal coding, correlation, baseline t-tests, confidence intervals, SUS instrument |
 > | Frontend Lead | Chrome extension UI (HTML/CSS/JS) plus responsive companion dashboard |
 > | Backend Lead | Flask server, routes, SQLite schema, usage-event logging |
@@ -33,8 +33,8 @@ See `docs/statistical_results.md` for the full tables and tests.
 
 ### Target users
 Students and young adults (survey age range 18–30, median 19) who use music streaming
-at least several times a week (84% of respondents). 64% name Spotify as their primary
-platform; 16% YouTube Music, 12% Other and 8% Apple Music.
+at least several times a week (85% of respondents). 67% name Spotify as their primary
+platform; 15% YouTube Music, 11% Other and 7% Apple Music.
 
 ### Empathy map (composite, built from real open-text answers)
 
@@ -42,15 +42,15 @@ platform; 16% YouTube Music, 12% Other and 8% Apple Music.
 |---|---|
 | **Says** | "Ads, remove ads" · "Poor recommendations" · "Repetitive recommendations" · "understand my music taste better" · "Organise all my music according to its vibe" · "change different suggestions that differ for mood and not on time" |
 | **Thinks** | "Why is it showing me the same songs again?" · "I liked that track — will I ever find it again?" · "I want music for this mood, not what the algorithm thinks is popular." |
-| **Does** | 84% add a song to a playlist or save/like it. 32% discover new music *outside* the app. 44% sometimes struggle to find songs saved a long time ago. |
-| **Feels** | Annoyed by interruptions (48% mention ads/paywall). Mildly satisfied but not delighted by recommendations: 44% say the app understands their taste only "somewhat", 8% "poorly". |
+| **Does** | 85% add a song to a playlist or save/like it. 30% discover new music *outside* the app. 44% sometimes struggle to find songs saved a long time ago. |
+| **Feels** | Annoyed by interruptions (48% mention ads/paywall). Mildly satisfied but not delighted by recommendations: 44% say the app understands their taste only "somewhat", 7% "poorly". |
 
 ### Key pain points, ranked by evidence
-1. **Ads / paywall — 12/25 (48%)** — highest frequency, but **out of scope** for a client-side utility; recorded as a limitation.
-2. **Recommendations / taste — 9/25 (36%)** — in scope: repetitive, not matching taste, not mood-sensitive.
-3. **Saved-song retrieval — 11/25 (44%) report difficulty** — in scope: the data layer already exists.
-4. **Vibe-finding friction — 11/25 (44%) rate Average or Difficult** — in scope but weaker evidence.
-5. UI/customisation — 5/25 (20%) — future scope.
+1. **Ads / paywall — 13/27 (48%)** — highest frequency, but **out of scope** for a client-side utility; recorded as a limitation.
+2. **Recommendations / taste — 10/27 (37%)** — in scope: repetitive, not matching taste, not mood-sensitive.
+3. **Saved-song retrieval — 12/27 (44%) sometimes struggle** — in scope: the data layer already exists.
+4. **Vibe-finding friction — 12/27 (44%) rate Average or Difficult** — in scope but weaker evidence.
+5. UI/customisation — 5/27 (19%) — future scope.
 
 ---
 
@@ -60,7 +60,7 @@ platform; 16% YouTube Music, 12% Other and 8% Apple Music.
 
 > **Aarav, 19 — B.Tech student, daily Spotify listener**
 > - Listens several hours a day, mostly on mobile/web between classes.
-> - Finds new music through friends and social media rather than inside the app (matches the 32% "outside the app" finding).
+> - Finds new music through friends and social media rather than inside the app (matches the 30% "outside the app" finding).
 > - Saves tracks to playlists but rarely revisits them because search is tedious.
 > - Wants recommendations that match his current mood and feels the app only "somewhat" understands his taste.
 > - Frustrated by ads but knows a free user cannot remove them; wants more control instead.
@@ -89,9 +89,9 @@ One-sample t-tests against neutral (2/3):
 
 | Measure | Mean | t | p | 95% CI | Reading |
 |---|---:|---:|---:|---|---|
-| Vibe-finding ease | 2.48 | 3.67 | 0.0012 | [2.21, 2.75] | significantly above neutral |
-| Taste understanding | 2.40 | 3.10 | 0.0049 | [2.13, 2.67] | above neutral, but 52% only "somewhat"/"poorly" |
-| Saved retrieval | 2.12 | 0.59 | 0.5593 | [1.70, 2.54] | not significantly different |
+| Vibe-finding ease | 2.44 | 3.31 | 0.0027 | [2.17, 2.72] | significantly above neutral |
+| Taste understanding | 2.41 | 3.33 | 0.0026 | [2.16, 2.66] | above neutral, but 52% only "somewhat"/"poorly" |
+| Saved retrieval | 2.04 | 0.19 | 0.8516 | [1.63, 2.44] | not significantly different |
 
 **Honest framing:** the closed questions show a *good-but-not-great* baseline, not a
 broken one. The opportunity is refinement of recommendations and retrieval, backed by
@@ -149,7 +149,7 @@ Personal Music Experience
 
 | Opportunities | Threats |
 |---|---|
-| Companion web dashboard adds backend + measurement | 25 responses is below the brief's target of 30 |
+| Companion web dashboard adds backend + measurement | 27 responses is below the brief's target of 30 |
 | Saved-song gap directly supported by data | Ads complaint is out of scope |
 | SUS + timed tasks give quantitative validation | Single-contributor scope reduces teamwork marks |
 
@@ -178,8 +178,8 @@ usage measurement, and a stated limitation on ads.
 - **H₀a:** There is no difference in median retrieval time.
 - **H₁b (taste satisfaction):** Mean rating of "the app understands my taste" is
   higher after using Familiar/Balanced/Exploratory discovery than the survey baseline
-  of 2.40.
-- **H₀b:** Mean rating is unchanged from 2.40.
+  of 2.41.
+- **H₀b:** Mean rating is unchanged from 2.41.
 - **H₁c (usability):** Mean SUS score of the prototype exceeds 68 (above-average benchmark).
 - **H₀c:** Mean SUS score is 68 or lower.
 - Significance level α = 0.05. Paired design (same users try both), Wilcoxon signed-rank

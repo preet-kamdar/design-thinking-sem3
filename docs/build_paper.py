@@ -102,10 +102,10 @@ def main():
            "recommendations only partially match their taste. This project applied Design Thinking "
            "to build a cross-platform personalisation prototype: a Chrome extension with Familiar, "
            "Balanced and Exploratory discovery, vibe-based browsing, and a saved-music library backed "
-           "by a Flask/SQLite dashboard. A 25-response survey found taste understanding significantly "
-           "above neutral but modest (mean 2.40, t=3.10, p=0.005), while 44% sometimes struggled to "
+           "by a Flask/SQLite dashboard. A 27-response survey found taste understanding significantly "
+           "above neutral but modest (mean 2.41, t=3.33, p=0.003), while 44% sometimes struggled to "
            "find old saves. The prototype addresses these in-scope gaps with local, private data and "
-           "built-in usage measurement. n=25 and single-contributor scope are disclosed as limits.")
+           "built-in usage measurement. n=27 and single-contributor scope are disclosed as limits.")
     p(doc, "Word count: approximately 100 words (brief recommends about 50; this version includes "
            "the required main statistical finding and model details).", italic=True)
 
@@ -117,11 +117,11 @@ def main():
     # ---- 3 Introduction ----
     h(doc, "3. Introduction", 1)
     p(doc, "Music streaming is a routine activity for young adults. The survey conducted for this "
-           "project found that 84% of respondents used their primary platform daily or several times "
+           "project found that 85% of respondents used their primary platform daily or several times "
            "a week. Yet routine use does not imply satisfaction with personalisation: 44% said their "
-           "app understood their taste only 'somewhat' and a further 8% said 'poorly'. Only 48% "
+           "app understood their taste only 'somewhat' and a further 7% said 'poorly'. Only 48% "
            "chose 'very well'.")
-    p(doc, "At the same time, 84% of respondents add a liked song to a playlist or save/like it, but "
+    p(doc, "At the same time, 85% of respondents add a liked song to a playlist or save/like it, but "
            "44% reported that finding songs saved a long time ago is sometimes difficult. This "
            "save-and-retrieve gap is directly addressable by a lightweight utility that does not need "
            "access to a streaming service's private APIs.")
@@ -130,7 +130,7 @@ def main():
            "combines the five Design Thinking stages with a questionnaire, descriptive and "
            "inferential statistics, a working frontend and Python backend, and an instrumented "
            "usability study.")
-    p(doc, "The scope of this document is deliberately honest. The survey has 25 responses against a "
+    p(doc, "The scope of this document is deliberately honest. The survey has 27 responses against a "
            "target of 30, the recommendation database is demo content, and the largest single complaint "
            "— advertisements, mentioned by 48% — is outside the technical reach of a client-side "
            "utility. Each of these is treated as a limitation rather than hidden.")
@@ -176,9 +176,9 @@ def main():
     # ---- 6 Methodology ----
     h(doc, "6. Research Methodology", 1)
     h(doc, "6.1 Participants and sampling", 2)
-    p(doc, "Convenience sampling was used to recruit 25 respondents, mostly students aged 18–30 "
-           "(median 19; numeric mean 19.76, SD 2.44). 64% named Spotify as their primary platform, "
-           "16% YouTube Music, 12% 'Other' and 8% Apple Music. Limitations: small sample, "
+    p(doc, "Convenience sampling was used to recruit 27 respondents, mostly students aged 18–30 "
+           "(median 19; numeric mean 19.74, SD 2.35). 67% named Spotify as their primary platform, "
+           "15% YouTube Music, 11% 'Other' and 7% Apple Music. Limitations: small sample, "
            "platform imbalance, self-selection bias and no "
            "stratification.")
     h(doc, "6.2 Questionnaire design", 2)
@@ -201,7 +201,7 @@ def main():
            "content scripts. Backend: Python 3 with Flask, SQLite via sqlite3. Analysis: pandas, "
            "NumPy, SciPy, matplotlib. Documentation: python-docx and python-pptx.")
     h(doc, "6.5 Ethical handling", 2)
-    p(doc, "Participants were informed of the purpose and data use. Names were replaced by R01–R25 in "
+    p(doc, "Participants were informed of the purpose and data use. Names were replaced by R01–R27 in "
            "the anonymised dataset. No contact details or sensitive information were collected. Two "
            "non-substantive responses were flagged rather than deleted, and no responses were "
            "invented or altered. AI tools were used for code and documentation drafting and are "
@@ -211,14 +211,14 @@ def main():
     h(doc, "7. User Research and Findings", 1)
     h(doc, "7.1 Descriptive findings", 2)
     table(doc, ["Measure", "Result"], [
-        ["Responses", "25 (23 assessed as substantive)"],
-        ["Primary platform", "Spotify 16 (64%); YouTube Music 4 (16%); Other 3 (12%); Apple Music 2 (8%)"],
-        ["Usage frequency", "Daily 16 (64%); several times/week 5 (20%); occasionally 4 (16%)"],
-        ["Discovery source", "Outside app 8 (32%); recommendations 7 (28%); search 6 (24%); playlist 4 (16%)"],
-        ["Vibe-finding ease", "Easy 14 (56%); Average 9 (36%); Difficult 2 (8%)"],
-        ["Action after liking", "Playlist 13 (52%); save/like 8 (32%); just listen 4 (16%)"],
-        ["Saved retrieval", "Easy 14 (56%); sometimes difficult 11 (44%)"],
-        ["Taste understanding", "Very well 12 (48%); somewhat 11 (44%); poorly 2 (8%)"],
+        ["Responses", "27 (25 assessed as substantive)"],
+        ["Primary platform", "Spotify 18 (67%); YouTube Music 4 (15%); Other 3 (11%); Apple Music 2 (7%)"],
+        ["Usage frequency", "Daily 18 (67%); several times/week 5 (19%); occasionally 4 (15%)"],
+        ["Discovery source", "Outside app 8 (30%); search 7 (26%); recommendations 7 (26%); playlist 5 (19%)"],
+        ["Vibe-finding ease", "Easy 15 (56%); Average 9 (33%); Difficult 3 (11%)"],
+        ["Action after liking", "Playlist 15 (56%); save/like 8 (30%); just listen 4 (15%)"],
+        ["Saved retrieval", "Easy 14 (52%); sometimes difficult 12 (44%); difficult 1 (4%)"],
+        ["Taste understanding", "Very well 13 (48%); somewhat 12 (44%); poorly 2 (7%)"],
     ])
     add_chart(doc, "platform_and_frequency.png", "Figure 1: Primary platform and usage frequency")
     add_chart(doc, "discovery_and_saving.png", "Figure 2: Discovery source and saving behaviour")
@@ -229,7 +229,7 @@ def main():
     table(doc, ["Quadrant", "Evidence from responses"], [
         ["Says", "'Remove ads'; 'better recommendations'; 'organise all my music according to its vibe'"],
         ["Thinks", "'Why the same songs again?'; 'Will I find that saved track later?'"],
-        ["Does", "84% save or playlist; 32% discover outside the app"],
+        ["Does", "85% save or playlist; 30% discover outside the app"],
         ["Feels", "Annoyed by ads (48%); mildly satisfied with recommendations"],
     ])
     h(doc, "7.3 Persona", 2)
@@ -241,10 +241,10 @@ def main():
     p(doc, "One-sample t-tests compared each ordinal mean with the neutral value 2 (two-tailed, "
            "alpha = 0.05). Results:")
     table(doc, ["Measure", "Mean", "SD", "t", "df", "p", "95% CI"], [
-        ["Usage frequency", "2.48", "0.77", "3.116", "24", "0.0047", "[2.16, 2.80]"],
-        ["Vibe-finding ease", "2.48", "0.65", "3.674", "24", "0.0012", "[2.21, 2.75]"],
-        ["Saved retrieval", "2.12", "1.01", "0.592", "24", "0.5593", "[1.70, 2.54]"],
-        ["Taste understanding", "2.40", "0.65", "3.098", "24", "0.0049", "[2.13, 2.67]"],
+        ["Usage frequency", "2.52", "0.75", "3.578", "26", "0.0014", "[2.22, 2.82]"],
+        ["Vibe-finding ease", "2.44", "0.70", "3.309", "26", "0.0027", "[2.17, 2.72]"],
+        ["Saved retrieval", "2.04", "1.02", "0.189", "26", "0.8516", "[1.63, 2.44]"],
+        ["Taste understanding", "2.41", "0.64", "3.328", "26", "0.0026", "[2.16, 2.66]"],
     ])
     p(doc, "Interpretation. Vibe-finding ease and taste understanding were significantly above neutral, "
            "while saved retrieval was not significantly different from neutral. These results do not "
@@ -253,21 +253,21 @@ def main():
            "address.")
     h(doc, "7.5 Correlations", 2)
     table(doc, ["Pair", "Pearson r", "Spearman rho", "p (Spearman)"], [
-        ["Vibe ease vs saved retrieval", "+0.413", "+0.393", "0.0522"],
-        ["Vibe ease vs taste", "+0.415", "+0.334", "0.1027"],
-        ["Saved retrieval vs taste", "+0.433", "+0.417", "0.0380"],
-        ["Frequency vs taste", "+0.101", "+0.166", "0.4280"],
+        ["Vibe ease vs saved retrieval", "+0.409", "+0.385", "0.0473"],
+        ["Vibe ease vs taste", "+0.270", "+0.212", "0.2893"],
+        ["Saved retrieval vs taste", "+0.391", "+0.377", "0.0523"],
+        ["Frequency vs taste", "+0.104", "+0.168", "0.4031"],
     ])
-    p(doc, "At n=25 the critical |r| is about 0.396. Only saved retrieval versus taste clears it "
-           "(rho +0.417, p = 0.038); the other associations are weak and directional only.")
+    p(doc, "At n=27 the critical |r| is about 0.381. Only vibe-finding ease versus saved retrieval clears it "
+           "(rho +0.385, p = 0.047); saved retrieval versus taste comes close (rho +0.377, p = 0.052). The remaining associations are weak and directional only.")
     add_chart(doc, "correlation_heatmap.png", "Figure 5: Spearman correlation matrix")
     h(doc, "7.6 Open-text themes", 2)
     table(doc, ["Theme", "Respondents", "Percent"], [
-        ["Ads / paywall", "12", "48.0%"],
-        ["Recommendations / taste", "9", "36.0%"],
-        ["UI / customisation", "5", "20.0%"],
-        ["Vibe / mood", "3", "12.0%"],
-        ["Saving / organising", "1", "4.0%"],
+        ["Ads / paywall", "13", "48.1%"],
+        ["Recommendations / taste", "10", "37.0%"],
+        ["UI / customisation", "5", "18.5%"],
+        ["Vibe / mood", "3", "11.1%"],
+        ["Saving / organising", "1", "3.7%"],
     ])
 
     # ---- 8 Ideation ----
@@ -337,7 +337,7 @@ def main():
     h(doc, "10.1 Hypotheses (fixed before testing)", 2)
     bullets(doc, [
         "H1a: median time to find a saved song is lower with the prototype; H0a: no difference.",
-        "H1b: mean taste rating after using discovery exceeds the survey baseline of 2.40; H0b: unchanged.",
+        "H1b: mean taste rating after using discovery exceeds the survey baseline of 2.41; H0b: unchanged.",
         "H1c: mean SUS score exceeds 68; H0c: SUS is 68 or lower.",
         "Significance level alpha = 0.05; paired design (same users try both).",
     ])
@@ -366,7 +366,7 @@ def main():
     p(doc, "The survey evidence supports the choice of retrieval and recommendation control as in-scope "
            "targets, while showing that ads — the most frequent complaint — cannot be addressed by "
            "this architecture. The baseline was above neutral, so the project claims refinement rather "
-           "than rescue. Limitations: n=25 against a target of 30; 64% Spotify and only 8% Apple Music "
+           "than rescue. Limitations: n=27 against a target of 30; 67% Spotify and only 7% Apple Music "
            "respondents; demo rather than learned recommendations; fragile site selectors; two "
            "flagged low-quality responses; and a single contributor covering all five brief roles. "
            "These limit generalisation and are stated plainly rather than minimised.")
@@ -376,7 +376,7 @@ def main():
     p(doc, "This project applied all five Design Thinking stages to a real, measured problem and "
            "produced a working cross-platform prototype with a Python backend, a SQLite database "
            "and built-in measurement. The strongest evidence-backed contribution is the save-and-"
-           "retrieve loop: 84% save music while 44% sometimes struggle to find old saves. The "
+           "retrieve loop: 85% save music while 44% sometimes struggle to find old saves. The "
            "prototype also gives users explicit control over recommendation familiarity and mood.")
     p(doc, "Future work includes replacing the demo recommendation database with a learned model, "
            "implementing the Understand section, collecting a larger stratified sample of at least "
@@ -391,7 +391,7 @@ def main():
     p(doc, "Integrated Assignment Brief (2026). Design for Impact: Finding a Real-World Problem and "
            "Proving Your Solution Works. B.Tech Second Year.")
     p(doc, "Google Forms (2026). Music Streaming Platform Experience questionnaire and anonymised "
-           "response dataset (R01–R25).")
+           "response dataset (R01–R27).")
     p(doc, "Flask, pandas, NumPy, SciPy and matplotlib documentation (open-source libraries used "
            "for the backend and statistical analysis).")
     p(doc, "Spotify, YouTube Music and Apple Music web players (interface structures observed for "
@@ -426,7 +426,7 @@ def main():
     h(doc, "Appendix C — Consent and anonymisation note", 2)
     p(doc, "Participants were told the purpose of the study, that participation was voluntary, and "
            "that responses would be used only for this academic project. Names were replaced with "
-           "identifiers R01–R25 in the shared dataset and no contact details were collected.")
+           "identifiers R01–R27 in the shared dataset and no contact details were collected.")
     h(doc, "Appendix D — Single-contributor scope statement", 2)
     p(doc, "The brief assumes a five-member team with five specialist roles. This project was "
            "executed by one student, consolidating Research, Statistics, Frontend, Backend and "
