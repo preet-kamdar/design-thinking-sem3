@@ -17,6 +17,7 @@ BLACK = RGBColor(0, 0, 0)
 BODY_SIZE = 12
 CAPTION_SIZE = 10
 TITLE_SIZE = 28
+CHART_WIDTH = 7.1  # inches; page text width is 7.2" with the narrower margins below
 
 
 def apply_font(obj, size=None):
@@ -93,15 +94,26 @@ def normalise_fonts(doc):
                         apply_font(run)
 
 
-def add_chart(doc, filename, caption_text):
+def add_chart(doc, filename, caption_text, new_page=False):
     path = CHARTS / filename
     if path.exists():
-        doc.add_picture(str(path), width=Inches(5.8))
+        if new_page:
+            doc.add_page_break()
+        par = doc.add_paragraph()
+        par.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        par.paragraph_format.keep_with_next = True  # image never leaves its caption
+        run = par.add_run()
+        run.add_picture(str(path), width=Inches(CHART_WIDTH))
         caption(doc, caption_text)
 
 
 def main():
     doc = Document()
+    for section in doc.sections:
+        section.top_margin = Inches(0.7)
+        section.bottom_margin = Inches(0.7)
+        section.left_margin = Inches(0.65)
+        section.right_margin = Inches(0.65)
     for style_name, size in (("Normal", BODY_SIZE), ("Heading 1", 16),
                              ("Heading 2", 14), ("List Bullet", BODY_SIZE),
                              ("Caption", CAPTION_SIZE)):
@@ -259,12 +271,14 @@ def main():
         ["Saved retrieval", "Easy 15 (47%); sometimes difficult 15 (47%); difficult 2 (6%)"],
         ["Taste understanding", "Very well 14 (44%); somewhat 14 (44%); poorly 4 (13%)"],
     ])
+    doc.add_page_break()  # keep the enlarged charts off the descriptive table
     add_chart(doc, "platform_and_frequency.png", "Figure 1: Primary platform and usage frequency")
     add_chart(doc, "discovery_and_saving.png", "Figure 2: Discovery source and saving behaviour")
-    add_chart(doc, "ordinal_distributions.png", "Figure 3: Distributions of ordinal questions")
+    add_chart(doc, "ordinal_distributions.png", "Figure 3: Distributions of ordinal questions",
+              new_page=True)
     add_chart(doc, "age_and_boxplots.png", "Figure 4: Age distribution and ordinal score spread")
 
-    h(doc, "7.2 Empathy map", 2)
+    h(doc, "7.2 Empathy map", 2, new_page=True)
     table(doc, ["Quadrant", "Evidence from responses"], [
         ["Says", "'Remove ads'; 'better recommendations'; 'organise all my music according to its vibe'"],
         ["Thinks", "'Why the same songs again?'; 'Will I find that saved track later?'"],
@@ -299,7 +313,8 @@ def main():
     ])
     p(doc, "At n=32 the critical |r| is about 0.349. None of the six pairs reaches it; the strongest is vibe-finding ease versus saved retrieval "
            "(rho +0.331, p = 0.064), followed by vibe ease versus taste (rho +0.325, p = 0.070). All associations are weak and directional only.")
-    add_chart(doc, "correlation_heatmap.png", "Figure 5: Spearman correlation matrix")
+    add_chart(doc, "correlation_heatmap.png", "Figure 5: Spearman correlation matrix",
+              new_page=True)
     h(doc, "7.6 Open-text themes", 2)
     table(doc, ["Theme", "Respondents", "Percent"], [
         ["Ads / paywall", "17", "53.1%"],
