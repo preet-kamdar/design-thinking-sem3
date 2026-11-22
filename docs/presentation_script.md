@@ -24,7 +24,7 @@ Target: 10–12 minutes including pauses, plus 5 minutes of questions. **Bold** 
 
 ### Slide 4 — User research
 **On slide:** Target users: students 18–30. Convenience sampling. Questionnaire: MCQ + ordinal + numeric + open-ended. n = 32.
-**Say:** "Before designing anything, I collected evidence. We used **convenience sampling** of students aged **18 to 30**, and the questionnaire mixed multiple-choice items, ordinal ease ratings, numeric age and three open-ended questions. We received **32 responses**, which meets the brief's target of **30**, although it remains a modest sample. Because **72%** named Spotify, our platform conclusions are strongest for Spotify."
+**Say:** "Before designing anything, I collected evidence by using **convenience sampling** of people aged **18 to 30**. The questionnaire contains multiple-choice items, ordinal ease ratings, numeric age and three open-ended questions. We received **32 responses**, which meets the brief's target of **30**, although it remains a modest sample. Because **72%** named Spotify, our platform conclusions are strongest for Spotify."
 
 ---
 
