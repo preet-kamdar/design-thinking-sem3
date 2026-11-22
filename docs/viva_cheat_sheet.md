@@ -78,7 +78,7 @@ Music, backend. Won't = ad removal, offline downloads.
 
 **Q: How many ideas and how did you select?**
 **10 ideas**, scored on desirability **40%**, feasibility **35%**, viability **25%**. Top
-score **5.00** — discovery slider, vibe tags, save-plus-library. Ad blocker scored **2.80**
+score **5.00** — discovery slider, vibe tags, save-plus-library. Ad blocker scored **2.60**
 and was rejected as infeasible without API access.
 
 **Q: What is SWOT?** Strengths, Weaknesses, Opportunities, Threats — used to sanity-check the

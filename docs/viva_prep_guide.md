@@ -97,7 +97,7 @@ Learn one "hook sentence" per section. If asked about any section, start with it
 | 5 | Objectives & problem | 5 objectives; POV and HMW statements. Know the HMW by heart: "How might we give listeners control over the familiarity of recommendations and let them rediscover saved music by mood, without requiring a paid subscription or a new account?" |
 | 6 | Methodology | Convenience sample, 29 students, questionnaire types, 3→2→1 coding, neutral = 2, 5-stage table, stack, ethics. |
 | 7 | Findings | Descriptive table, 5 charts, empathy map, persona Aarav (19), 4 t-tests, 4 correlations, 5 open-text themes. **Most likely section to be questioned.** |
-| 8 | Ideation | 10 ideas, 40/35/25 weights, top 5.00 (slider, vibe tags, library), ad blocker 2.80 rejected as infeasible. |
+| 8 | Ideation | 10 ideas, 40/35/25 weights, top 5.00 (slider, vibe tags, library), ad blocker 2.60 rejected as infeasible. |
 | 9 | Prototype | Extension + dashboard, hostname adapters, 2-second polling, 5 DB tables, 6 features. |
 | 10 | Testing | 3 hypotheses, SUS formula, Wilcoxon/paired t-test planned. **Section 10.3 is honest: no SUS or task-time result is claimed because runs were not complete.** |
 | 11 | Conclusion | Strongest evidence = save-and-retrieve loop. Future work: learned model, Understand section, 30+ sample, completed paired study. |

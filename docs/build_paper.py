@@ -279,12 +279,12 @@ def main():
         ["Familiar/Balanced/Exploratory slider", "5", "5", "5", "5.00", "Build"],
         ["Vibe-tag browser", "5", "5", "5", "5.00", "Build"],
         ["Save + personal library", "5", "5", "5", "5.00", "Build"],
-        ["Preferences panel", "4", "5", "5", "4.65", "Build"],
+        ["Preferences panel", "4", "5", "5", "4.60", "Build"],
         ["Usage logging + SUS", "3", "5", "5", "4.20", "Build"],
         ["Current-track context", "4", "4", "4", "4.00", "Keep"],
         ["Understand (lyrics)", "4", "2", "2", "2.80", "Future"],
         ["AI chatbot", "4", "1", "2", "2.45", "Future"],
-        ["Ad blocker", "5", "1", "1", "2.80", "Reject — infeasible"],
+        ["Ad blocker", "5", "1", "1", "2.60", "Reject — infeasible"],
     ])
     p(doc, "The selected concept is a privacy-first personalisation layer: Discover, Find by Vibe and "
            "My Music at its core, with a companion dashboard and measurement, and an explicit "

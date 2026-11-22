@@ -119,7 +119,7 @@ then scored each on desirability, feasibility and viability."
 ### Slide 14 — Idea selection + hypotheses
 **On slide:** Weighted matrix (D 40% / F 35% / V 25%); top score 5.00; H₀/H₁ written in advance.
 **Say:** "Weighted scoring put the discovery slider, vibe tags, and save-plus-library at
-**5.00**, highest. AI chatbot scored **2.45** and ad blocker **2.80** — rejected on
+**5.00**, highest. AI chatbot scored **2.45** and ad blocker **2.60** — rejected on
 feasibility, since we have no API access. Before testing we fixed three hypotheses:
 retrieval time, taste satisfaction above baseline 2.31, and SUS above 68, at alpha 0.05."
 

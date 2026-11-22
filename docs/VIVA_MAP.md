@@ -18,7 +18,7 @@ Then open the paper, point, and answer in your own words.
 | t-test, p-value, CI, significance | **7.4 Inferential** | four rows |
 | Spearman, critical 0.349, "any correlation?" | **7.5 Correlations** | "None clears critical" |
 | Ads, themes, open answers | **7.6 Themes** | ads 53% |
-| Idea selection / why no ad blocker | **8 Ideation** | 5.00 vs 2.80 |
+| Idea selection / why no ad blocker | **8 Ideation** | 5.00 vs 2.60 |
 | Chrome extension / Flask / SQLite / features | **9 Prototype** | 9.1–9.3 |
 | Hypotheses / study design / SUS status | **10 Testing** | especially **10.3** |
 | Limitations / future work / conclusion | **11** | n=32, selectors, learned model |

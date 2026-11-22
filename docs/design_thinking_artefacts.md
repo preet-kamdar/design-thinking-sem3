@@ -160,12 +160,12 @@ Personal Music Experience
 | Discovery slider (1) | 5 | 5 | 5 | **5.00** | Build — top-ranked pain point |
 | Vibe tags (2) | 5 | 5 | 5 | **5.00** | Build — 50% report friction |
 | Save + My Music (3,4) | 5 | 5 | 5 | **5.00** | Build — 47% retrieval difficulty |
-| Preferences (6) | 4 | 5 | 5 | 4.65 | Build |
+| Preferences (6) | 4 | 5 | 5 | 4.60 | Build |
 | Usage logging + SUS (7) | 3 | 5 | 5 | 4.20 | Build — required by brief |
 | Current-track context (5) | 4 | 4 | 4 | 4.00 | Keep (already built) |
 | Understand (8) | 4 | 2 | 2 | 2.80 | Future scope |
 | AI chatbot (9) | 4 | 1 | 2 | 2.45 | Future scope |
-| Ad blocker (10) | 5 | 1 | 1 | 2.80 | Reject — out of scope |
+| Ad blocker (10) | 5 | 1 | 1 | 2.60 | Reject — out of scope |
 
 **Final concept:** a privacy-first, cross-platform personalisation layer — Discover,
 Find by Vibe, and My Music at its core, with a responsive companion dashboard,

@@ -43,7 +43,7 @@ The Chrome extension and the Flask website are **separate**: the extension store
 | Themes: recs / UI / vibe / saving | **38% / 19% / 13% / 6%** |
 | Vibe-finding ease: easy / average / difficult | **50% / 34% / 16%** |
 | Ideas generated / selection weights | **10** / D 40 · F 35 · V 25 |
-| Winning ideas / ad blocker score | **5.00** ×3 / **2.80** rejected |
+| Winning ideas / ad blocker score | **5.00** ×3 / **2.60** rejected |
 | Hypothesis thresholds | alpha **0.05**, SUS benchmark **68** |
 | Polling interval / DB tables / website pages | **2 s** / **5** / **6** |
 
@@ -82,7 +82,7 @@ One-sample t-tests vs neutral 2, two-tailed, df = 31:
 | Decision | Reason |
 |---|---|
 | Build familiarity control + saved library + vibe tags | Survey showed 84% save but 47% struggle to retrieve; 56% only somewhat/poorly understood taste |
-| Reject the ad blocker (2.80) | A client-side utility cannot control playback/ads — recorded in "Won't", disclosed as a limitation |
+| Reject the ad blocker (2.60) | A client-side utility cannot control playback/ads — recorded in "Won't", disclosed as a limitation |
 | Flask + SQLite, not Django | Six pages and a few JSON APIs; small enough to explain and inspect line by line |
 | Report the "good-but-not-great" baseline | Data do not support claiming users are deeply dissatisfied; honesty over drama |
 | Anonymise to R01–R32 | Ethics: consent, no contact details, AI use disclosed; 2 low-quality rows flagged, none deleted |

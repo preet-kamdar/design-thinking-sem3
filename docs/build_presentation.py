@@ -773,9 +773,9 @@ def s14(prs):
     text(s, 0.7, 1.95, 7.5, 0.28, "WEIGHTED SCORE", size=FONT_META, color=T_AMBER, bold=True)
     y = 2.35
     for label, score, c in [("Discovery slider", 5.0, GREEN), ("Vibe tags", 5.0, GREEN),
-                            ("Save + library", 5.0, GREEN), ("Preferences", 4.65, CYAN),
+                            ("Save + library", 5.0, GREEN), ("Preferences", 4.6, CYAN),
                             ("Usage logging", 4.2, CYAN), ("AI chatbot", 2.45, RED),
-                            ("Ad blocker", 2.8, RED)]:
+                            ("Ad blocker", 2.6, RED)]:
         text(s, 0.7, y, 2.2, 0.28, label, size=FONT_META, color=WHITE)
         shape(s, MSO_SHAPE.RECTANGLE, 2.9, y + 0.03, 3.7, 0.2, PANEL2)
         shape(s, MSO_SHAPE.RECTANGLE, 2.9, y + 0.03, 3.7 * score / 5, 0.2, c)
