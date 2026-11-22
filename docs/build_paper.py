@@ -5,17 +5,38 @@ from pathlib import Path
 
 from docx import Document
 from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.oxml.ns import qn
 from docx.shared import Pt, Inches, RGBColor
 
 OUT = Path(__file__).with_name("Research_Paper.docx")
 ROOT = Path(__file__).resolve().parents[1]
 CHARTS = ROOT / "data" / "charts"
 
-TITLE_COLOR = RGBColor(31, 55, 78)  # dark navy — professional, print-friendly
+FONT_NAME = "Times New Roman"
+BLACK = RGBColor(0, 0, 0)
+BODY_SIZE = 12
+CAPTION_SIZE = 10
+TITLE_SIZE = 28
 
 
-def h(doc, text, level=1):
-    doc.add_heading(text, level=level)
+def apply_font(obj, size=None):
+    """Force Times New Roman and black on a style or a run."""
+    obj.font.name = FONT_NAME
+    obj.font.color.rgb = BLACK
+    if size is not None:
+        obj.font.size = Pt(size)
+    element = obj.element if hasattr(obj, "element") else obj._element
+    rpr = element.get_or_add_rPr()
+    rfonts = rpr.get_or_add_rFonts()
+    for attr in ("w:ascii", "w:hAnsi", "w:eastAsia", "w:cs"):
+        rfonts.set(qn(attr), FONT_NAME)
+
+
+def h(doc, text, level=1, new_page=False):
+    par = doc.add_heading(text, level=level)
+    if new_page:
+        par.paragraph_format.page_break_before = True
+    return par
 
 
 def p(doc, text, italic=False, bold=False):
@@ -34,7 +55,7 @@ def bullets(doc, items):
 
 def table(doc, headers, rows, widths=None):
     t = doc.add_table(rows=1, cols=len(headers))
-    t.style = "Light Grid Accent 1"
+    t.style = "Table Grid"
     for i, head in enumerate(headers):
         t.rows[0].cells[i].text = str(head)
     for row in rows:
@@ -52,8 +73,24 @@ def caption(doc, text):
     par = doc.add_paragraph()
     run = par.add_run(text)
     run.italic = True
-    run.font.size = Pt(9)
+    run.font.size = Pt(CAPTION_SIZE)
     par.alignment = WD_ALIGN_PARAGRAPH.CENTER
+
+
+def normalise_fonts(doc):
+    """Final pass: no blue or Calibri can survive anywhere in the document."""
+    for style in doc.styles:
+        if hasattr(style, "font") and style.font is not None:
+            apply_font(style)
+    for par in doc.paragraphs:
+        for run in par.runs:
+            apply_font(run)
+    for tbl in doc.tables:
+        for row in tbl.rows:
+            for cell in row.cells:
+                for par in cell.paragraphs:
+                    for run in par.runs:
+                        apply_font(run)
 
 
 def add_chart(doc, filename, caption_text):
@@ -65,17 +102,19 @@ def add_chart(doc, filename, caption_text):
 
 def main():
     doc = Document()
-    style = doc.styles["Normal"]
-    style.font.name = "Calibri"
-    style.font.size = Pt(11)
+    for style_name, size in (("Normal", BODY_SIZE), ("Heading 1", 16),
+                             ("Heading 2", 14), ("List Bullet", BODY_SIZE),
+                             ("Caption", CAPTION_SIZE)):
+        if style_name in doc.styles:
+            apply_font(doc.styles[style_name], size)
 
     # ---- Title page ----
     title = doc.add_paragraph()
     title.alignment = WD_ALIGN_PARAGRAPH.CENTER
     run = title.add_run("Reimagining the Personal Music Experience")
     run.bold = True
-    run.font.size = Pt(26)
-    run.font.color.rgb = TITLE_COLOR
+    run.font.size = Pt(TITLE_SIZE)
+    run.font.color.rgb = BLACK
     sub = doc.add_paragraph()
     sub.alignment = WD_ALIGN_PARAGRAPH.CENTER
     sub.add_run("A Design Thinking study with statistical validation of a cross-platform\n"
@@ -136,7 +175,7 @@ def main():
            "utility. Each of these is treated as a limitation rather than hidden.")
 
     # ---- 4 Literature review ----
-    h(doc, "4. Literature Review", 1)
+    h(doc, "4. Literature Review", 1, new_page=True)
     p(doc, "Commercial streaming services personalise through collaborative filtering and behavioural "
            "modelling. For this prototype, a rule-based demo database was used instead, because the "
            "brief requires a working, measurable system rather than production-grade recommendation "
@@ -174,7 +213,7 @@ def main():
            "rediscover saved music by mood, without requiring a paid subscription or a new account?")
 
     # ---- 6 Methodology ----
-    h(doc, "6. Research Methodology", 1)
+    h(doc, "6. Research Methodology", 1, new_page=True)
     h(doc, "6.1 Participants and sampling", 2)
     p(doc, "Convenience sampling was used to recruit 32 respondents, mostly students aged 18–30 "
            "(median 19; numeric mean 19.69, SD 2.19). 72% named Spotify as their primary platform, "
@@ -208,7 +247,7 @@ def main():
            "disclosed here.")
 
     # ---- 7 Findings ----
-    h(doc, "7. User Research and Findings", 1)
+    h(doc, "7. User Research and Findings", 1, new_page=True)
     h(doc, "7.1 Descriptive findings", 2)
     table(doc, ["Measure", "Result"], [
         ["Responses", "32 (30 assessed as substantive)"],
@@ -271,7 +310,7 @@ def main():
     ])
 
     # ---- 8 Ideation ----
-    h(doc, "8. Ideation and Concept Development", 1)
+    h(doc, "8. Ideation and Concept Development", 1, new_page=True)
     p(doc, "Ten ideas were generated individually and compared using a weighted selection matrix "
            "(desirability 40%, feasibility 35%, viability 25%). A SWOT analysis checked the concept "
            "against the fragile client-side nature of the extension and the small sample.")
@@ -291,7 +330,7 @@ def main():
            "exclusion of ad removal.")
 
     # ---- 9 Prototype ----
-    h(doc, "9. Proposed Solution and Prototype", 1)
+    h(doc, "9. Proposed Solution and Prototype", 1, new_page=True)
     p(doc, "The prototype comprises two connected parts. The Chrome extension injects a dark side "
            "panel into Spotify Web, YouTube Music and Apple Music. A platform adapter selects itself "
            "by hostname and polls the page for the current track every two seconds; polling was "
@@ -308,19 +347,7 @@ def main():
         ["usage_events", "Built-in measurement", "id, user_id, event_type, detail, duration_ms"],
         ["test_tasks", "Stage 5 timed tasks", "id, task_name, duration_ms, clicks, errors, completed"],
     ])
-    h(doc, "9.2 Wireframe sketch", 2)
-    p(doc, "Dashboard layout (text wireframe):\n"
-           "┌──────────────────────────────┐\n"
-           "│  Header: brand + nav          │\n"
-           "├──────────────┬───────────────┤\n"
-           "│ Hero / title │  Stat cards   │\n"
-           "├──────────────┴───────────────┤\n"
-           "│ Controls: platform / level    │\n"
-           "│ ┌────┐ ┌────┐ ┌────┐         │\n"
-           "│ │card│ │card│ │card│  ...     │\n"
-           "│ └────┘ └────┘ └────┘         │\n"
-           "└──────────────────────────────┘")
-    h(doc, "9.3 Key features", 2)
+    h(doc, "9.2 Key features", 2)
     bullets(doc, [
         "Discover: Familiar, Balanced and Exploratory levels, current-track context, save button.",
         "Find by Vibe: eight mood tags with platform-specific sets and default fallback.",
@@ -333,7 +360,7 @@ def main():
            "/preferences and /study and are available in the presentation deck.")
 
     # ---- 10 Testing ----
-    h(doc, "10. Testing, Statistical Validation and Discussion", 1)
+    h(doc, "10. Testing, Statistical Validation and Discussion", 1, new_page=True)
     h(doc, "10.1 Hypotheses (fixed before testing)", 2)
     bullets(doc, [
         "H1a: median time to find a saved song is lower with the prototype; H0a: no difference.",
@@ -374,7 +401,7 @@ def main():
            "These limit generalisation and are stated plainly rather than minimised.")
 
     # ---- 11 Conclusion ----
-    h(doc, "11. Conclusion and Future Scope", 1)
+    h(doc, "11. Conclusion and Future Scope", 1, new_page=True)
     p(doc, "This project applied all five Design Thinking stages to a real, measured problem and "
            "produced a working cross-platform prototype with a Python backend, a SQLite database "
            "and built-in measurement. The strongest evidence-backed contribution is the save-and-"
@@ -386,7 +413,7 @@ def main():
            "investigating whether mood-based retrieval improves measured task time.")
 
     # ---- 12 References ----
-    h(doc, "12. References", 1)
+    h(doc, "12. References", 1, new_page=True)
     p(doc, "Brown, T. (2008). Design Thinking. Harvard Business Review, 86(6), 84–92.")
     p(doc, "Brooke, J. (1996). SUS: a 'quick and dirty' usability scale. In P. W. Jordan et al. "
            "(Eds.), Usability Evaluation in Industry. Taylor & Francis.")
@@ -400,7 +427,7 @@ def main():
            "track detection).")
 
     # ---- 13 Appendices ----
-    h(doc, "13. Appendices", 1)
+    h(doc, "13. Appendices", 1, new_page=True)
     h(doc, "Appendix A — Questionnaire", 2)
     bullets(doc, [
         "Name; Age.",
@@ -443,6 +470,7 @@ def main():
     p(doc, "python3 webapp/analysis/analysis.py --csv \"Music Streaming Platform Experience "
            "(Responses) - Form responses 1.csv\"", italic=True)
 
+    normalise_fonts(doc)
     doc.save(OUT)
     print(f"Wrote {OUT}")
 
