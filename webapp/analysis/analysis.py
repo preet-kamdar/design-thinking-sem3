@@ -223,15 +223,22 @@ def make_charts(df: pd.DataFrame, scores: dict[str, pd.Series], outdir: Path) ->
         style_axes(ax)
     save(fig, "discovery_and_saving.png")
 
-    # Ordinal distributions
+    # Ordinal distributions. Long category names are wrapped onto two lines:
+    # at four panels across, rotated labels collided with the next chart.
     fig, axes = plt.subplots(1, 4, figsize=(16, 5))
+    wrapped_labels = {
+        "Several times a week": "Several\ntimes a\nweek",
+        "Sometimes difficult": "Sometimes\ndifficult",
+    }
     for ax, (label, (col, mapping)) in zip(axes, ORDINAL_MAPS.items()):
         vc = df[col].astype(str).str.strip().value_counts()
         order = [k for k in mapping if k in vc.index]
         ax.bar(order, [vc[k] for k in order], color=palette[: len(order)])
+        ax.set_xticks(range(len(order)))
+        ax.set_xticklabels([wrapped_labels.get(k, k) for k in order], rotation=0, ha="center")
         ax.set_title(label)
-        ax.tick_params(axis="x", rotation=20)
         style_axes(ax)
+        ax.tick_params(axis="x", labelsize=13, pad=6)
     save(fig, "ordinal_distributions.png")
 
     # Age histogram + box plot of ordinal scores
