@@ -90,37 +90,37 @@ Target: 10–12 minutes including pauses, plus 5 minutes of questions. **Bold** 
 
 ### Slide 15 — Prototype
 **On slide:** Architecture diagram: Extension (HTML/CSS/JS) → Flask routes → SQLite; screenshots of panel, dashboard, study page.
-**Say:** "Two parts: a Chrome side panel that detects the track on three music sites, and a Flask dashboard backed by SQLite for saved songs and test data. No login, no external API. Let me show it live: Discover, one save, then My Music."
+**Say:** "The prototype has two connected parts. The Chrome extension injects a side panel into three music sites and detects the current track through one adapter per platform. The companion dashboard is responsive HTML, CSS and JavaScript served by Flask, with SQLite storing saved songs, preferences, usage events and test tasks. Everything stays local, with no login and no external API. I will now show the live build: Discover, one save, and the My Music list."
 
 ---
 
 ### Slide 16 — Testing and validation
 **On slide:** Paired design · timed tasks · SUS · tests chosen · one author pilot.
-**Say:** "Validation is a paired study: timed tasks plus a SUS score out of **100**. I'd compare times with Wilcoxon and SUS against **68**. One author pilot — **46.6**, **27.0**, **23.4 seconds**, self-rating **35** — only confirmed the logging works. It is not participant validation."
+**Say:** "For validation, the intended design is paired: the same participants try both approaches. The study page times three tasks and counts clicks and errors, then computes a **System Usability Scale** score out of **100**. For task time I would use a **Wilcoxon signed-rank test** if the data are non-normal, otherwise a paired t-test; for SUS, a one-sample t-test against **68**. I ran one author pilot to check the instrument: **46.6**, **27.0** and **23.4 seconds**, all completed, plus a self-rating of **35.0**. That is a system check, not participant validation, and I keep the two separate."
 
 ---
 
 ### Slide 17 — Results and iterations
 **On slide:** Three improvements made; one author pilot verified the logging.
-**Say:** "Three fixes came from failures: per-platform adapters after YouTube Music broke, a dashboard because saved songs had no view, and usage logging with consent. The pilot confirmed the data is recorded; participant runs remain future work."
+**Say:** "Iteration was driven by failures, not guesswork. First, I split track detection into per-platform adapters after the single-file version broke on YouTube Music's changing DOM. Second, I added the companion dashboard because saved songs existed in extension storage but had no view. Third, I added usage logging and a consent toggle, so testing is based on measurement rather than recall. The pilot confirmed that task times, clicks and the SUS score are stored correctly; real participant runs remain future work."
 
 ---
 
 ### Slide 18 — Impact and limitations
 **On slide:** Benefits · feasibility · threats to validity.
-**Say:** "Benefits: no account, local data, three platforms. Limits: only **32** responses, **72%** Spotify versus **6%** Apple Music, ads out of scope, demo recommendations, single contributor. I disclose these because they define exactly what the result can and cannot claim."
+**Say:** "The benefits are concrete: no account is required, data never leaves the browser, and the utility works across three platforms. The limits are equally concrete. The sample is **32**, which is modest; **72%** are Spotify users and only **6%** Apple Music; ads, the biggest complaint, are out of scope; the recommendations are demo data; and this was a single-contributor project, so team roles were consolidated. I disclose these rather than hide them, because that is what makes the rest of the claim credible."
 
 ---
 
 ### Slide 19 — Conclusion and future scope
 **On slide:** Key learning · conclusion · future work.
-**Say:** "What I learned is that a small, focused utility can address a real, measured gap: saving and finding tracks, without complex infrastructure. It does not fix ads. Next is a learned model, the Understand section, and a larger, stratified sample."
+**Say:** "What I learned is that a small, focused utility can address a real, measured gap — saved-song retrieval and taste control — without complex infrastructure. The prototype addresses the in-scope pain points; it does not claim to fix ads. Future work is clear: replace the demo database with a learned model, implement the Understand section, and collect a larger, stratified sample."
 
 ---
 
 ### Slide 20 — References and Q&A
 **On slide:** Google Forms dataset · brief · libraries (Flask, pandas, scipy, matplotlib) · sites' UI.
-**Say:** "Sources are the anonymised survey, the brief, and the open-source libraries behind the build. AI drafting is disclosed in the paper. That's my presentation — thank you, I'm happy to take questions."
+**Say:** "Sources are our anonymised survey dataset, the assignment brief, and the open-source libraries behind the backend and analysis. AI tools were used for code and documentation drafting, and that is disclosed in the paper. With that, I am done. Thank you — I am happy to take questions."
 
 ---
 
