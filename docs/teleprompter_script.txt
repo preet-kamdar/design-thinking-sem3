@@ -34,6 +34,6 @@ Three fixes came from failures: per-platform adapters after YouTube Music broke,
 
 Benefits: no account, local data, three platforms. Limits: only 32 responses, 72% Spotify versus 6% Apple Music, ads out of scope, demo recommendations, single contributor. I disclose these because they define exactly what the result can and cannot claim.
 
-A small utility can address a measured gap — saving and finding tracks — without complex infrastructure. It does not fix ads. Next: a learned model, the Understand section, and a larger stratified sample.
+What I learned is that a small, focused utility can address a real, measured gap: saving and finding tracks, without complex infrastructure. It does not fix ads. Next is a learned model, the Understand section, and a larger, stratified sample.
 
 Sources are the anonymised survey, the brief, and the open-source libraries behind the build. AI drafting is disclosed in the paper. That's my presentation — thank you, I'm happy to take questions.

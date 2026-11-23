@@ -114,7 +114,7 @@ Target: 10–12 minutes including pauses, plus 5 minutes of questions. **Bold** 
 
 ### Slide 19 — Conclusion and future scope
 **On slide:** Key learning · conclusion · future work.
-**Say:** "A small utility can address a measured gap — saving and finding tracks — without complex infrastructure. It does not fix ads. Next: a learned model, the Understand section, and a larger stratified sample."
+**Say:** "What I learned is that a small, focused utility can address a real, measured gap: saving and finding tracks, without complex infrastructure. It does not fix ads. Next is a learned model, the Understand section, and a larger, stratified sample."
 
 ---
 
